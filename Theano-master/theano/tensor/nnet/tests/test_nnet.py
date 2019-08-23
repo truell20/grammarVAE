@@ -1,4 +1,4 @@
-from __future__ import absolute_import, print_function, division
+
 import unittest
 
 import numpy
@@ -1389,7 +1389,7 @@ def test_asymptotic_32():
 
         xval = numpy.zeros((5, 5), dtype=dtype).astype(dtype)
         x2val = numpy.zeros(5, dtype=xval.dtype).astype(dtype)
-        for i in xrange(100):
+        for i in range(100):
             cval, gxval = f(xval, numpy.arange(5), x2val)
             xval -= 100.3 * gxval
             # print cval, gxval
@@ -1399,7 +1399,7 @@ def test_asymptotic_32():
 
         xval = numpy.zeros((5, 5), dtype=dtype)
         x2val = numpy.zeros(5, dtype=xval.dtype)
-        for i in xrange(100):
+        for i in range(100):
 
             cval, gxval = f(xval, numpy.arange(5), x2val)
             xval += 100000.3 * gxval

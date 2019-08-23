@@ -2,7 +2,7 @@
 
 Author: Christof Angermueller <cangermueller@gmail.com>
 """
-from __future__ import absolute_import, print_function, division
+
 
 import numpy as np
 import os
@@ -263,7 +263,7 @@ class PyDotFormatter(object):
                 int_inputs = [gf.__node_id(x)
                               for x in node.op.fn.maker.fgraph.inputs]
                 assert len(ext_inputs) == len(int_inputs)
-                h = format_map(zip(ext_inputs, int_inputs))
+                h = format_map(list(zip(ext_inputs, int_inputs)))
                 pd_node.get_attributes()['subg_map_inputs'] = h
 
                 # Outputs mapping
@@ -276,7 +276,7 @@ class PyDotFormatter(object):
                 int_outputs = node.op.fn.maker.fgraph.outputs
                 int_outputs = [gf.__node_id(x) for x in int_outputs]
                 assert len(ext_outputs) == len(int_outputs)
-                h = format_map(zip(int_outputs, ext_outputs))
+                h = format_map(list(zip(int_outputs, ext_outputs)))
                 pd_node.get_attributes()['subg_map_outputs'] = h
 
         return graph

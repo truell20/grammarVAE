@@ -1,4 +1,4 @@
-from __future__ import absolute_import, print_function, division
+
 import numpy
 from theano import config, function, tensor
 from theano.sandbox import multinomial
@@ -20,7 +20,7 @@ class test_OP(unittest.TestCase):
         f = function([p, u, n], m, allow_input_downcast=True)
 
         n_elements = 1000
-        all_indices = range(n_elements)
+        all_indices = list(range(n_elements))
         numpy.random.seed(12345)
         for i in [5, 10, 50, 100, 500, n_elements]:
             uni = numpy.random.rand(i).astype(config.floatX)
@@ -96,7 +96,7 @@ class test_function(unittest.TestCase):
         f = function([p, n], m, allow_input_downcast=True)
 
         n_elements = 1000
-        all_indices = range(n_elements)
+        all_indices = list(range(n_elements))
         numpy.random.seed(12345)
         for i in [5, 10, 50, 100, 500, n_elements]:
             pvals = numpy.random.randint(1, 100, (1, n_elements)).astype(config.floatX)

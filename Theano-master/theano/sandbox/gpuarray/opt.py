@@ -1,4 +1,4 @@
-from __future__ import absolute_import, print_function, division
+
 import copy
 import numpy
 import logging
@@ -696,7 +696,7 @@ def local_gpua_careduce(node, context_name):
 
             new_in_shp = [x_shape[0]]
             new_mask = [reduce_mask[0]]
-            for i in xrange(1, x.type.ndim):
+            for i in range(1, x.type.ndim):
                 if reduce_mask[i] == reduce_mask[i - 1]:
                     new_in_shp[-1] *= x_shape[i]
                 else:

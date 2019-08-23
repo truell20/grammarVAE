@@ -4,7 +4,7 @@ This module provides utility functions for the Scan Op.
 See scan.py for details on scan.
 
 """
-from __future__ import absolute_import, print_function, division
+
 __docformat__ = 'restructedtext en'
 __authors__ = ("Razvan Pascanu "
                "Frederic Bastien "
@@ -386,7 +386,7 @@ def _map_variables_inner(replacer, inner_inputs, outer_inputs,
     # variables, which we cannot directly use inside the inner graph.
     # we need to create inner inputs to access them through.
 
-    outer_to_inner = dict(zip(outer_inputs, inner_inputs))
+    outer_to_inner = dict(list(zip(outer_inputs, inner_inputs)))
     extra_inner_inputs = []
     extra_outer_inputs = []
 
@@ -441,7 +441,7 @@ def _map_variables_inner(replacer, inner_inputs, outer_inputs,
             # if this foreign input is not already available
             # as an inner input, connect it through a new
             # inner input
-            if outer_input not in outer_to_inner.keys():
+            if outer_input not in list(outer_to_inner.keys()):
                 inner_input = scan_utils.safe_new(outer_input, tag="_copy")
                 outer_to_inner[outer_input] = inner_input
                 extra_inner_inputs.append(inner_input)
@@ -451,7 +451,7 @@ def _map_variables_inner(replacer, inner_inputs, outer_inputs,
                 # as we discover them.
                 graph.owner.fgraph.add_input(inner_input)
 
-        replacements.extend(outer_to_inner.items())
+        replacements.extend(list(outer_to_inner.items()))
 
         new_graph, = theano.clone([new_graph],
                                   share_inputs=True,
@@ -617,7 +617,7 @@ def expand_empty(tensor_var, size):
 
     if size == 0:
         return tensor_var
-    shapes = [tensor_var.shape[x] for x in xrange(tensor_var.ndim)]
+    shapes = [tensor_var.shape[x] for x in range(tensor_var.ndim)]
     new_shape = [size + shapes[0]] + shapes[1:]
     empty = tensor.AllocEmpty(tensor_var.dtype)(*new_shape)
 
@@ -648,7 +648,7 @@ def equal_computations(xs, ys, in_xs=None, in_ys=None):
     if in_ys is None:
         in_ys = []
 
-    for x, y in izip(xs, ys):
+    for x, y in zip(xs, ys):
         if x.owner and not y.owner:
             return False
         if y.owner and not x.owner:
@@ -660,13 +660,13 @@ def equal_computations(xs, ys, in_xs=None, in_ys=None):
             return False
     if len(in_xs) != len(in_ys):
         return False
-    for _x, _y in izip(in_xs, in_ys):
+    for _x, _y in zip(in_xs, in_ys):
         if _x.type != _y.type:
             return False
 
     common = set(zip(in_xs, in_ys))
     different = set()
-    for dx, dy in izip(xs, ys):
+    for dx, dy in zip(xs, ys):
         # We checked above that both dx and dy have an owner or not
         if not dx.owner:
             if (isinstance(dx, tensor.Constant) and
@@ -700,7 +700,7 @@ def equal_computations(xs, ys, in_xs=None, in_ys=None):
             return False
         else:
             all_in_common=True
-            for dx, dy in izip(nd_x.outputs, nd_y.outputs):
+            for dx, dy in zip(nd_x.outputs, nd_y.outputs):
                 if (dx, dy) in different:
                     return False
                 if (dx, dy) not in common:
@@ -710,7 +710,7 @@ def equal_computations(xs, ys, in_xs=None, in_ys=None):
                 return True
 
             # Compare the individual inputs for equality
-            for dx, dy in izip(nd_x.inputs, nd_y.inputs):
+            for dx, dy in zip(nd_x.inputs, nd_y.inputs):
                 if (dx, dy) not in common:
 
                     # Equality between the variables is unknown, compare
@@ -742,7 +742,7 @@ def equal_computations(xs, ys, in_xs=None, in_ys=None):
             # If the code reaches this statement then the inputs are pair-wise
             # equivalent so the outputs of the current nodes are also
             # pair-wise equivalents
-            for dx, dy in izip(nd_x.outputs, nd_y.outputs):
+            for dx, dy in zip(nd_x.outputs, nd_y.outputs):
                 common.add((dx, dy))
 
             return True
@@ -772,7 +772,7 @@ def infer_shape(outs, inputs, input_shapes):
     # inside.  We don't use the full ShapeFeature interface, but we
     # let it initialize itself with an empty fgraph, otherwise we will
     # need to do it manually
-    for inp, inp_shp in izip(inputs, input_shapes):
+    for inp, inp_shp in zip(inputs, input_shapes):
         if inp_shp is not None and len(inp_shp) != inp.ndim:
             assert len(inp_shp) == inp.ndim
 
@@ -780,7 +780,7 @@ def infer_shape(outs, inputs, input_shapes):
     shape_feature.on_attach(theano.gof.FunctionGraph([], []))
 
     # Initialize shape_of with the input shapes
-    for inp, inp_shp in izip(inputs, input_shapes):
+    for inp, inp_shp in zip(inputs, input_shapes):
         shape_feature.set_shape(inp, inp_shp)
 
     def local_traverse(out):
@@ -917,8 +917,8 @@ def scan_can_remove_outs(op, out_idxs):
         n_ins = len(op.info['tap_array'][idx])
         out_ins += [op.inputs[offset:offset + n_ins]]
         offset += n_ins
-    out_ins += [[] for k in xrange(op.n_nit_sot)]
-    out_ins += [[op.inputs[offset + k]] for k in xrange(op.n_shared_outs)]
+    out_ins += [[] for k in range(op.n_nit_sot)]
+    out_ins += [[op.inputs[offset + k]] for k in range(op.n_shared_outs)]
 
     added = True
     out_idxs_mask = [1 for idx in out_idxs]
@@ -978,7 +978,7 @@ def compress_outs(op, not_required, inputs):
     i_offset = op.n_seqs
     o_offset = 0
     curr_pos = 0
-    for idx in xrange(op.info['n_mit_mot']):
+    for idx in range(op.info['n_mit_mot']):
         if offset + idx not in not_required:
             map_old_new[offset + idx] = curr_pos
             curr_pos += 1
@@ -1002,7 +1002,7 @@ def compress_outs(op, not_required, inputs):
     offset += op.n_mit_mot
     ni_offset += op.n_mit_mot
 
-    for idx in xrange(op.info['n_mit_sot']):
+    for idx in range(op.info['n_mit_sot']):
         if offset + idx not in not_required:
             map_old_new[offset + idx] = curr_pos
             curr_pos += 1
@@ -1023,7 +1023,7 @@ def compress_outs(op, not_required, inputs):
 
     offset += op.n_mit_sot
     ni_offset += op.n_mit_sot
-    for idx in xrange(op.info['n_sit_sot']):
+    for idx in range(op.info['n_sit_sot']):
         if offset + idx not in not_required:
             map_old_new[offset + idx] = curr_pos
             curr_pos += 1
@@ -1044,7 +1044,7 @@ def compress_outs(op, not_required, inputs):
     offset += op.n_sit_sot
     ni_offset += op.n_sit_sot
     nit_sot_ins = []
-    for idx in xrange(op.info['n_nit_sot']):
+    for idx in range(op.info['n_nit_sot']):
         if offset + idx not in not_required:
             map_old_new[offset + idx] = curr_pos
             curr_pos += 1
@@ -1057,7 +1057,7 @@ def compress_outs(op, not_required, inputs):
 
     offset += op.n_nit_sot
     shared_ins = []
-    for idx in xrange(op.info['n_shared_outs']):
+    for idx in range(op.info['n_shared_outs']):
         if offset + idx not in not_required:
             map_old_new[offset + idx] = curr_pos
             curr_pos += 1
@@ -1109,7 +1109,7 @@ def reconstruct_graph(inputs, outputs, tag=None):
         tag = ''
     nw_inputs = [safe_new(x, tag) for x in inputs]
     givens = OrderedDict()
-    for nw_x, x in izip(nw_inputs, inputs):
+    for nw_x, x in zip(nw_inputs, inputs):
         givens[x] = nw_x
     allinputs = theano.gof.graph.inputs(outputs)
     for inp in allinputs:

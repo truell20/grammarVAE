@@ -1,4 +1,4 @@
-from __future__ import absolute_import, print_function, division
+
 import os
 import logging
 
@@ -44,7 +44,7 @@ class BaseCorrMM(gof.Op):
                 raise ValueError(
                     'invalid border_mode {}, which must be a '
                     'pair of non-negative integers'.format(border_mode))
-            pad_h, pad_w = map(int, border_mode)
+            pad_h, pad_w = list(map(int, border_mode))
             border_mode = (pad_h, pad_w)
         if not ((isinstance(border_mode, tuple) and min(border_mode) >= 0) or
                 border_mode in ('valid', 'full', 'half')):

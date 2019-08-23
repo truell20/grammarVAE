@@ -1,4 +1,4 @@
-from __future__ import absolute_import, print_function, division
+
 import theano
 import numpy as N
 from theano import tensor as T
@@ -103,7 +103,7 @@ def test_module_advanced_example():
                        stepsize = 0.1,
                        mode=profmode)
 
-    for i in xrange(1000):
+    for i in range(1000):
        xe, gw, gb, ga = model.update(data_x, data_y)
        if i % 100 == 0:
            print(i, xe)

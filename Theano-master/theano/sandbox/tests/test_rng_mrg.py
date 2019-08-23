@@ -1,4 +1,4 @@
-from __future__ import absolute_import, print_function, division
+
 import copy
 import os
 import sys
@@ -460,7 +460,7 @@ def basictest(f, steps, sample_size, prefix="", allow_01=False, inputs=None,
     dt = 0.0
     avg_var = 0.0
 
-    for i in xrange(steps):
+    for i in range(steps):
         t0 = time.time()
         ival = f(*inputs)
         assert ival.shape == sample_size
@@ -778,7 +778,7 @@ def basic_multinomialtest(f, steps, sample_size, target_pvals, n_samples,
     dt = 0.0
     avg_pvals = numpy.zeros(target_pvals.shape, dtype=config.floatX)
 
-    for i in xrange(steps):
+    for i in range(steps):
         t0 = time.time()
         ival = f()
         assert ival.shape == sample_size

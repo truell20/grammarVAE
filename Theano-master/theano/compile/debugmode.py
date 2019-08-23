@@ -4,7 +4,7 @@ Provides `DebugMode`, an evaluation mode for debugging theano internals.
 TODO: add support for IfElse Op, LazyLinker, PureOp, etc.
 
 """
-from __future__ import absolute_import, print_function, division
+
 
 import copy
 import sys
@@ -2074,8 +2074,8 @@ class _Linker(gof.link.LocalLinker):
                                 # as viewd are unsafe too, because the
                                 # corresponding output can be
                                 # destroyed.
-                                if any(i in v for v in chain(dmap.values(),
-                                                             vmap.values())):
+                                if any(i in v for v in chain(list(dmap.values()),
+                                                             list(vmap.values()))):
                                     storage_map[r][0] = _lessbroken_deepcopy(
                                         r_vals[r])
 
@@ -2374,7 +2374,7 @@ class _Maker(FunctionMaker):  # inheritance buys a few helper functions
                    for input in inputs]
 
         # make the fgraph
-        for i in xrange(mode.stability_patience):
+        for i in range(mode.stability_patience):
             fgraph, additional_outputs, equivalence_tracker = _optcheck_fgraph(
                 inputs, outputs, accept_inplace)
             fgraph.equivalence_tracker = equivalence_tracker
@@ -2406,7 +2406,7 @@ class _Maker(FunctionMaker):  # inheritance buys a few helper functions
                           "trace)", file=infolog)
                     print("-------------------------------------------------"
                           "----", file=infolog)
-                    for j in xrange(max(len(li), len(l0))):
+                    for j in range(max(len(li), len(l0))):
                         if j >= len(li):
                             print('trailing event in optimization 0 :', j,
                                   file=infolog)
@@ -2437,7 +2437,7 @@ class _Maker(FunctionMaker):  # inheritance buys a few helper functions
 
         no_borrow = [
             output
-            for output, spec in izip(fgraph.outputs,
+            for output, spec in zip(fgraph.outputs,
                                      outputs + additional_outputs)
             if not spec.borrow]
         if no_borrow:
@@ -2481,7 +2481,7 @@ class _Maker(FunctionMaker):  # inheritance buys a few helper functions
 
         # The following loop is to fill in the input_storage and _defaults
         # lists.
-        for (input, indices, subinputs), default in izip(self.indices,
+        for (input, indices, subinputs), default in zip(self.indices,
                                                          defaults):
             __default = default
 

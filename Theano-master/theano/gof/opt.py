@@ -3,7 +3,7 @@ Defines the base class for optimizations as well as a certain
 amount of useful generic optimization tools.
 
 """
-from __future__ import absolute_import, print_function, division
+
 
 from collections import deque
 import copy
@@ -26,6 +26,7 @@ from theano.gof.fg import InconsistencyError
 from theano.misc.ordered_set import OrderedSet
 
 from . import destroyhandler as dh
+from functools import reduce
 
 _logger = logging.getLogger('theano.gof.opt')
 _optimizer_idx = [0]
@@ -807,7 +808,7 @@ class MergeOptimizer(Optimizer):
                         # If both nodes have clients that destroy
                         # them, we can't merge them.
                         clients = pairs[0][0].clients + pairs[0][1].clients
-                        if sum([i in utils.flatten(c.op.destroy_map.values())
+                        if sum([i in utils.flatten(list(c.op.destroy_map.values()))
                                 for c, i in clients
                                 if c != 'output' and
                                 hasattr(c.op, 'destroy_map')]) > 1:
@@ -1082,7 +1083,7 @@ class LocalMetaOptimizer(LocalOptimizer):
                 missing.add(input)
         if missing:
             givens.update(self.provide_inputs(node, missing))
-            missing.difference_update(givens.keys())
+            missing.difference_update(list(givens.keys()))
         # ensure we have data for all input variables that need it
         if missing:
             if self.verbose:
@@ -1456,7 +1457,7 @@ class PatternSub(LocalOptimizer):
                     assert len(real_node.outputs) == len(ret)
                     if self.values_eq_approx:
                         ret.tag.values_eq_approx = self.values_eq_approx
-                    return dict(izip(real_node.outputs, ret))
+                    return dict(zip(real_node.outputs, ret))
 
         if node.op != self.op:
             return False
@@ -1925,7 +1926,7 @@ class OpKeyOptimizer(NavigatorOptimizer):
     def apply(self, fgraph):
         op = self.local_opt.op_key()
         if isinstance(op, (list, tuple)):
-            q = reduce(list.__iadd__, map(fgraph.get_nodes, op))
+            q = reduce(list.__iadd__, list(map(fgraph.get_nodes, op)))
         else:
             q = list(fgraph.get_nodes(op))
 

@@ -4,7 +4,7 @@ Ops for downsampling images.
 Planned:
 Pool, DownsampleAvg, DownsampleSoftmax.
 """
-from __future__ import absolute_import, print_function, division
+
 # This file should move along with conv.py
 import warnings
 
@@ -303,15 +303,15 @@ class Pool(Op):
         elif self.mode != 'max':
             func = numpy.average
 
-        for n in xrange(x.shape[0]):
-            for k in xrange(x.shape[1]):
-                for r in xrange(pr):
+        for n in range(x.shape[0]):
+            for k in range(x.shape[1]):
+                for r in range(pr):
                     row_st = r * st0
                     row_end = builtins.min(row_st + ds0, img_rows)
                     if not inc_pad:
                         row_st = builtins.max(row_st, self.padding[0])
                         row_end = builtins.min(row_end, x.shape[-2] + pad_h)
-                    for c in xrange(pc):
+                    for c in range(pc):
                         col_st = c * st1
                         col_end = builtins.min(col_st + ds1, img_cols)
                         if not inc_pad:
@@ -665,16 +665,16 @@ class MaxPoolGrad(PoolGrad):
         else:
             y = x
         gx = numpy.zeros_like(y)
-        for n in xrange(x.shape[0]):
-            for k in xrange(x.shape[1]):
-                for r in xrange(pr):
+        for n in range(x.shape[0]):
+            for k in range(x.shape[1]):
+                for r in range(pr):
                     row_st = builtins.max(r * st0, self.padding[0])
                     row_end = builtins.min(row_st + ds0, img_rows)
-                    for c in xrange(pc):
+                    for c in range(pc):
                         col_st = builtins.max(c * st1, self.padding[1])
                         col_end = builtins.min(col_st + ds1, img_cols)
-                        for row_ind in xrange(row_st, row_end):
-                            for col_ind in xrange(col_st, col_end):
+                        for row_ind in range(row_st, row_end):
+                            for col_ind in range(col_st, col_end):
                                 if (maxout[n, k, r, c] == y[n, k, row_ind, col_ind]):
                                     gx[n, k, row_ind, col_ind] += gz[n, k, r, c]
         # unpad the image
@@ -853,15 +853,15 @@ class AveragePoolGrad(PoolGrad):
         else:
             y = x
         gx = numpy.zeros_like(y)
-        for n in xrange(x.shape[0]):
-            for k in xrange(x.shape[1]):
-                for r in xrange(pr):
+        for n in range(x.shape[0]):
+            for k in range(x.shape[1]):
+                for r in range(pr):
                     if sum_mode or inc_pad:
                         row_st = r * st0
                     else:
                         row_st = builtins.max(r * st0, self.padding[0])
                     row_end = builtins.min(row_st + ds0, img_rows)
-                    for c in xrange(pc):
+                    for c in range(pc):
                         if sum_mode or inc_pad:
                             col_st = c * st1
                         else:
@@ -955,16 +955,16 @@ class DownsampleFactorMaxGradGrad(Op):
         else:
             y_padded = x
             ggx_padded = ggx
-        for n in xrange(x.shape[0]):
-            for k in xrange(x.shape[1]):
-                for r in xrange(pr):
+        for n in range(x.shape[0]):
+            for k in range(x.shape[1]):
+                for r in range(pr):
                     row_st = r * st0
                     row_end = builtins.min(row_st + ds0, img_rows)
-                    for c in xrange(pc):
+                    for c in range(pc):
                         col_st = c * st1
                         col_end = builtins.min(col_st + ds1, img_cols)
-                        for row_ind in xrange(row_st, row_end):
-                            for col_ind in xrange(col_st, col_end):
+                        for row_ind in range(row_st, row_end):
+                            for col_ind in range(col_st, col_end):
                                 if (maxout[n, k, r, c] == y_padded[n, k, row_ind, col_ind]):
                                     ggz[n, k, r, c] = ggx_padded[n, k, row_ind, col_ind]
 

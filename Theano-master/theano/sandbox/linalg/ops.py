@@ -1,4 +1,4 @@
-from __future__ import absolute_import, print_function, division
+
 import logging
 
 logger = logging.getLogger(__name__)
@@ -421,7 +421,7 @@ def spectral_radius_bound(X, log2_exponent):
                          'exponent', log2_exponent)
 
     XX = X
-    for i in xrange(log2_exponent):
+    for i in range(log2_exponent):
         XX = tensor.dot(XX, XX)
     return tensor.pow(
             trace(XX),

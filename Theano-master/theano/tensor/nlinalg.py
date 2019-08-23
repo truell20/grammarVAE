@@ -1,4 +1,4 @@
-from __future__ import absolute_import, print_function, division
+
 
 import logging
 
@@ -528,7 +528,7 @@ class EighGrad(Op):
             self.tri1 = lambda a: numpy.tril(a, -1)
 
     def make_node(self, x, w, v, gw, gv):
-        x, w, v, gw, gv = map(as_tensor_variable, (x, w, v, gw, gv))
+        x, w, v, gw, gv = list(map(as_tensor_variable, (x, w, v, gw, gv)))
         assert x.ndim == 2
         assert w.ndim == 1
         assert v.ndim == 2
@@ -551,10 +551,10 @@ class EighGrad(Op):
 
         def G(n):
             return sum(v[:, m] * V.T[n].dot(v[:, m]) / (w[n] - w[m])
-                       for m in xrange(N) if m != n)
+                       for m in range(N) if m != n)
 
         g = sum(outer(v[:, n], v[:, n] * W[n] + G(n))
-                for n in xrange(N))
+                for n in range(N))
 
         # Numpy's eigh(a, 'L') (eigh(a, 'U')) is a function of tril(a)
         # (triu(a)) only.  This means that partial derivative of
@@ -796,7 +796,7 @@ class lstsq(Op):
 
 def matrix_power(M, n):
     result = 1
-    for i in xrange(n):
+    for i in range(n):
         result = theano.dot(result, M)
     return result
 

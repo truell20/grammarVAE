@@ -1,4 +1,4 @@
-from __future__ import absolute_import, print_function, division
+
 import numpy
 import six.moves.copyreg as copyreg
 from six import iteritems
@@ -74,7 +74,7 @@ def list_contexts():
     Return an iterable of all the registered context names.
 
     """
-    return _context_reg.keys()
+    return list(_context_reg.keys())
 
 
 # Private method

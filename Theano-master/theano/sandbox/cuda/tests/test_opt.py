@@ -1,4 +1,4 @@
-from __future__ import absolute_import, print_function, division
+
 import operator
 import sys
 import unittest
@@ -19,6 +19,7 @@ from theano.tests.breakpoint import PdbBreakpoint
 from theano.tests import unittest_tools as utt
 
 import theano.sandbox.cuda as cuda
+from functools import reduce
 
 if not cuda.cuda_available:
     raise SkipTest('Optional package cuda disabled')

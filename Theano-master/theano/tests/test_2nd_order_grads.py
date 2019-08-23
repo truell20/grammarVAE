@@ -1,7 +1,7 @@
 """
 Test for jacobian/hessian functions in Theano
 """
-from __future__ import absolute_import, print_function, division
+
 from six.moves import xrange
 from theano.tests import unittest_tools as utt
 import theano
@@ -57,7 +57,7 @@ def test002_jacobian_matrix():
     y = 2 * x.sum(axis=0)
     rng = numpy.random.RandomState(seed=utt.fetch_seed())
     ev = numpy.zeros((10, 10, 10))
-    for dx in xrange(10):
+    for dx in range(10):
         ev[dx, :, dx] = 2.
 
     # test when the jacobian is called with a tensor as wrt
@@ -90,7 +90,7 @@ def test002_jacobian_matrix():
     vJs = f(vx, vz)
     evx = numpy.zeros((10, 10, 10))
     evz = numpy.zeros((10, 10, 10))
-    for dx in xrange(10):
+    for dx in range(10):
         evx[dx, dx, :] = vx[dx, :]
         evz[dx, dx, :] = vz[dx, :]
     assert numpy.allclose(vJs[0], evz)

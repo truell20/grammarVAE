@@ -1,5 +1,5 @@
 # Skip test if cuda_ndarray is not available.
-from __future__ import absolute_import, print_function, division
+
 import itertools
 
 from nose.plugins.skip import SkipTest
@@ -125,7 +125,7 @@ class TestGpuCumsum(theano.tensor.tests.test_extra_ops.TestCumsumOp):
 
         # Extensive testing for the first 1025 sizes
         a = np.random.random(1025).astype("float32")
-        for i in xrange(a.shape[0]):
+        for i in range(a.shape[0]):
             utt.assert_allclose(np.cumsum(a[:i]), f(a[:i]))
 
         # Use multiple GPU threadblocks
@@ -151,7 +151,7 @@ class TestGpuCumsum(theano.tensor.tests.test_extra_ops.TestCumsumOp):
             a_shape[shape_axis] = 1025
             a = np.random.random(a_shape).astype("float32")
             slices = [slice(None), slice(None)]
-            for i in xrange(a.shape[shape_axis]):
+            for i in range(a.shape[shape_axis]):
                 slices[shape_axis] = slice(i)
                 fa = f(a[slices])
                 npa = np.cumsum(a[slices], axis=axis)
@@ -190,7 +190,7 @@ class TestGpuCumsum(theano.tensor.tests.test_extra_ops.TestCumsumOp):
             a_shape[shape_axis] = 1025
             a = np.random.rand(*a_shape).astype("float32")
             slices = [slice(None), slice(None), slice(None)]
-            for i in xrange(a.shape[shape_axis]):
+            for i in range(a.shape[shape_axis]):
                 slices[shape_axis] = slice(i)
                 fa = f(a[slices])
                 npa = np.cumsum(a[slices], axis=axis)

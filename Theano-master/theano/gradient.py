@@ -1,5 +1,5 @@
 """Driver for gradient calculations."""
-from __future__ import absolute_import, print_function, division
+
 import six.moves.builtins as builtins
 import logging
 import time
@@ -19,6 +19,7 @@ from six.moves import xrange, reduce
 from theano.gof.null_type import NullType, null_type
 from theano.gof.op import get_debug_values
 from theano.compile import ViewOp
+from functools import reduce
 
 np = numpy
 __authors__ = "James Bergstra, Razvan Pascanu, Arnaud Bergeron, Ian Goodfellow"
@@ -346,7 +347,7 @@ def Lop(f, wrt, eval_points, consider_constant=None,
         wrt = [wrt]
 
     assert len(f) == len(grads)
-    known = dict(izip(f, grads))
+    known = dict(zip(f, grads))
 
     ret = grad(cost=None, known_grads=known,
                consider_constant=consider_constant, wrt=wrt,
@@ -560,7 +561,7 @@ def grad(cost, wrt, consider_constant=None,
     rval = _populate_grad_dict(var_to_app_to_idx,
                                grad_dict, wrt, cost_name)
 
-    for i in xrange(len(rval)):
+    for i in range(len(rval)):
         if isinstance(rval[i].type, NullType):
             if null_gradients == 'raise':
                 raise NullTypeGradError("tensor.grad encountered a NaN. " +
@@ -720,7 +721,7 @@ def subgraph_grad(wrt, end, start=None, cost=None, details=False):
             for i in range(len(grads)):
                 grads[i] += cost_grads[i]
 
-    pgrads = OrderedDict(izip(params, grads))
+    pgrads = OrderedDict(zip(params, grads))
     # separate wrt from end grads:
     wrt_grads = list(pgrads[k] for k in wrt)
     end_grads = list(pgrads[k] for k in end)
@@ -764,7 +765,7 @@ def _node_to_pattern(node):
                               for ipt in node.inputs]
     assert isinstance(connection_pattern, list)
     assert len(connection_pattern) == len(node.inputs)
-    for ii in xrange(len(node.inputs)):
+    for ii in range(len(node.inputs)):
         assert isinstance(connection_pattern[ii], list)
         assert len(connection_pattern[ii]) == len(node.outputs)
     return connection_pattern
@@ -1093,7 +1094,7 @@ def _populate_grad_dict(var_to_app_to_idx,
                 # by the user, not computed by Op.grad, and some gradients are
                 # only computed and returned, but never passed as another
                 # node's output grads.
-                for idx, packed in enumerate(izip(node.outputs,
+                for idx, packed in enumerate(zip(node.outputs,
                                              new_output_grads)):
                     orig_output, new_output_grad = packed
                     if not hasattr(orig_output, 'shape'):
@@ -1456,7 +1457,7 @@ class numeric_grad(object):
 
         # now iterate over the elements of x, and call f on apt.
         x_copy = x.copy()
-        for i in xrange(total_size):
+        for i in range(total_size):
             x[:] = x_copy
 
             x[i] += eps
@@ -1689,7 +1690,7 @@ def verify_grad(fun, pt, n_tests=2, rng=None, eps=None,
     grad_fn = function(tensor_pt, symbolic_grad,
                        name='gradient.py symbolic grad')
 
-    for test_num in xrange(n_tests):
+    for test_num in range(n_tests):
         try:
             num_grad = numeric_grad(cost_fn, [p.copy() for p in pt],
                                     eps, out_type)

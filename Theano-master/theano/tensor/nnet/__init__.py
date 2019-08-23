@@ -1,4 +1,4 @@
-from __future__ import absolute_import, print_function, division
+
 from .nnet import (
     CrossentropyCategorical1Hot, CrossentropyCategorical1HotGrad,
     CrossentropySoftmax1HotWithBiasDx, CrossentropySoftmaxArgmax1HotWithBias,
@@ -121,8 +121,8 @@ def conv2d(input, filters, input_shape=None, filter_shape=None,
             "are not supported anymore (and have not been a reliable way to "
             "perform upsampling). That feature is still available by calling "
             "theano.tensor.nnet.conv.conv2d() for the time being.")
-    if len(kwargs.keys()) > 0:
-        warnings.warn(str(kwargs.keys()) +
+    if len(list(kwargs.keys())) > 0:
+        warnings.warn(str(list(kwargs.keys())) +
                       " are now deprecated in "
                       "`tensor.nnet.abstract_conv.conv2d` interface"
                       " and will be ignored.",

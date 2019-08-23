@@ -1,4 +1,4 @@
-from __future__ import absolute_import, print_function, division
+
 import copy
 import logging
 import sys
@@ -200,7 +200,7 @@ class GpuElemwise(GpuOp):
         self.scalar_op = scalar_op
 
         self.inplace_pattern = inplace_pattern
-        self.destroy_map = dict((o, [i]) for o, i in inplace_pattern.items())
+        self.destroy_map = dict((o, [i]) for o, i in list(inplace_pattern.items()))
 
         self.sync = sync
 
@@ -282,7 +282,7 @@ class GpuElemwise(GpuOp):
         # output is broadcastable only along dimensions where all
         # inputs are broadcastable
         broadcastable = []
-        for d in xrange(_inputs[0].type.ndim):
+        for d in range(_inputs[0].type.ndim):
             bcast_d = True
             for i in _inputs:
                 if not i.type.broadcastable[d]:
@@ -293,7 +293,7 @@ class GpuElemwise(GpuOp):
 
         otype = CudaNdarrayType(broadcastable=broadcastable)
         assert self.nout > 0
-        return Apply(self, _inputs, [otype() for o in xrange(self.nout)])
+        return Apply(self, _inputs, [otype() for o in range(self.nout)])
 
     def c_support_code(self, *args, **kwargs):
         return self.src_generator.c_support_code(*args, **kwargs)
@@ -612,7 +612,7 @@ class GpuCAReduce(GpuOp):
         if (x.type.ndim != len(self.reduce_mask)):
             raise TypeError("x must have rank %i" % len(self.reduce_mask))
         o_broadcast = [x.type.broadcastable[i] for i
-                       in xrange(x.type.ndim) if not self.reduce_mask[i]]
+                       in range(x.type.ndim) if not self.reduce_mask[i]]
         return Apply(self, [x], [CudaNdarrayType(o_broadcast)()])
 
     """
@@ -655,8 +655,8 @@ class GpuCAReduce(GpuOp):
 
         name = 'fake_name'
 
-        inp = ['fake_input_name_%d' % i for i in xrange(len(inputs))]
-        out = ['fake_output_name_%d' % i for i in xrange(len(node.outputs))]
+        inp = ['fake_input_name_%d' % i for i in range(len(inputs))]
+        out = ['fake_output_name_%d' % i for i in range(len(node.outputs))]
 
         sub = {'fail': 'fake failure code'}
 
@@ -694,7 +694,7 @@ class GpuCAReduce(GpuOp):
         # this is OK to do
         if self.scalar_op in [scal.minimum, scal.maximum]:
             conds = ["(CudaNdarray_HOST_DIMS(%s)[%d] == 0)" % (x, i)
-                     for i in xrange(nd_in)
+                     for i in range(nd_in)
                      if self.reduce_mask[i]]
             assert len(conds) > 0
             cond = "(" + " || ".join(conds) + ")"
@@ -718,7 +718,7 @@ class GpuCAReduce(GpuOp):
 
         # ensure that the output has the right non-reduced dimensions
         j = 0
-        for i in xrange(nd_in):
+        for i in range(nd_in):
             if not self.reduce_mask[i]:
                 print(" || (CudaNdarray_HOST_DIMS(%(z)s)[%(j)s] != CudaNdarray_HOST_DIMS(%(x)s)[%(i)d]) " % locals(), file=sio)
                 j += 1
@@ -733,7 +733,7 @@ class GpuCAReduce(GpuOp):
             print("int *new_dims=NULL; ", file=sio)
 
         j = 0
-        for i in xrange(nd_in):
+        for i in range(nd_in):
             if not self.reduce_mask[i]:
                 print('new_dims[%(j)s] = CudaNdarray_HOST_DIMS(%(x)s)[%(i)s];' % locals(), file=sio)
                 j += 1
@@ -828,7 +828,7 @@ class GpuCAReduce(GpuOp):
         nd_out = ndim - sum(self.reduce_mask)
         shapes_format = "shape=(%s)" % ",".join(["%d"] * node.inputs[0].ndim)
         shapes_data = ",".join("CudaNdarray_HOST_DIMS(%s)[%d]" % (x, i)
-                               for i in xrange(node.inputs[0].ndim))
+                               for i in range(node.inputs[0].ndim))
 
         print("""
             if (verbose)
@@ -844,21 +844,21 @@ class GpuCAReduce(GpuOp):
                                   n_blocks.x*n_blocks.y, n_shared, %(shapes_data)s);
             kernel_reduce_%(pattern)s_%(name)s<<<n_blocks, n_threads, n_shared>>>(
             """ % locals(), file=sio)
-        for i in xrange(ndim):
+        for i in range(ndim):
             print("""
                     CudaNdarray_HOST_DIMS(%(x)s)[%(i)s],
             """ % locals(), file=sio)
         print("""
                     CudaNdarray_DEV_DATA(%(x)s)
             """ % locals(), file=sio)
-        for i in xrange(ndim):
+        for i in range(ndim):
             print("""
                     ,CudaNdarray_HOST_STRIDES(%(x)s)[%(i)s]
             """ % locals(), file=sio)
         print("""
                     ,CudaNdarray_DEV_DATA(%(z)s)
             """ % locals(), file=sio)
-        for i in xrange(nd_out):
+        for i in range(nd_out):
             print("""
                     ,CudaNdarray_HOST_STRIDES(%(z)s)[%(i)s]
             """ % locals(), file=sio)
@@ -921,21 +921,21 @@ class GpuCAReduce(GpuOp):
         print("""
             static __global__ void kernel_reduce_%(pattern)s_%(nodename)s(
         """ % locals(), file=sio)
-        for i in xrange(ndim):
+        for i in range(ndim):
             print("""
                     const int d%(i)s,
         """ % locals(), file=sio)
         print("""
                     const float *A,
         """ % locals(), file=sio)
-        for i in xrange(ndim):
+        for i in range(ndim):
             print("""
                     const int sA%(i)s,
         """ % locals(), file=sio)
         print("""
                     float * Z
         """ % locals(), file=sio)
-        for i in xrange(ndim - sum(reduce_mask)):
+        for i in range(ndim - sum(reduce_mask)):
             print("""
                     , const int sZ%(i)s
         """ % locals(), file=sio)
@@ -1289,9 +1289,9 @@ class GpuCAReduce(GpuOp):
         makecall = self._makecall(node, name, x, z, fail)
         N_pattern = ''.join(['1'] * N)
         param_dim = ",".join(["CudaNdarray_HOST_DIMS(%s)[%d]" % (x, i)
-                              for i in xrange(N + 1)])
+                              for i in range(N + 1)])
         strides_dim = ",".join(["CudaNdarray_HOST_STRIDES(%s)[%d]"
-                                % (x, i) for i in xrange(N + 1)])
+                                % (x, i) for i in range(N + 1)])
 
         threads_y = """
             //get as many y threads as we can fit
@@ -1991,9 +1991,9 @@ class GpuCAReduce(GpuOp):
             reducebuf = self._k_reduce_buf('Z[i0 * sZ0]', node,
                                            nodename, sub={})
             param_dim = ",".join(["const int d%d" % i
-                                  for i in xrange(nd_in)])
+                                  for i in range(nd_in)])
             param_strides = ",".join(["const int sA%d" % i
-                                      for i in xrange(nd_in)])
+                                      for i in range(nd_in)])
             decl = self._k_decl(node, nodename)
             init = self._k_init(node, nodename)
             reduce_init = self._assign_init("A[%(first_i3)s * %(sA3)s + %(first_i2)s * %(sA2)s + %(first_i1)s * %(sA1)s + i0 * sA0]" % locals())
@@ -3465,7 +3465,7 @@ class GpuJoin(tensor.Join, GpuOp):
 
         def construct_slices(curlen):
             slices = [slice(None, None, None) for i in \
-                            xrange(len(template_shape))]
+                            range(len(template_shape))]
             slices[axis] = slice(curpos, curpos + curlen, None)
             return tuple(slices)
 
@@ -3844,7 +3844,7 @@ class GpuAlloc(GpuAllocEmpty):
                       GpuAdvancedIncSubtensor1,
                       theano.sandbox.cuda.blas.GpuGemm,
                       theano.sandbox.cuda.blas.GpuGemv,
-                      theano.sandbox.cuda.blas.GpuGer,
+                      theano.sandbox.cuda.blas.GpuGer
                   ))):
                 return False
             # If the clients is a transfer, we don't want to fold. We
@@ -3908,7 +3908,7 @@ class CopyOnNegativeStrides(GpuOp):
                 Py_INCREF(%(z)s);
 
             } else if ((NULL == %(z)s)""" % locals()
-        for i in xrange(node.inputs[0].type.ndim):
+        for i in range(node.inputs[0].type.ndim):
             str += "\n|| (CudaNdarray_HOST_DIMS(%(input)s)[%(i)s] != CudaNdarray_HOST_DIMS(%(z)s)[%(i)s])" % locals()
         str += """
                 || !CudaNdarray_is_c_contiguous(%(z)s))
@@ -3985,7 +3985,7 @@ class GpuContiguous(GpuOp):
                 Py_INCREF(%(z)s);
 
             } else if ((NULL == %(z)s)""" % locals()
-        for i in xrange(node.inputs[0].type.ndim):
+        for i in range(node.inputs[0].type.ndim):
             str += "\n|| (CudaNdarray_HOST_DIMS(%(input)s)[%(i)s] != CudaNdarray_HOST_DIMS(%(z)s)[%(i)s])" % locals()
         str += """
                 || !CudaNdarray_is_c_contiguous(%(z)s))
@@ -4150,7 +4150,7 @@ def profile_printer(fct_name, compile_time, fct_call_time, fct_call,
                     apply_time, apply_cimpl, message, outputs_size,
                     other_time):
     if any([x[1].op.__class__.__name__.lower().startswith("gpu")
-            for x in apply_time.keys()]):
+            for x in list(apply_time.keys())]):
         local_time = sum(apply_time.values())
         print()
         print('Some info useful for gpu:')
@@ -4222,7 +4222,7 @@ class GpuEye(GpuOp):
         return [out_shape]
 
     def grad(self, inp, grads):
-        return [grad_undefined(self, i, inp[i]) for i in xrange(3)]
+        return [grad_undefined(self, i, inp[i]) for i in range(3)]
 
     def __eq__(self, other):
         return type(self) == type(other) and self.dtype == other.dtype

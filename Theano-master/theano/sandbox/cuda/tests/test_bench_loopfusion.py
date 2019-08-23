@@ -4,7 +4,7 @@ This file is based on hpu.nns.driver_kouh of Oct 22 2009.
 It is meant to be used to benchmark loop fusion optimizations.
 
 """
-from __future__ import absolute_import, print_function, division
+
 # this experiments are designed to use file-based configuration
 # rather than db-based configuration.
 # so state is ignored
@@ -78,12 +78,12 @@ class Kouh2008(object):
         if use_softmax_w:
             w = shared_uniform(low=-.1, high=.1, size=(n_out, n_terms), name='Kouh2008::w')
             w_sm = theano.tensor.nnet.softmax(w)
-            w_list = [w_sm[:, i] for i in xrange(n_terms)]
+            w_list = [w_sm[:, i] for i in range(n_terms)]
             w_l1 = abs(w).sum()
             w_l2_sqr = (w**2).sum()
         else:
             w_list = [shared_uniform(low=-2.0/n_terms, high=2.0/n_terms, size=(n_out,), name='w_%i'%i)
-                    for i in xrange(n_terms)]
+                    for i in range(n_terms)]
             w_l1 = sum(abs(wi).sum() for wi in w_list)
             w_l2_sqr = sum((wi**2).sum() for wi in w_list)
 
@@ -162,15 +162,15 @@ class Kouh2008(object):
             return _shared_uniform(rng, low, high, size, dtype, name)
 
         f_list = [shared_uniform(low=-2.0/numpy.sqrt(n_in), high=2.0/numpy.sqrt(n_in), size=(n_in, n_out), name='f_%i'%i)
-                for i in xrange(n_terms)]
+                for i in range(n_terms)]
 
         b_list = [shared_uniform(low=0, high=.01, size=(n_out,), name='b_%i'%i)
-                for i in xrange(n_terms)]
+                for i in range(n_terms)]
         #x_list = [theano._asarray(eps, dtype=dtype)+softplus(tensor.dot(input, f_list[i])) for i in xrange(n_terms)]
         filter_range = theano._asarray(filter_range, dtype=dtype)
         half_filter_range = theano._asarray(filter_range/2, dtype=dtype)
         x_list = [theano._asarray(filter_range + eps, dtype=dtype)+half_filter_range * softsign(tensor.dot(input, f_list[i]) +
-            b_list[i]) for i in xrange(n_terms)]
+            b_list[i]) for i in range(n_terms)]
 
         rval = cls.new_expbounds(rng, x_list, n_out, dtype=dtype, params=f_list + b_list,
                 exponent_range=exponent_range)
@@ -206,10 +206,10 @@ class Kouh2008(object):
         def pixel_range(x):
             return 255 * (x - x.min()) / (x.max() - x.min() + eps)
 
-        for r in xrange(rows):
+        for r in range(rows):
             out_r_low = r*(row_gap + filter_shape[0])
             out_r_high = out_r_low + filter_shape[0]
-            for c in xrange(cols):
+            for c in range(cols):
                 out_c_low = c*(col_gap + filter_shape[1])
                 out_c_high = out_c_low + filter_shape[1]
                 out_tile = out_array[out_r_low:out_r_high, out_c_low:out_c_high, :]
@@ -222,14 +222,14 @@ class Kouh2008(object):
                     if w_col < w.shape[1]:
                         # filters after the 3rd do not get rendered, but are skipped over.
                         #  there are only 3 colour channels.
-                        for i in xrange(min(self.n_E_quadratic, 3)):
+                        for i in range(min(self.n_E_quadratic, 3)):
                             out_tile[:, :, i] = pixel_range(w[:, w_col+i]).reshape(filter_shape)
                         w_col += self.n_E_quadratic
                 if c % 3 == 2:  # S filters
                     if w_col < w.shape[1]:
                         # filters after the 3rd do not get rendered, but are skipped over.
                         #  there are only 3 colour channels.
-                        for i in xrange(min(self.n_S_quadratic, 3)):
+                        for i in range(min(self.n_S_quadratic, 3)):
                             out_tile[:, :, 2-i] = pixel_range(w[:, w_col+i]).reshape(filter_shape)
                         w_col += self.n_S_quadratic
         return Image.fromarray(out_array, 'RGB')
@@ -324,5 +324,5 @@ if 0:
             dtype=conf.dtype2,
             )
         yval = numpy.arange(conf.ft_batchsize)
-        for i in xrange(n_iter):
+        for i in range(n_iter):
             train_nll(xval, yval, conf.lr)

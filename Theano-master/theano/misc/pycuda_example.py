@@ -19,7 +19,7 @@ pycuda.elementwise.ElementwiseKernel. It must be wrapper by
 TheanoElementwiseKernel.
 
 """
-from __future__ import absolute_import, print_function, division
+
 from itertools import chain
 
 import numpy
@@ -228,7 +228,7 @@ class PycudaElemwiseSourceModuleOp(GpuOp):
         assert self.nout == 1
 
         fct_name = "pycuda_elemwise_%s" % str(self.scalar_op)
-        out_node = Apply(self, _inputs, [otype() for o in xrange(self.nout)])
+        out_node = Apply(self, _inputs, [otype() for o in range(self.nout)])
         in_name = ["i" + str(id) for id in range(len(inputs))]
         out_name = ["o" + str(id) for id in range(self.nout)]
         c_code = self.scalar_op.c_code(out_node, "some_name",
@@ -236,8 +236,8 @@ class PycudaElemwiseSourceModuleOp(GpuOp):
                                        tuple(n + "[i]" for n in out_name), {})
         c_code_param = ", ".join(
             [_replace_npy_types(var.type.dtype_specs()[1]) + " *" + name
-             for var, name in chain(izip(inputs, in_name),
-                                    izip(out_node.outputs, out_name))] +
+             for var, name in chain(zip(inputs, in_name),
+                                    zip(out_node.outputs, out_name))] +
             ["int size"])
         mod = SourceModule("""
   __global__ void %s(%s)
@@ -317,7 +317,7 @@ class PycudaElemwiseSourceModuleMakeThunkOp(Op):
             raise Exception("pycuda don't support broadcasted dimensions")
 
         otype = CudaNdarrayType(broadcastable=[False] * _inputs[0].type.ndim)
-        out_node = Apply(self, _inputs, [otype() for o in xrange(self.nout)])
+        out_node = Apply(self, _inputs, [otype() for o in range(self.nout)])
         return out_node
 
     def make_thunk(self, node, storage_map, _, _2):
@@ -332,8 +332,8 @@ class PycudaElemwiseSourceModuleMakeThunkOp(Op):
                                        tuple(n + "[i]" for n in out_name), {})
         c_code_param = ", ".join(
             [_replace_npy_types(var.type.dtype_specs()[1]) + " *" + name
-             for var, name in chain(izip(node.inputs, in_name),
-                                    izip(node.outputs, out_name))] +
+             for var, name in chain(zip(node.inputs, in_name),
+                                    zip(node.outputs, out_name))] +
             ["int size"])
 
         mod = SourceModule("""

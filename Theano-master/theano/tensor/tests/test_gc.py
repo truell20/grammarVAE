@@ -1,4 +1,4 @@
-from __future__ import absolute_import, print_function, division
+
 import numpy
 import six.moves.cPickle as pickle
 from six.moves import xrange
@@ -25,7 +25,7 @@ def test_no_reuse():
 def test_gc_never_pickles_temporaries():
     x = T.dvector()
 
-    for i in xrange(2):  # TODO: 30 causes like LONG compilation due to MERGE
+    for i in range(2):  # TODO: 30 causes like LONG compilation due to MERGE
         if i:
             r = r + r/10
         else:
@@ -106,7 +106,7 @@ def test_merge_opt_runtime():
 
     """
     x = T.dvector()
-    for i in xrange(50):
+    for i in range(50):
         if i:
             r = r + r/10
         else:

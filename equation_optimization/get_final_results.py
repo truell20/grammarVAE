@@ -77,16 +77,16 @@ for j in range(1, n_simulations + 1):
 
 print("Results Grammar VAE (fraction valid, best, average)):")
 
-print("Mean:", np.mean(results_grammar, 0))
-print("Std:", np.std(results_grammar, 0) / np.sqrt(iteration))
+print(("Mean:", np.mean(results_grammar, 0)))
+print(("Std:", np.std(results_grammar, 0) / np.sqrt(iteration)))
 
-print("First:", np.min(results_grammar[ : , 1 ]))
+print(("First:", np.min(results_grammar[ : , 1 ])))
 best_score = np.min(results_grammar[ : , 1 ])
 results_grammar[ results_grammar[ : , 1 ] == best_score , 1 ] = 1e10
-print("Second:", np.min(results_grammar[ : , 1 ]))
+print(("Second:", np.min(results_grammar[ : , 1 ])))
 second_best_score = np.min(results_grammar[ : , 1 ])
 results_grammar[ results_grammar[ : , 1 ] == second_best_score, 1 ] = 1e10
-print("Third:", np.min(results_grammar[ : , 1 ]))
+print(("Third:", np.min(results_grammar[ : , 1 ])))
 third_best_score = np.min(results_grammar[ : , 1 ])
 
 for j in range(1, n_simulations + 1):
@@ -155,16 +155,16 @@ for j in range(1, n_simulations + 1):
 
 print("Results Character VAE (fraction valid, best, average)):")
 
-print("Mean:", np.mean(results_character, 0))
-print("Std:", np.std(results_character, 0) / np.sqrt(iteration))
+print(("Mean:", np.mean(results_character, 0)))
+print(("Std:", np.std(results_character, 0) / np.sqrt(iteration)))
 
-print("First:", np.min(results_character[ : , 1 ]))
+print(("First:", np.min(results_character[ : , 1 ])))
 best_score = np.min(results_character[ : , 1 ])
 results_character[ results_character[ : , 1 ] == best_score , 1 ] = 1e10
-print("Second:", np.min(results_character[ : , 1 ]))
+print(("Second:", np.min(results_character[ : , 1 ])))
 second_best_score = np.min(results_character[ : , 1 ])
 results_character[ results_character[ : , 1 ] == second_best_score, 1 ] = 1e10
-print("Third:", np.min(results_character[ : , 1 ]))
+print(("Third:", np.min(results_character[ : , 1 ])))
 third_best_score = np.min(results_character[ : , 1 ])
 
 # We print the best smile found the character autoencoder

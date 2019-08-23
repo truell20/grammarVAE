@@ -7,7 +7,7 @@ U{http://www-users.cs.umn.edu/~saad/software/SPARSKIT/paper.ps}.
 @todo: Automatic methods for determining best sparse format?
 """
 # COPIED FROM hpu/icml09/sp.py
-from __future__ import absolute_import, print_function, division
+
 import numpy
 import scipy
 from scipy import sparse as scipy_sparse
@@ -146,9 +146,9 @@ class ConvolutionIndices(Op):
         # values (order in which you write the values determines how
         # the vectorized data will get used later one)
 
-        for fmapi in xrange(inshp[0]):  # loop over input features
+        for fmapi in range(inshp[0]):  # loop over input features
             # loop over number of kernels (nkern=1 for weight sharing)
-            for n in xrange(nkern):
+            for n in range(nkern):
 
                 # FOR EACH OUTPUT PIXEL...
                 # loop over output image height
@@ -231,8 +231,8 @@ class ConvolutionIndices(Op):
             kmap = N.zeros(ntaps, dtype='int')
             k = 0
             # print 'TEMPORARY BUGFIX: REMOVE !!!'
-            for j in xrange(spmat.shape[1]):
-                for i_idx in xrange(spmat.indptr[j], spmat.indptr[j + 1]):
+            for j in range(spmat.shape[1]):
+                for i_idx in range(spmat.indptr[j], spmat.indptr[j + 1]):
                     if spmat.data[i_idx] != 0:
                         # this is == spmat[i,j] - 1
                         kmap[k] = spmat.data[i_idx] - 1

@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-from __future__ import absolute_import, print_function, division
+
 
 import datetime
 import os
@@ -173,7 +173,7 @@ def run(stdout, stderr, argv, theano_nose, batch_size, time_profile,
         # we want the user to focus only on the failed tests, which are re-run
         # (with output) below.
         dummy_out = open(os.devnull, 'w')
-        for test_id in xrange(1, n_tests + 1, batch_size):
+        for test_id in range(1, n_tests + 1, batch_size):
             stdout.flush()
             stderr.flush()
             test_range = list(range(test_id,
@@ -266,8 +266,8 @@ def run(stdout, stderr, argv, theano_nose, batch_size, time_profile,
             f_nosort.write('TIME-PROFILING OF THEANO\'S NOSETESTS'
                            ' (by sequential id)\n\n' + stamp + fields)
             f_nosort.flush()
-            for test_floor in xrange(1, n_tests + 1, batch_size):
-                for test_id in xrange(test_floor, min(test_floor + batch_size,
+            for test_floor in range(1, n_tests + 1, batch_size):
+                for test_id in range(test_floor, min(test_floor + batch_size,
                                                       n_tests + 1)):
                     # Print the test we will start in the raw log to help
                     # debug tests that are too long.
@@ -347,7 +347,7 @@ def run(stdout, stderr, argv, theano_nose, batch_size, time_profile,
             with open(path_sort, 'w') as f_sort:
                 f_sort.write('TIME-PROFILING OF THEANO\'S NOSETESTS'
                              ' (sorted by computation time)\n\n' + stamp + fields)
-                for i in xrange(len(prof_master_nosort)):
+                for i in range(len(prof_master_nosort)):
                     s_sort = ((str(prof_master_sort[i][0]) + 's').ljust(10) +
                               " " + prof_master_sort[i][1].ljust(7) + " " +
                               prof_master_sort[i][2] + prof_master_sort[i][3] +

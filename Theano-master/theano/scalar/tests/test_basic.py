@@ -10,7 +10,7 @@ If you do want to rewrite these tests, bear in mind:
 """
 
 
-from __future__ import absolute_import, print_function, division
+
 
 import unittest
 import numpy as np

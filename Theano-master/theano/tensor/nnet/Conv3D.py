@@ -1,4 +1,4 @@
-from __future__ import absolute_import, print_function, division
+
 
 import numpy as N
 from six.moves import xrange
@@ -623,19 +623,19 @@ def computeH(V, W, b, d):
                 outputWidth, outputDur, outputChannels), dtype=V.dtype)
 
     # H[i,j,x,y,t] = b_j + sum_k sum_l sum_m sum_z W[j,z,k,l,m] V[i,z, dx*x+k,dy*y+l,dt*t+m]
-    for i in xrange(0, H.shape[0]):
+    for i in range(0, H.shape[0]):
         # print '\texample '+str(i+1)+'/'+str(H.shape[0])
-        for j in xrange(0, H.shape[4]):
+        for j in range(0, H.shape[4]):
                 # print '\t\tfeature map '+str(j+1)+'/'+str(H.shape[1])
-            for x in xrange(0, H.shape[1]):
+            for x in range(0, H.shape[1]):
                 # print '\t\t\trow '+str(x+1)+'/'+str(H.shape[2])
-                for y in xrange(0, H.shape[2]):
-                    for t in xrange(0, H.shape[3]):
+                for y in range(0, H.shape[2]):
+                    for t in range(0, H.shape[3]):
                         H[i, x, y, t, j] = b[j]
-                        for k in xrange(0, filterHeight):
-                            for l in xrange(0, filterWidth):
-                                for m in xrange(0, filterDur):
-                                    for z in xrange(0, inputChannels):
+                        for k in range(0, filterHeight):
+                            for l in range(0, filterWidth):
+                                for m in range(0, filterDur):
+                                    for z in range(0, inputChannels):
                                         # if (i,j,x,y,t) == (0,0,0,0,0):
                                         #    print (( W[j,z,k,l,m] , V[i,z,d[0]*x+k,d[1]*y+l,d[2]*t+m] ), (k,l,m) )
                                         w = W[j, k, l, m, z]

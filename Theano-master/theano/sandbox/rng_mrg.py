@@ -5,7 +5,7 @@ Generator code in SSJ package (L'Ecuyer & Simard).
 http://www.iro.umontreal.ca/~simardr/ssj/indexe.html
 
 """
-from __future__ import absolute_import, print_function, division
+
 import warnings
 
 import numpy
@@ -364,7 +364,7 @@ class mrg_uniform(mrg_uniform_base):
 
         err_orig = numpy.seterr(over='ignore')
         try:
-            for i in xrange(n_elements):
+            for i in range(n_elements):
                 sample = mrg_next_value(rstate[i % n_streams],
                                         rstate[i % n_streams])
                 rval[i] = sample
@@ -1224,7 +1224,7 @@ class MRG_RandomStreams(object):
         f.input_storage[2].storage[0] = M1
         f.input_storage[3].storage[0] = A2p72
         f.input_storage[5].storage[0] = M2
-        for i in xrange(1, n_streams):
+        for i in range(1, n_streams):
             # Inline the following call to bypass Python overhead
             # rval[i] = ff_2p72(rval[i - 1])
             v = rval[i - 1]

@@ -1,4 +1,4 @@
-from __future__ import absolute_import, print_function, division
+
 import copy
 from theano.compat import izip
 import numpy
@@ -225,7 +225,7 @@ class GpuElemwise(GpuKernelBase, HideC, Elemwise):
             raise MethodNotDefined('cuda only')
         nd = node.outputs[0].ndim
         fail = sub["fail"]
-        initial_dims = ','.join('1' for i in xrange(nd))
+        initial_dims = ','.join('1' for i in range(nd))
         opname = str(self.scalar_op)
         ctx = sub['params']
 
@@ -253,7 +253,7 @@ class GpuElemwise(GpuKernelBase, HideC, Elemwise):
                 assert emitted_inames[iname] is node.inputs[idx]
                 continue
 
-            broadcasts = map(int, node.inputs[idx].broadcastable)
+            broadcasts = list(map(int, node.inputs[idx].broadcastable))
             broadcasts = ', '.join(map(str, broadcasts))
             nd = node.inputs[idx].ndim
             if nd > 0:
@@ -302,7 +302,7 @@ class GpuElemwise(GpuKernelBase, HideC, Elemwise):
         # check that all outputs have valid dimensions
         for idx, oname in enumerate(outputs):
             typecode = dtype_to_typecode(node.outputs[idx].dtype)
-            if idx not in self.inplace_pattern.keys():
+            if idx not in list(self.inplace_pattern.keys()):
                 code += """
         for (int i = 0; (i< %(nd)s) && (%(oname)s); ++i) {
             if (dims[i] != PyGpuArray_DIMS(%(oname)s)[i])
@@ -413,7 +413,7 @@ class GpuElemwise(GpuKernelBase, HideC, Elemwise):
             node._cache_elemwise_k = self.generate_kernel(node, "kcode")
 
         out_shape = []
-        for values in izip(*[input.shape for input in inputs]):
+        for values in zip(*[input.shape for input in inputs]):
             if any(v == 0 for v in values):
                 # All non-broadcasted dimensions should be zero
                 assert max(values) <= 1
@@ -423,7 +423,7 @@ class GpuElemwise(GpuKernelBase, HideC, Elemwise):
         out_shape = tuple(out_shape)
 
         args = copy.copy(inputs)
-        for n, (stor, out) in enumerate(izip(output_storage, node.outputs)):
+        for n, (stor, out) in enumerate(zip(output_storage, node.outputs)):
             if n in self.inplace_pattern:
                 stor[0] = inputs[self.inplace_pattern[n]]
             else:
@@ -689,8 +689,8 @@ class GpuCAReduceCuda(GpuKernelBase, HideC, CAReduceDtype):
 
         name = 'fake_name'
 
-        inp = ['fake_input_name_%d' % i for i in xrange(len(inputs))]
-        out = ['fake_output_name_%d' % i for i in xrange(len(node.outputs))]
+        inp = ['fake_input_name_%d' % i for i in range(len(inputs))]
+        out = ['fake_output_name_%d' % i for i in range(len(node.outputs))]
 
         sub = {'fail': 'fake failure code', 'params': 'fake context'}
 
@@ -737,7 +737,7 @@ class GpuCAReduceCuda(GpuKernelBase, HideC, CAReduceDtype):
         # this is OK to do
         if self.scalar_op in [scal.minimum, scal.maximum]:
             conds = ["(PyGpuArray_DIMS(%s)[%d] == 0)" % (x, i)
-                     for i in xrange(nd_in)
+                     for i in range(nd_in)
                      if self.reduce_mask[i]]
             assert len(conds) > 0
             cond = "(" + " || ".join(conds) + ")"
@@ -761,7 +761,7 @@ class GpuCAReduceCuda(GpuKernelBase, HideC, CAReduceDtype):
 
         # ensure that the output has the right non-reduced dimensions
         j = 0
-        for i in xrange(nd_in):
+        for i in range(nd_in):
             if not self.reduce_mask[i]:
                 print(" || (PyGpuArray_DIMS(%(z)s)[%(j)s] != PyGpuArray_DIMS(%(x)s)[%(i)d]) " % locals(), file=sio)
                 j += 1
@@ -776,7 +776,7 @@ class GpuCAReduceCuda(GpuKernelBase, HideC, CAReduceDtype):
             print("size_t *new_dims=NULL; ", file=sio)
 
         j = 0
-        for i in xrange(nd_in):
+        for i in range(nd_in):
             if not self.reduce_mask[i]:
                 print('new_dims[%(j)s] = PyGpuArray_DIMS(%(x)s)[%(i)s];' % locals(), file=sio)
                 j += 1
@@ -883,14 +883,14 @@ class GpuCAReduceCuda(GpuKernelBase, HideC, CAReduceDtype):
         k_var = "kernel_reduce_%(pattern)s_%(name)s" % locals()
         params = []
 
-        for i in xrange(ndim):
+        for i in range(ndim):
             params.append("(void *)&PyGpuArray_DIMS(%(x)s)[%(i)s]" % locals())
         for declaration, value in extra_dims:
             print(declaration % locals(), file=sio)
             params.append(value)
         params.append("(void *)%(x)s->ga.data" % locals())
         params.append("(void *)&%(x)s->ga.offset" % locals())
-        for i in xrange(ndim):
+        for i in range(ndim):
             print("""
             ssize_t stride_A%(i)d = PyGpuArray_STRIDES(%(x)s)[%(i)s]/sizeof(%(in_dtype)s);
             """ % locals(), file=sio)
@@ -901,7 +901,7 @@ class GpuCAReduceCuda(GpuKernelBase, HideC, CAReduceDtype):
 
         params.append("(void *)%(z)s->ga.data" % locals())
         params.append("(void *)&%(z)s->ga.offset" % locals())
-        for i in xrange(nd_out):
+        for i in range(nd_out):
             print("""
             ssize_t stride_Z%(i)d = PyGpuArray_STRIDES(%(z)s)[%(i)s]/sizeof(%(out_dtype)s);
             """ % locals(), file=sio)
@@ -991,7 +991,7 @@ class GpuCAReduceCuda(GpuKernelBase, HideC, CAReduceDtype):
         print("""
             KERNEL void %(kname)s(
         """ % locals(), file=sio)
-        for i in xrange(ndim):
+        for i in range(ndim):
             params.append('uintp')
             print("""
                     const ga_size d%(i)s,
@@ -1001,7 +1001,7 @@ class GpuCAReduceCuda(GpuKernelBase, HideC, CAReduceDtype):
         print("""
                     const %(in_type)s *A, const ga_size offset_A,
         """ % locals(), file=sio)
-        for i in xrange(ndim):
+        for i in range(ndim):
             params.append('intp')
             print("""
                     const ga_ssize sA%(i)s,
@@ -1011,7 +1011,7 @@ class GpuCAReduceCuda(GpuKernelBase, HideC, CAReduceDtype):
         print("""
                     %(out_type)s * Z, const ga_size offset_Z
         """ % locals(), file=sio)
-        for i in xrange(ndim - sum(reduce_mask)):
+        for i in range(ndim - sum(reduce_mask)):
             params.append('intp')
             print("""
                     , const ga_ssize sZ%(i)s
@@ -1386,9 +1386,9 @@ class GpuCAReduceCuda(GpuKernelBase, HideC, CAReduceDtype):
         makecall = self._makecall(node, name, x, z, fail)
         N_pattern = ''.join(['1'] * N)
         param_dim = ",".join(["PyGpuArray_DIMS(%s)[%d]" % (x, i)
-                              for i in xrange(N + 1)])
+                              for i in range(N + 1)])
         strides_dim = ",".join(["PyGpuArray_STRIDES(%s)[%d]/sizeof(%s)"
-                                % (x, i, in_dtype) for i in xrange(N + 1)])
+                                % (x, i, in_dtype) for i in range(N + 1)])
 
         threads_y = """
             //get as many y threads as we can fit
@@ -2141,9 +2141,9 @@ class GpuCAReduceCuda(GpuKernelBase, HideC, CAReduceDtype):
             reducebuf = self._k_reduce_buf('Z[i0 * sZ0]', node,
                                            nodename, sub={})
             param_dim = ",".join(["const ga_size d%d" % i
-                                  for i in xrange(nd_in)])
+                                  for i in range(nd_in)])
             param_strides = ",".join(["const ga_ssize sA%d" % i
-                                      for i in xrange(nd_in)])
+                                      for i in range(nd_in)])
             decl, kname, params, k_var = self._k_decl(node, nodename)
             init = self._k_init(node, nodename)
             reduce_init = self._assign_init(load_in + "(A[%(first_i3)s * %(sA3)s + %(first_i2)s * %(sA2)s + %(first_i1)s * %(sA1)s + i0 * sA0])" % locals())

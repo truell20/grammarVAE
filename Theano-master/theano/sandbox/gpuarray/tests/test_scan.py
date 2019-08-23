@@ -1,4 +1,4 @@
-from __future__ import absolute_import, print_function, division
+
 from unittest import TestCase
 
 import numpy
@@ -57,7 +57,7 @@ class T_Scan(TestCase):
         # compute the output in numpy
         v_out = numpy.zeros((4,))
         v_out[0] = v_u[0] * W_in + v_x0 * W
-        for step in xrange(1, 4):
+        for step in range(1, 4):
             v_out[step] = v_u[step] * W_in + v_out[step - 1] * W
 
         theano_values = f2(v_u, v_x0, W_in, W)
@@ -124,7 +124,7 @@ class T_Scan(TestCase):
         # compute the output in numpy
         v_out = numpy.zeros((4,))
         v_out[0] = v_u[0] * W_in + v_x0 * W
-        for step in xrange(1, 4):
+        for step in range(1, 4):
             v_out[step] = v_u[step] * W_in + v_out[step - 1] * W
 
         theano_values = f2(v_u, v_x0, W_in, W)
@@ -188,7 +188,7 @@ class T_Scan(TestCase):
         v_out2 = numpy.zeros((4,), dtype='int64')
         v_out1[0] = v_u[0] * W_in + v_x0 * W
         v_out2[0] = v_u[0] + v_x0
-        for step in xrange(1, 4):
+        for step in range(1, 4):
             v_out1[step] = v_u[step] * W_in + v_out1[step - 1] * W
             v_out2[step] = numpy.int64(v_u[step] + v_out1[step - 1])
 

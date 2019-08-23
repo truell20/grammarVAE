@@ -9,7 +9,7 @@ what you are doing!
 If you want to use a scalar variable in a Theano graph,
 you probably want to use theano.tensor.[c,z,f,d,b,w,i,l,]scalar!
 """
-from __future__ import absolute_import, print_function, division
+
 
 from itertools import chain
 import math
@@ -919,7 +919,7 @@ class ScalarOp(Op):
         if hasattr(self, 'name') and self.name:
             return self.name
         else:
-            param = [(k, v) for k, v in self.__dict__.items()
+            param = [(k, v) for k, v in list(self.__dict__.items())
                      if k not in ["name", "_op_use_c_code",
                                   "output_types_preference"]]
             if param:
@@ -1710,14 +1710,14 @@ class IntDiv(BinaryScalarOp):
         (x, y) = inputs
         (z,) = outputs
         t = node.inputs[0].type.upcast(*[i.type for i in node.inputs[1:]])
-        if t in imap(str, discrete_types):
+        if t in map(str, discrete_types):
             x_div_y_pp = '(%(x)s / %(y)s)' % locals()
             x_div_y_mp = '((-%(x)s) / %(y)s)' % locals()
             x_mod_y_mp = 'THEANO_MACRO_MOD((-%(x)s), %(y)s)' % locals()
             x_div_y_pm = '(%(x)s / (-%(y)s))' % locals()
             x_mod_y_pm = 'THEANO_MACRO_MOD(%(x)s, (-%(y)s))' % locals()
             x_div_y_mm = '((-%(x)s) / (-%(y)s))' % locals()
-        elif t in imap(str, float_types):
+        elif t in map(str, float_types):
             # We need to call different functions of math.h
             # depending on the type
             if t == 'float32':
@@ -1806,30 +1806,30 @@ class Mod(BinaryScalarOp):
         (x, y) = inputs
         (z,) = outputs
         t = node.inputs[0].type.upcast(*[i.type for i in node.inputs[1:]])
-        if (str(t) in imap(str, discrete_types) or
+        if (str(t) in map(str, discrete_types) or
                 t in ['uint8', 'int8', 'uint16', 'int16'] or
                 t in ['uint32', 'int32', 'uint64', 'int64'] or
                 t in discrete_types):
             # The above or's should not be needed anymore. However, for now we
             # keep them out of safety, and verify they are useless with an
             # assert.
-            assert str(t) in imap(str, discrete_types)
+            assert str(t) in map(str, discrete_types)
             x_mod_y = "THEANO_MACRO_MOD(%(x)s, %(y)s)" % locals()
             x_mod_ymm = "THEANO_MACRO_MOD(-%(x)s, -%(y)s)" % locals()
             x_mod_ypm = "THEANO_MACRO_MOD(%(x)s, -%(y)s)" % locals()
             x_mod_ymp = "THEANO_MACRO_MOD(-%(x)s, %(y)s)" % locals()
-        elif (str(t) in imap(str, float_types) or
+        elif (str(t) in map(str, float_types) or
               t in ['float32', 'float64'] or
               t in float_types):
             # The above or's should not be needed anymore. However, for now we
             # keep them out of safety, and verify they are useless with an
             # assert.
-            assert str(t) in imap(str, float_types)
+            assert str(t) in map(str, float_types)
             x_mod_y = "fmod(%(x)s,%(y)s)" % locals()
             x_mod_ymm = "fmod(-%(x)s,-%(y)s)" % locals()
             x_mod_ypm = "fmod(%(x)s,-%(y)s)" % locals()
             x_mod_ymp = "fmod(-%(x)s,%(y)s)" % locals()
-        elif str(t) in imap(str, complex_types):
+        elif str(t) in map(str, complex_types):
             raise self.complex_error
         else:
             raise NotImplementedError('type not supported', t)
@@ -3621,7 +3621,7 @@ class Composite(ScalarOp):
             res2 = theano.compile.rebuild_collect_shared(
                 inputs=outputs[0].owner.op.inputs,
                 outputs=outputs[0].owner.op.outputs,
-                replace=dict(izip(outputs[0].owner.op.inputs, res[1]))
+                replace=dict(zip(outputs[0].owner.op.inputs, res[1]))
             )
             assert len(res2[1]) == len(outputs)
             assert len(res[0]) == len(inputs)
@@ -3657,7 +3657,7 @@ class Composite(ScalarOp):
             assert len(inputs) == self.nin
             res = theano.compile.rebuild_collect_shared(
                 self.outputs,
-                replace=dict(izip(self.inputs, inputs)),
+                replace=dict(zip(self.inputs, inputs)),
                 rebuild_strict=False)
             # After rebuild_collect_shared, the Variable in inputs
             # are not necessarily in the graph represented by res.
@@ -3672,7 +3672,7 @@ class Composite(ScalarOp):
             storage[0] = impl(inputs)
 
     def impl(self, *inputs):
-        output_storage = [[None] for i in xrange(self.nout)]
+        output_storage = [[None] for i in range(self.nout)]
         self.perform(None, inputs, output_storage)
         ret = utils.to_return_values([storage[0] for storage in
                                       output_storage])
@@ -3684,8 +3684,8 @@ class Composite(ScalarOp):
         raise NotImplementedError("grad is not implemented for Composite")
 
     def c_code(self, node, nodename, inames, onames, sub):
-        d = dict(chain(izip(("i%i" % i for i in xrange(len(inames))), inames),
-                       izip(("o%i" % i for i in xrange(len(onames))),
+        d = dict(chain(zip(("i%i" % i for i in range(len(inames))), inames),
+                       zip(("o%i" % i for i in range(len(onames))),
                             onames)), **sub)
         d['nodename'] = nodename
         if 'id' not in sub:

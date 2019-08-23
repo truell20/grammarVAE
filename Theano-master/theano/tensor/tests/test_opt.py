@@ -1,4 +1,4 @@
-from __future__ import absolute_import, print_function, division
+
 # PENDING REWRITE OF tensor_opt.py
 
 import copy
@@ -564,7 +564,7 @@ class test_canonize(unittest.TestCase):
             topo = f.maker.fgraph.toposort()
             elem = [t for t in topo if isinstance(t.op, T.Elemwise)]
             assert len(elem) == nb_elemwise
-            assert isinstance(elem[0].op, (T.Elemwise, ))
+            assert isinstance(elem[0].op, T.Elemwise)
             assert isinstance(elem[0].op.scalar_op, (
                 theano.scalar.basic.Inv, theano.scalar.basic.TrueDiv))
             assert(out_dtype == out.dtype)
@@ -588,7 +588,7 @@ class test_canonize(unittest.TestCase):
             assert numpy.allclose(out, (val_inputs[0] / val_inputs[3]))
             topo = f.maker.fgraph.toposort()
             assert len(topo) == 1
-            assert isinstance(topo[0].op, (T.Elemwise, ))
+            assert isinstance(topo[0].op, T.Elemwise)
             assert isinstance(topo[0].op.scalar_op,
                 theano.scalar.basic.TrueDiv)
             assert len(topo[0].inputs) == 2
@@ -613,11 +613,11 @@ class test_canonize(unittest.TestCase):
                  val_inputs[0] / val_inputs[1]))
             topo = f.maker.fgraph.toposort()
             assert len(topo) == 2
-            assert isinstance(topo[0].op, (T.Elemwise, ))
+            assert isinstance(topo[0].op, T.Elemwise)
             assert isinstance(topo[0].op.scalar_op,
                  theano.scalar.basic.Mul)
             assert len(topo[0].inputs) == 2
-            assert isinstance(topo[1].op, (T.Elemwise, ))
+            assert isinstance(topo[1].op, T.Elemwise)
             assert isinstance(topo[1].op.scalar_op,
                 theano.scalar.basic.TrueDiv)
             assert len(topo[1].inputs) == 2
@@ -758,7 +758,7 @@ class test_canonize(unittest.TestCase):
                 val_inputs[1] / val_inputs[2])
             topo = f.maker.fgraph.toposort()
             assert len(topo) == 2
-            assert isinstance(topo[0].op, (T.Elemwise, ))
+            assert isinstance(topo[0].op, T.Elemwise)
             assert isinstance(topo[0].op.scalar_op,
                  theano.scalar.basic.Inv)
             assert len(topo[0].inputs) == 1
@@ -776,7 +776,7 @@ class test_canonize(unittest.TestCase):
                 val_inputs[1] / val_inputs[2]))
             topo = f.maker.fgraph.toposort()
             assert len(topo) == 2
-            assert isinstance(topo[0].op, (T.Elemwise, ))
+            assert isinstance(topo[0].op, T.Elemwise)
             assert isinstance(topo[0].op.scalar_op,
                  theano.scalar.basic.Inv)
             assert len(topo[0].inputs) == 1
@@ -1099,7 +1099,7 @@ class test_fusion(unittest.TestCase):
             if shared_fn is None:
                 assert gpu is False
                 f = compile.function(list(sym_inputs), g, mode=mode)
-                for x in xrange(nb_repeat):
+                for x in range(nb_repeat):
                     out = f(*val_inputs)
                 t1 = time.time()
             else:
@@ -1107,7 +1107,7 @@ class test_fusion(unittest.TestCase):
                 assert out.dtype == g.dtype
                 f = function(sym_inputs, [], updates=[(out, g)], mode=mode)
                 t0 = time.time()
-                for x in xrange(nb_repeat):
+                for x in range(nb_repeat):
                     f(*val_inputs)
                 t1 = time.time()
                 out = out.get_value()
@@ -1225,16 +1225,16 @@ class test_fusion(unittest.TestCase):
     def test_fusion_35inputs(self):
         # Make sure a fused graph with more than 35 inputs does not segfault
         # or error.
-        inpts = vectors(['i%i' % i for i in xrange(35)])
+        inpts = vectors(['i%i' % i for i in range(35)])
         # Make an elemwise graph looking like:
         # sin(i34 + sin(i33 + sin(... i1 + sin(i0) ...)))
         out = tensor.sin(inpts[0])
-        for idx in xrange(1, 35):
+        for idx in range(1, 35):
             out = tensor.sin(inpts[idx] + out)
 
         f = function(inpts, out)
         # Test it on some dummy values
-        f(*[list(range(i, 4 + i)) for i in xrange(35)])
+        f(*[list(range(i, 4 + i)) for i in range(35)])
 
     def test_pickle_big_fusion(self):
         """In the past, pickle of Composite generated in tha case
@@ -1257,7 +1257,7 @@ class test_fusion(unittest.TestCase):
         if theano.config.mode in ["DebugMode", "DEBUG_MODE"]:
             n = 10
 
-        for i in xrange(n):
+        for i in range(n):
             f = (cst_m05 * sd ** cst_m2 * (ones - means[i]) ** cst_2 +
                  cst_05 * tensor.log(cst_05 * (sd ** cst_m2) / numpy.pi))
             factors.append(tensor.sum(f))
@@ -1360,7 +1360,7 @@ class test_fusion(unittest.TestCase):
         # TODO: if mode is Mode('py','merge') then their is no memory leak!
         from theano.compile.function_module import orig_function
         for id, [g, sym_inputs, val_inputs, out_dtype] in enumerate(cases):
-            for zzzz in xrange(nb_repeat):
+            for zzzz in range(nb_repeat):
                 v = numpy.zeros(shp, dtype=out_dtype)
                 gc.collect()
                 gc.collect()
@@ -1384,7 +1384,7 @@ class test_fusion(unittest.TestCase):
                     gc.collect()
                     nd = objgraph.typestats()
                     print('key, old val, new val, diff')
-                    for key in set(d.keys() + nd.keys()):
+                    for key in set(list(d.keys()) + list(nd.keys())):
                         if key in d and key in nd and nd[key] != d[key]:
                             print(key, d.get(key), nd.get(key), end=' ')
                             if key in d and key in nd:
@@ -2092,7 +2092,7 @@ class test_local_subtensor_merge(unittest.TestCase):
     def test_const(self):
         # var[const::][-1] -> var[-1]
         x = tensor.matrix('x')
-        for idx in xrange(-7, 6):
+        for idx in range(-7, 6):
             f = function([x], x[idx::][-1], mode=mode_opt)
             g = function([x], x[idx::][-1], mode=mode_opt.excluding(
                 'local_subtensor_merge'))
@@ -2137,7 +2137,7 @@ class test_local_subtensor_merge(unittest.TestCase):
         for x_s in self.x_shapes:
             x_val = self.rng.uniform(size=x_s).astype(config.floatX)
 
-            for idx in xrange(-9, 8):
+            for idx in range(-9, 8):
                 if (idx < x_s[0]) and (x_s[0] > 0):
                     # The first subtensor is non-empty
                     f(x_val, idx)  # let debugmode test something
@@ -2149,7 +2149,7 @@ class test_local_subtensor_merge(unittest.TestCase):
     def test_const2(self):
         # var[::-1][const] -> var[-1]
         x = tensor.matrix('x')
-        for idx in xrange(-8, 7):
+        for idx in range(-8, 7):
             f = function([x], x[::-1][idx], mode=mode_opt)
             g = function([x], x[::-1][idx],
                          mode=mode_opt.excluding('local_subtensor_merge'))
@@ -2196,7 +2196,7 @@ class test_local_subtensor_merge(unittest.TestCase):
         for x_s in self.x_shapes:
             x_val = self.rng.uniform(size=x_s).astype(config.floatX)
 
-            for idx in xrange(-x_s[0], x_s[0]):
+            for idx in range(-x_s[0], x_s[0]):
                 f(x_val, idx)  # let debugmode test something
             for idx in (list(range(x_s[0], 9)) + list(range(-9, -x_s[0]))):
                 self.assertRaises(IndexError, f, x_val, idx)
@@ -2205,7 +2205,7 @@ class test_local_subtensor_merge(unittest.TestCase):
     def test_const3(self):
         # var[::-1][:const] -> var[-1]
         x = tensor.matrix('x')
-        for idx in xrange(-9, 8):
+        for idx in range(-9, 8):
             f = function([x], x[::-1][:idx], mode=mode_opt)
 
             self._verify_stack_trace(f)
@@ -2241,14 +2241,14 @@ class test_local_subtensor_merge(unittest.TestCase):
 
         for x_s in self.x_shapes:
             x_val = self.rng.uniform(size=x_s).astype(config.floatX)
-            for idx in xrange(-7, 7):
+            for idx in range(-7, 7):
                 f(x_val, idx)  # let debugmode test something
 
     def test_const4(self):
         # var[const1::][:const2]
         x = tensor.matrix('x')
-        for idx1 in xrange(-7, 7):
-            for idx2 in xrange(-7, 7):
+        for idx1 in range(-7, 7):
+            for idx2 in range(-7, 7):
                 f = function([x], x[idx1:][:idx2], mode=mode_opt)
 
                 self._verify_stack_trace(f)
@@ -2285,8 +2285,8 @@ class test_local_subtensor_merge(unittest.TestCase):
 
         for x_s in self.x_shapes:
             x_val = self.rng.uniform(size=x_s).astype(config.floatX)
-            for idx1 in xrange(-11, 11):
-                for idx2 in xrange(-11, 11):
+            for idx1 in range(-11, 11):
+                for idx2 in range(-11, 11):
                     f(x_val, idx1, idx2)  # let debugmode test something
 
     def test_const_general(self):
@@ -3714,9 +3714,9 @@ class test_shapeoptimizer(unittest.TestCase):
 
         c01b = T.set_subtensor(wide_infinity[:, 0:img_shp, 0:img_shp, :], c01b)
 
-        for row_within_pool in xrange(pool_shp):
+        for row_within_pool in range(pool_shp):
             row_stop = last_pool_r + row_within_pool + 1
-            for col_within_pool in xrange(pool_shp):
+            for col_within_pool in range(pool_shp):
                 col_stop = last_pool_c + col_within_pool + 1
                 cur = c01b[:, row_within_pool:row_stop:pool_stride,
                            col_within_pool:col_stop:pool_stride, :]
@@ -4035,7 +4035,7 @@ def speed_local_pow_specialize_range():
     v = T.vector()
     mode = compile.mode.get_default_mode()
     mode_without_pow_opt = mode.excluding('local_pow_specialize')
-    for i in xrange(500, 513):
+    for i in range(500, 513):
         f1 = function([v], v ** i, mode=mode)
         f2 = function([v], v ** i, mode=mode_without_pow_opt)
         assert len(f1.maker.fgraph.toposort()) == 1
@@ -4047,7 +4047,7 @@ def speed_local_pow_specialize_range():
         print(i, t2 - t1, t3 - t2, t2 - t1 < t3 - t2)
         if not t2 - t1 < t3 - t2:
             print("WARNING WE ARE SLOWER")
-    for i in xrange(-3, -1500, -1):
+    for i in range(-3, -1500, -1):
         f1 = function([v], v ** i, mode=mode)
         f2 = function([v], v ** i, mode=mode_without_pow_opt)
         assert len(f1.maker.fgraph.toposort()) == 1
@@ -4455,7 +4455,7 @@ class T_local_switch_sink(unittest.TestCase):
                 f = theano.function([condition[0], x[0], c],
                                     [y], mode=self.mode)
                 if type(condition[1]) is list:
-                    for i in xrange(len(condition[1])):
+                    for i in range(len(condition[1])):
                         res = f(condition[1][i], x[1], -1)
                         assert (res == numpy.asarray(
                             self.resm[idx][i])).sum() == self.resm[idx][i].size
@@ -4482,7 +4482,7 @@ class T_local_switch_sink(unittest.TestCase):
                 f = theano.function([condition[0], x[0], c]
                     , [y], mode=self.mode)
                 if type(condition[1]) is list:
-                    for i in xrange(len(condition[1])):
+                    for i in range(len(condition[1])):
                         res = f(condition[1][i], x[1], -1)
                         assert (res == numpy.
                             asarray(self.resm[idx][i])).sum() == self.resm[idx][i].size
@@ -5187,14 +5187,14 @@ class T_local_sum_prod(unittest.TestCase):
             assert numpy.allclose(f(input), n_like(input).sum())
             assert len(f.maker.fgraph.apply_nodes) == nb_nodes[0]
 
-            for d in xrange(3):
+            for d in range(3):
                 f = theano.function([a], t_like(a).sum(d), mode=mode)
                 assert numpy.allclose(f(input), n_like(input).sum(d))
                 assert len(f.maker.fgraph.apply_nodes) == nb_nodes[1]
                 topo = f.maker.fgraph.toposort()
                 assert topo[-1].op == T.alloc
                 assert not any([isinstance(node.op, T.Sum) for node in topo])
-            for i in xrange(3):
+            for i in range(3):
                 f = theano.function([a], t_like(a).sum(i), mode=mode)
                 assert numpy.allclose(f(input), n_like(input).sum(i))
                 assert len(f.maker.fgraph.apply_nodes) == nb_nodes[2]
@@ -5905,7 +5905,7 @@ def test_local_useless_split():
 
 
 def test_local_flatten_lift():
-    for i in xrange(1, 4):
+    for i in range(1, 4):
         x = tensor.tensor4()
         out = tensor.flatten(T.exp(x), i)
         assert out.ndim == i
@@ -6032,7 +6032,7 @@ class TestShape_i(utt.InferShapeTester):
 
         admat = matrix()
         admat_val = numpy.random.rand(4, 3).astype(config.floatX)
-        for i in xrange(2):
+        for i in range(2):
             f = function([admat], Shape_i(i)(admat))
             out = f(admat_val)
             assert numpy.allclose(out, admat_val.shape[i])

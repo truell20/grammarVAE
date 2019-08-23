@@ -1,5 +1,5 @@
-from __future__ import absolute_import, print_function, division
-from __future__ import print_function
+
+
 import sys, time
 from six import iteritems
 from theano.compile.pfunc import pfunc
@@ -21,7 +21,7 @@ def compare_fns(fns, input, reps=10):
         except Exception:
             pass
         t0 = time.time()
-        for i in xrange(reps):
+        for i in range(reps):
             impl(input)
         dt = time.time() - t0
         times[implname] = dt

@@ -5,7 +5,7 @@ A VM is not actually different from a Linker, we just decided
 VM was a better name at some point.
 
 """
-from __future__ import absolute_import, print_function, division
+
 
 from . import link
 from collections import defaultdict
@@ -214,7 +214,7 @@ class VM(object):
             profile.dependencies = self.dependencies
 
         # clear the timer info out of the buffers
-        for i in xrange(len(self.call_times)):
+        for i in range(len(self.call_times)):
             self.call_times[i] = 0.0
             self.call_counts[i] = 0
 
@@ -846,9 +846,9 @@ class VM_Linker(link.LocalLinker):
 
             # put storage_map and compute_map into a int-based scheme
             storage_map_list = [storage_map[vars_idx_inv[i]]
-                                for i in xrange(len(vars_idx_inv))]
+                                for i in range(len(vars_idx_inv))]
             compute_map_list = [compute_map[vars_idx_inv[i]]
-                                for i in xrange(len(vars_idx_inv))]
+                                for i in range(len(vars_idx_inv))]
             if nodes:
                 assert type(storage_map_list[0]) is list
                 assert type(compute_map_list[0]) is list
@@ -857,7 +857,7 @@ class VM_Linker(link.LocalLinker):
             dependency_map = self.compute_gc_dependencies(storage_map)
             dependency_map_list = [
                 [vars_idx[d] for d in dependency_map[vars_idx_inv[i]]]
-                for i in xrange(len(vars_idx_inv))]
+                for i in range(len(vars_idx_inv))]
 
             # build the pointers to node inputs and offsets
             base_input_output_list = []

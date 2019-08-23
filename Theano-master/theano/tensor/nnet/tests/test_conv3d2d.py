@@ -1,4 +1,4 @@
-from __future__ import absolute_import, print_function, division
+
 import time
 
 from nose.plugins.skip import SkipTest
@@ -61,9 +61,9 @@ def pyconv3d(signals, filters):
     Wf2 = Wf//2
 
     rval = numpy.zeros((Ns, Ts-Tf+1, Nf, Hs-Hf+1, Ws-Wf+1))
-    for ns in xrange(Ns):
-        for nf in xrange(Nf):
-            for c in xrange(C):
+    for ns in range(Ns):
+        for nf in range(Nf):
+            for c in range(C):
                 s_i = signals[ns, :, c, :, :]
                 f_i = filters[nf, :, c, :, :]
                 r_i = rval[ns, :, nf, :, :]

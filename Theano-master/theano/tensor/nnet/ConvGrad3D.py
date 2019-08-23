@@ -1,4 +1,4 @@
-from __future__ import absolute_import, print_function, division
+
 from six.moves import xrange
 
 import numpy as N
@@ -75,15 +75,15 @@ class ConvGrad3D(theano.Op):
 
         # print 'computing output of shape '+str(WShape)
 
-        for k in xrange(0, WShape[1]):
-            for l in xrange(0, WShape[2]):
-                for m in xrange(0, WShape[3]):
-                    for i in xrange(0, batchSize):
-                        for p in xrange(0, outputHeight):
-                            for q in xrange(0, outputWidth):
-                                for r in xrange(0, outputDur):
-                                    for j in xrange(0, WShape[0]):
-                                        for z in xrange(0, WShape[4]):
+        for k in range(0, WShape[1]):
+            for l in range(0, WShape[2]):
+                for m in range(0, WShape[3]):
+                    for i in range(0, batchSize):
+                        for p in range(0, outputHeight):
+                            for q in range(0, outputWidth):
+                                for r in range(0, outputDur):
+                                    for j in range(0, WShape[0]):
+                                        for z in range(0, WShape[4]):
                                             dCdW[j, k, l, m, z] += (
                                                 dCdH[i, p, q, r, j] *
                                                 V[i, dr * p + k, dc * q + l,

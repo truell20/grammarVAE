@@ -1,4 +1,4 @@
-from __future__ import absolute_import, print_function, division
+
 import theano
 from theano.compat import OrderedDict
 from theano.gof.utils import (
@@ -46,7 +46,7 @@ def test_remove():
         return x % 2 == 1
     # The list are needed as with python 3, remove and filter return generators
     # and we can't compare generators.
-    assert list(remove(even, range(5))) == list(filter(odd, range(5)))
+    assert list(remove(even, list(range(5)))) == list(filter(odd, list(range(5))))
 
 
 def test_hash_from_dict():

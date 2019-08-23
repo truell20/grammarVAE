@@ -1,4 +1,4 @@
-from __future__ import absolute_import, print_function, division
+
 from copy import copy
 import unittest
 import math
@@ -772,7 +772,7 @@ class T_reduce_dtype(unittest.TestCase):
     op = CAReduce
     axes = [None, 0, 1, [], [0], [1], [0, 1]]
     methods = ['sum', 'prod']
-    dtypes = imap(str, theano.scalar.all_types)
+    dtypes = map(str, theano.scalar.all_types)
 
     def test_reduce_default_dtype(self):
         """
@@ -927,7 +927,7 @@ class T_mean_dtype(unittest.TestCase):
         """
         # We try multiple axis combinations even though axis should not matter.
         axes = [None, 0, 1, [], [0], [1], [0, 1]]
-        for idx, dtype in enumerate(imap(str, theano.scalar.all_types)):
+        for idx, dtype in enumerate(map(str, theano.scalar.all_types)):
             axis = axes[idx % len(axes)]
             x = tensor.matrix(dtype=dtype)
             m = x.mean(axis=axis)
@@ -948,9 +948,9 @@ class T_mean_dtype(unittest.TestCase):
         # We try multiple axis combinations even though axis should not matter.
         axes = [None, 0, 1, [], [0], [1], [0, 1]]
         idx = 0
-        for input_dtype in imap(str, theano.scalar.all_types):
+        for input_dtype in map(str, theano.scalar.all_types):
             x = tensor.matrix(dtype=input_dtype)
-            for sum_dtype in imap(str, theano.scalar.all_types):
+            for sum_dtype in map(str, theano.scalar.all_types):
                 axis = axes[idx % len(axes)]
                 # If the inner sum cannot be created, it will raise a
                 # TypeError.
@@ -1006,7 +1006,7 @@ class T_prod_without_zeros_dtype(unittest.TestCase):
         """
         # We try multiple axis combinations even though axis should not matter.
         axes = [None, 0, 1, [], [0], [1], [0, 1]]
-        for idx, dtype in enumerate(imap(str, theano.scalar.all_types)):
+        for idx, dtype in enumerate(map(str, theano.scalar.all_types)):
             axis = axes[idx % len(axes)]
             x = ProdWithoutZeros(axis=axis)(tensor.matrix(dtype=dtype))
             assert x.dtype == dict(
@@ -1024,7 +1024,7 @@ class T_prod_without_zeros_dtype(unittest.TestCase):
         """
         # We try multiple axis combinations even though axis should not matter.
         axes = [None, 0, 1, [], [0], [1], [0, 1]]
-        for idx, dtype in enumerate(imap(str, theano.scalar.all_types)):
+        for idx, dtype in enumerate(map(str, theano.scalar.all_types)):
             axis = axes[idx % len(axes)]
             x = tensor.matrix(dtype=dtype)
             p = ProdWithoutZeros(axis=axis)(x)
@@ -1055,9 +1055,9 @@ class T_prod_without_zeros_dtype(unittest.TestCase):
         # We try multiple axis combinations even though axis should not matter.
         axes = [None, 0, 1, [], [0], [1], [0, 1]]
         idx = 0
-        for input_dtype in imap(str, theano.scalar.all_types):
+        for input_dtype in map(str, theano.scalar.all_types):
             x = tensor.matrix(dtype=input_dtype)
-            for output_dtype in imap(str, theano.scalar.all_types):
+            for output_dtype in map(str, theano.scalar.all_types):
                 axis = axes[idx % len(axes)]
                 prod_woz_var = ProdWithoutZeros(
                         axis=axis, dtype=output_dtype)(x)
@@ -1079,9 +1079,9 @@ class T_prod_without_zeros_dtype(unittest.TestCase):
         # We try multiple axis combinations even though axis should not matter.
         axes = [None, 0, 1, [], [0], [1], [0, 1]]
         idx = 0
-        for input_dtype in imap(str, theano.scalar.all_types):
+        for input_dtype in map(str, theano.scalar.all_types):
             x = tensor.matrix(dtype=input_dtype)
-            for acc_dtype in imap(str, theano.scalar.all_types):
+            for acc_dtype in map(str, theano.scalar.all_types):
                 axis = axes[idx % len(axes)]
                 # If acc_dtype would force a downcast, we expect a TypeError
                 # We always allow int/uint inputs with float/complex outputs.
@@ -1171,7 +1171,7 @@ class TestElemwise(unittest_tools.InferShapeTester):
         s = a + b + c + d + e + f
         g = theano.function([a, b, c, d, e, f], s,
                              mode=theano.compile.Mode(linker='py'))
-        g(*[numpy.zeros(2 ** 11, config.floatX) for i in xrange(6)])
+        g(*[numpy.zeros(2 ** 11, config.floatX) for i in range(6)])
 
 
 def test_gt_grad():

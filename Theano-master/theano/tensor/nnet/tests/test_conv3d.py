@@ -1,4 +1,4 @@
-from __future__ import absolute_import, print_function, division
+
 import unittest
 import theano
 import theano.tensor as T
@@ -270,11 +270,11 @@ class TestConv3D(utt.InferShapeTester):
         W_mat = N.zeros((n, numFilters))
         V_mat = N.zeros((batchSize, n))
         Hv_mat = N.zeros((batchSize, numFilters))
-        for qi in xrange(0, numFilters):
+        for qi in range(0, numFilters):
             W_mat[:, qi] = \
                     self.W.get_value(borrow=True)[qi, :, :, :, :].reshape((n))
             Hv_mat[:, qi] = Hv[:, 0, 0, 0, qi]
-        for qi in xrange(0, batchSize):
+        for qi in range(0, batchSize):
             V_mat[qi, :] = \
                     self.V.get_value(borrow=True)[qi, :, :, :, :].reshape((n))
 
@@ -336,17 +336,17 @@ class TestConv3D(utt.InferShapeTester):
 
         n = inputChannels * videoHeight * videoWidth * videoDur
         rbim = N.zeros((videoHeight, videoWidth, videoDur, inputChannels))
-        for qi in xrange(0, inputChannels):
+        for qi in range(0, inputChannels):
             rbim[:, :, :, qi] = self.rb.get_value(borrow=True)[qi]
         rbv = rbim.reshape((n))
         W_mat = N.zeros((numFilters, n))
         Vv_mat = N.zeros((n, batchSize))
         Hv_mat = N.zeros((numFilters, batchSize))
-        for qi in xrange(0, numFilters):
+        for qi in range(0, numFilters):
             W_mat[qi, :] = \
                     self.W.get_value(borrow=True)[qi, :, :, :, :].reshape((n))
             Hv_mat[qi, :] = Hv[:, 0, 0, 0, qi]
-        for qi in xrange(0, batchSize):
+        for qi in range(0, batchSize):
             Vv_mat[:, qi] = Vv[qi, :, :, :, :].reshape((n))
 
         V_mat = (N.dot(W_mat.transpose(), Hv_mat).transpose() + \
@@ -356,8 +356,8 @@ class TestConv3D(utt.InferShapeTester):
             print(V_mat)
             print(Vv_mat)
 
-            for qq in xrange(V_mat.shape[0]):
-                for qqq in xrange(Vv_mat.shape[1]):
+            for qq in range(V_mat.shape[0]):
+                for qqq in range(Vv_mat.shape[1]):
                     if abs(V_mat[qq, qqq] - Vv_mat[qq, qqq]) > 1e-5:
                         print(('wrong at ' + str((qq, qqq)) + ': ' +
                         str(V_mat[qq, qqq], Vv_mat[qq, qqq])))
@@ -417,13 +417,13 @@ class TestConv3D(utt.InferShapeTester):
         c = N.zeros(H_shape[1:], dtype='int32')
         t = N.zeros(H_shape[1:], dtype='int32')
 
-        for qi in xrange(0, H_shape[4]):
+        for qi in range(0, H_shape[4]):
             h[:, :, :, qi] = qi
-        for qi in xrange(0, H_shape[1]):
+        for qi in range(0, H_shape[1]):
             r[qi, :, :, :] = qi
-        for qi in xrange(0, H_shape[2]):
+        for qi in range(0, H_shape[2]):
             c[:, qi, :, :] = qi
-        for qi in xrange(0, H_shape[3]):
+        for qi in range(0, H_shape[3]):
             t[:, :, qi, :] = qi
 
         hn = H_shape[1] * H_shape[2] * H_shape[3] * H_shape[4]
@@ -439,14 +439,14 @@ class TestConv3D(utt.InferShapeTester):
 
         n = inputChannels * videoHeight * videoWidth * videoDur
         rbim = N.zeros((videoHeight, videoWidth, videoDur, inputChannels))
-        for qi in xrange(0, inputChannels):
+        for qi in range(0, inputChannels):
             rbim[:, :, :, qi] = self.rb.get_value(borrow=True)[qi]
         rbv = rbim.reshape((n))
 
         W_mat = N.zeros((hn, n))
         Vv_mat = N.zeros((n, batchSize))
         Hv_mat = N.zeros((hn, batchSize))
-        for qi in xrange(0, hn):
+        for qi in range(0, hn):
             hi = h[qi]
             ri = r[qi]
             ci = c[qi]
@@ -462,7 +462,7 @@ class TestConv3D(utt.InferShapeTester):
 
             W_mat[qi, :] = placed_filter.reshape((n))
             Hv_mat[qi, :] = Hv[:, ri, ci, ti, hi]
-        for qi in xrange(0, batchSize):
+        for qi in range(0, batchSize):
             Vv_mat[:, qi] = Vv[qi, :, :, :, :].reshape((n))
 
         W_mat_T = sparse.csr_matrix(W_mat.transpose())
@@ -475,8 +475,8 @@ class TestConv3D(utt.InferShapeTester):
             print(V_mat)
             print('conv')
             print(Vv_mat)
-            for i in xrange(0, n):
-                for j in xrange(0, batchSize):
+            for i in range(0, n):
+                for j in range(0, batchSize):
                     if abs(V_mat[i, j] - Vv_mat[i, j]) > 1e-5:
                         print(('wrong at %d,%d: %f mul versus %f conv'
                                % (i, j, V_mat[i, j], Vv_mat[i, j])))

@@ -1,7 +1,8 @@
-from __future__ import absolute_import, print_function, division
+
 
 from six.moves import reduce
 from six import string_types
+from functools import reduce
 
 if 0:
     class _EquilibriumOptimizer(NavigatorOptimizer):
@@ -102,7 +103,7 @@ if 0:
                 tasks[node].extend(lopt for track, i, lopt in self.fetch_tracks0(node.op))
 
             u = self.attach_updater(fgraph, importer, pruner, chin)
-            print('KEYS', [hash(t) for t in tasks.keys()])
+            print('KEYS', [hash(t) for t in list(tasks.keys())])
             while tasks:
                 for node in tasks:
                     todo = tasks.pop(node)

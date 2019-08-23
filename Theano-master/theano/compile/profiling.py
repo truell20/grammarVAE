@@ -9,7 +9,7 @@ ProfileStats object for runtime and memory profiling.
 # TODO: ensure field width for string fields makes columns line up
 # TODO: what to do about 'diff summary'? (ask Fred?)
 #
-from __future__ import absolute_import, print_function, division
+
 
 __authors__ = "James Bergstra"
 __reviewer__ = "Razvan Pascanu"
@@ -1234,7 +1234,7 @@ class ProfileStats(object):
             print("  No execution time accumulated "
                   "(hint: try config profiling.time_thunks=1)", file=file)
         if config.profiling.debugprint:
-            fcts = set([n.fgraph for n in self.apply_time.keys()])
+            fcts = set([n.fgraph for n in list(self.apply_time.keys())])
             theano.printing.debugprint(fcts, print_type=True)
         if self.variable_shape or self.variable_strides:
             self.summary_memory(file, n_apply_to_print)

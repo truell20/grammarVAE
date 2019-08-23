@@ -2,7 +2,7 @@
  Tests fof the lazy conditiona
 """
 
-from __future__ import absolute_import, print_function, division
+
 import unittest
 import numpy
 from nose.plugins.skip import SkipTest
@@ -13,6 +13,7 @@ from theano import tensor
 import theano.ifelse
 from theano.ifelse import IfElse, ifelse
 from theano.tests import unittest_tools as utt
+from functools import reduce
 
 
 __docformat__ = 'restructedtext en'

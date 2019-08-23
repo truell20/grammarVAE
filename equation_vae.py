@@ -55,7 +55,7 @@ class EquationCharacterModel(object):
         """ Encode a list of smiles strings into the latent space """
         indices = [np.array([self._char_index[c] for c in entry], dtype=int) for entry in smiles]
         one_hot = np.zeros((len(indices), self.MAX_LEN, len(self.charlist)), dtype=np.float32)
-        for i in xrange(len(indices)):
+        for i in range(len(indices)):
             num_productions = len(indices[i])
             one_hot[i][np.arange(num_productions),indices[i]] = 1.
             one_hot[i][np.arange(num_productions, self.MAX_LEN),-1] = 1.

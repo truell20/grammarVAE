@@ -1,4 +1,4 @@
-from __future__ import absolute_import, print_function, division
+
 import unittest
 from six.moves import xrange
 import theano
@@ -14,7 +14,7 @@ class TestRealImag(unittest.TestCase):
         x = zvector()
         rng = numpy.random.RandomState(23)
         xval = numpy.asarray(list(numpy.complex(rng.randn(), rng.randn())
-                                  for i in xrange(10)))
+                                  for i in range(10)))
         assert numpy.all(xval.real == theano.function([x], real(x))(xval))
         assert numpy.all(xval.imag == theano.function([x], imag(x))(xval))
 

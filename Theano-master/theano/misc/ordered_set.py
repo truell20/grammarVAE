@@ -1,4 +1,4 @@
-from __future__ import absolute_import, print_function, division
+
 
 from collections import MutableSet
 import types
@@ -54,7 +54,7 @@ class Link(object):
         # weakref.proxy don't pickle well, so we use weakref.ref
         # manually and don't pickle the weakref.
         # We restore the weakref when we unpickle.
-        ret = [self.prev(), self.next()]
+        ret = [self.prev(), next(self)]
         try:
             ret.append(self.key)
         except AttributeError:
@@ -88,7 +88,7 @@ class OrderedSet(MutableSet):
         # Checks added by IG
         check_deterministic(iterable)
         self.__root = root = Link()         # sentinel node for doubly linked list
-        root.prev = root.next = weakref.ref(root)
+        root.prev = root.__next__ = weakref.ref(root)
         self.__map = {}                     # key --> link
         if iterable is not None:
             self |= iterable
@@ -142,16 +142,16 @@ class OrderedSet(MutableSet):
         # then removed by updating the links in the predecessor and successors.
         if key in self.__map:
             link = self.__map.pop(key)
-            link.prev().next = link.next
+            link.prev().next = link.__next__
             link.next().prev = link.prev
 
     def __iter__(self):
         # Traverse the linked list in order.
         root = self.__root
-        curr = root.next()
+        curr = next(root)
         while curr is not root:
             yield curr.key
-            curr = curr.next()
+            curr = next(curr)
 
     def __reversed__(self):
         # Traverse the linked list in reverse order.

@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-from __future__ import absolute_import, print_function, division
+
 
 __docformat__ = 'restructuredtext en'
 
@@ -76,7 +76,7 @@ def get_correct_indentation_diff(code, filename):
         diff_generator = difflib.unified_diff(code.splitlines(True), reindent_output.splitlines(True),
                                               fromfile=filename, tofile=filename + " (reindented)")
         # work around http://bugs.python.org/issue2142
-        diff_tuple = map(clean_diff_line_for_python_bug_2142, diff_generator)
+        diff_tuple = list(map(clean_diff_line_for_python_bug_2142, diff_generator))
         diff = "".join(diff_tuple)
         return diff
     else:

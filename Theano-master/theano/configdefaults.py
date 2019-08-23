@@ -1,4 +1,4 @@
-from __future__ import absolute_import, print_function, division
+
 import errno
 import os
 import sys
@@ -1691,5 +1691,5 @@ AddConfigVar(
     in_c_key=False)
 
 # Check if there are remaining flags provided by the user through THEANO_FLAGS.
-for key in THEANO_FLAGS_DICT.keys():
+for key in list(THEANO_FLAGS_DICT.keys()):
     warnings.warn('Theano does not recognise this flag: {0}'.format(key))

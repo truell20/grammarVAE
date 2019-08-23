@@ -1,4 +1,4 @@
-from __future__ import absolute_import, print_function, division
+
 from theano.compile import Mode
 import theano
 from theano.printing import hex_digest
@@ -174,7 +174,7 @@ class RecordMode(Mode):
         if record is None:
             record = Record(**kwargs)
         else:
-            assert len(kwargs.keys()) == 0
+            assert len(list(kwargs.keys())) == 0
 
         self.set_record(record)
 

@@ -124,7 +124,7 @@ If arguments to GEMM are dimshuffled vectors, then we can use GEMV
 instead. This optimization is `local_gemm_to_gemv`.
 
 """
-from __future__ import absolute_import, print_function, division
+
 import copy
 import logging
 import os
@@ -132,6 +132,7 @@ import time
 
 import numpy
 import numpy.distutils
+from functools import reduce
 try:
     import numpy.distutils.__config__
 except ImportError:
@@ -1342,10 +1343,10 @@ def _gemm_from_factored_list(lst):
         return s * M
 
     # Try every pair in the sM_list, trying to turn it into a gemm operation
-    for i in xrange(len(lst) - 1):
+    for i in range(len(lst) - 1):
         s_i, M_i = lst[i]
 
-        for j in xrange(i + 1, len(lst)):
+        for j in range(i + 1, len(lst)):
             s_j, M_j = lst[j]
 
             if M_i.type != M_j.type:
@@ -2045,7 +2046,7 @@ class BatchedDot(Op):
         shape = self.infer_shape(node, [i.shape for i in inp])[0]
         dtype = node.outputs[0].dtype
         z0 = z[0] = numpy.empty(shape, dtype=dtype)
-        for i in xrange(z0.shape[0]):
+        for i in range(z0.shape[0]):
             z0[i] = numpy.dot(x[i], y[i])
 
     def c_support_code(self):
@@ -2406,7 +2407,7 @@ class BatchedDot(Op):
             input_values = [iv0, iv1]
             eval_point_values = [ev0, ev1]
 
-            for i in xrange(2):
+            for i in range(2):
                 if eval_point_values[i] is not None and \
                    input_values[i].shape != eval_point_values[i].shape:
                     raise ValueError(

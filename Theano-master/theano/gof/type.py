@@ -4,7 +4,7 @@ WRITEME
 Defines the `Type` class.
 
 """
-from __future__ import absolute_import, print_function, division
+
 
 from theano.compat import PY3
 from six import string_types

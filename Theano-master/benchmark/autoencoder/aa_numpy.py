@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-from __future__ import absolute_import, print_function, division
+
 import numpy as N
 import sys
 import time
@@ -20,7 +20,7 @@ x = (rng.rand(neg, nout)-0.5) * 1.5
 dot_time = 0.0
 
 t = time.time()
-for i in xrange(niter):
+for i in range(niter):
     tt = time.time()
     d = N.dot(x, w)
     dot_time += time.time() - tt

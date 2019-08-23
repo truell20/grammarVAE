@@ -71,16 +71,16 @@ for j in range(1, n_simulations + 1):
 
 print("Results Grammar VAE (fraction valid, best, average)):")
 
-print("Mean:", np.mean(results_grammar, 0)[ 0 ], -np.mean(results_grammar, 0)[ 1 ], -np.mean(results_grammar, 0)[ 2 ])
-print("Std:", np.std(results_grammar, 0) / np.sqrt(iteration))
-print("First:", -np.min(results_grammar[ : , 1 ]))
+print(("Mean:", np.mean(results_grammar, 0)[ 0 ], -np.mean(results_grammar, 0)[ 1 ], -np.mean(results_grammar, 0)[ 2 ]))
+print(("Std:", np.std(results_grammar, 0) / np.sqrt(iteration)))
+print(("First:", -np.min(results_grammar[ : , 1 ])))
 
 best_score = np.min(results_grammar[ : , 1 ])
 results_grammar[ results_grammar[ : , 1 ] == best_score , 1 ] = 1e10
-print("Second:", -np.min(results_grammar[ : , 1 ]))
+print(("Second:", -np.min(results_grammar[ : , 1 ])))
 second_best_score = np.min(results_grammar[ : , 1 ])
 results_grammar[ results_grammar[ : , 1 ] == second_best_score, 1 ] = 1e10
-print("Third:", -np.min(results_grammar[ : , 1 ]))
+print(("Third:", -np.min(results_grammar[ : , 1 ])))
 third_best_score = np.min(results_grammar[ : , 1 ])
 
 from rdkit.Chem import MolFromSmiles, MolToSmiles
@@ -96,7 +96,7 @@ for j in range(1, n_simulations + 1):
         if np.any(scores == best_score):
             smile = smiles[ scores == best_score ]
             smile = np.array(smile).astype('str')[ 0 ]
-            print("First:", smile)
+            print(("First:", smile))
             mol = MolFromSmiles(smile)
             mols.append(mol)
             best_score = 1e10
@@ -104,7 +104,7 @@ for j in range(1, n_simulations + 1):
         if np.any(scores == second_best_score):
             smile = smiles[ scores == second_best_score ]
             smile = np.array(smile).astype('str')[ 0 ]
-            print("Second:", smile)
+            print(("Second:", smile))
             mol = MolFromSmiles(smile)
             mols.append(mol)
             second_best_score = 1e10
@@ -112,7 +112,7 @@ for j in range(1, n_simulations + 1):
         if np.any(scores == third_best_score):
             smile = smiles[ scores == third_best_score ]
             smile = np.array(smile).astype('str')[ 0 ]
-            print("Third:", smile)
+            print(("Third:", smile))
             mol = MolFromSmiles(smile)
             mols.append(mol)
             third_best_score = 1e10
@@ -160,16 +160,16 @@ for j in range(1, n_simulations + 1):
 
 print("Results Character VAE (fraction valid, best, average)):")
 
-print("Mean:", np.mean(results_character, 0)[ 0 ], -np.mean(results_character, 0)[ 1 ], -np.mean(results_character, 0)[ 2 ])
-print("Std:", np.std(results_character, 0) / np.sqrt(iteration))
+print(("Mean:", np.mean(results_character, 0)[ 0 ], -np.mean(results_character, 0)[ 1 ], -np.mean(results_character, 0)[ 2 ]))
+print(("Std:", np.std(results_character, 0) / np.sqrt(iteration)))
 
-print("First:", -np.min(results_character[ : , 1 ]))
+print(("First:", -np.min(results_character[ : , 1 ])))
 best_score = np.min(results_character[ : , 1 ])
 results_character[ results_character[ : , 1 ] == best_score , 1 ] = 1e10
-print("Second:", -np.min(results_character[ : , 1 ]))
+print(("Second:", -np.min(results_character[ : , 1 ])))
 second_best_score = np.min(results_character[ : , 1 ])
 results_character[ results_character[ : , 1 ] == second_best_score, 1 ] = 1e10
-print("Third:", -np.min(results_character[ : , 1 ]))
+print(("Third:", -np.min(results_character[ : , 1 ])))
 third_best_score = np.min(results_character[ : , 1 ])
 
 # We print the best smile found the character autoencoder
@@ -183,7 +183,7 @@ for j in range(1, n_simulations + 1):
         if np.any(scores == best_score):
             smile = smiles[ scores == best_score ]
             smile = np.array(smile).astype('str')[ 0 ]
-            print("First:", smile)
+            print(("First:", smile))
             mol = MolFromSmiles(smile)
             mols.append(mol)
             best_score = 1e10
@@ -191,7 +191,7 @@ for j in range(1, n_simulations + 1):
         if np.any(scores == second_best_score):
             smile = smiles[ scores == second_best_score ]
             smile = np.array(smile).astype('str')[ 0 ]
-            print("Second:", smile)
+            print(("Second:", smile))
             mol = MolFromSmiles(smile)
             mols.append(mol)
             second_best_score = 1e10
@@ -199,7 +199,7 @@ for j in range(1, n_simulations + 1):
         if np.any(scores == third_best_score):
             smile = smiles[ scores == third_best_score ]
             smile = np.array(smile).astype('str')[ 0 ]
-            print("Third:", smile)
+            print(("Third:", smile))
             mol = MolFromSmiles(smile)
             mols.append(mol)
             third_best_score = 1e10

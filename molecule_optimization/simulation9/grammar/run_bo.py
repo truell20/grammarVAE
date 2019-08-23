@@ -33,7 +33,7 @@ def decode_from_latent_space(latent_points, grammar_model):
 
         aux = collections.Counter(rdkit_molecules[ ~np.equal(rdkit_molecules[ :, i ], None) , i ])
         if len(aux) > 0:
-            smile = aux.items()[ np.argmax(aux.values()) ][ 0 ]
+            smile = list(aux.items())[ np.argmax(list(aux.values())) ][ 0 ]
         else:
             smile = None
         final_smiles.append(smile)
@@ -107,14 +107,14 @@ while iteration < 5:
     pred, uncert = sgp.predict(X_test, 0 * X_test)
     error = np.sqrt(np.mean((pred - y_test)**2))
     testll = np.mean(sps.norm.logpdf(pred - y_test, scale = np.sqrt(uncert)))
-    print 'Test RMSE: ', error
-    print 'Test ll: ', testll
+    print('Test RMSE: ', error)
+    print('Test ll: ', testll)
 
     pred, uncert = sgp.predict(X_train, 0 * X_train)
     error = np.sqrt(np.mean((pred - y_train)**2))
     trainll = np.mean(sps.norm.logpdf(pred - y_train, scale = np.sqrt(uncert)))
-    print 'Train RMSE: ', error
-    print 'Train ll: ', trainll
+    print('Train RMSE: ', error)
+    print('Train ll: ', trainll)
 
     # We load the decoder to obtain the molecules
 

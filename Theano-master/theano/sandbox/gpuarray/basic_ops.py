@@ -1,4 +1,4 @@
-from __future__ import absolute_import, print_function, division
+
 import os
 
 import numpy
@@ -827,7 +827,7 @@ class GpuContiguous(Op):
                 Py_INCREF(%(z)s);
 
             } else if ((NULL == %(z)s)""" % locals()
-        for i in xrange(len(node.inputs[0].type.broadcastable)):
+        for i in range(len(node.inputs[0].type.broadcastable)):
             str += "\n|| (PyGpuArray_DIMS(%(input)s)[%(i)s] != PyGpuArray_DIMS(%(z)s)[%(i)s])" % locals()
         str += """
                 || !GpuArray_IS_C_CONTIGUOUS(&(%(z)s->ga)))
@@ -1108,7 +1108,7 @@ class GpuEye(GpuKernelBase, Op):
 
     def grad(self, inp, grads):
         return [grad_undefined(self, i, inp[i])
-                for i in xrange(3)]
+                for i in range(3)]
 
     def gpu_kernels(self, node, name):
         code = """

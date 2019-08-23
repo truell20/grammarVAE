@@ -1,4 +1,4 @@
-from __future__ import absolute_import, print_function, division
+
 from six.moves import xrange
 import theano
 
@@ -240,7 +240,7 @@ def make_loop(loop_orders, dtypes, loop_tasks, sub, openmp=None):
 
     s = ""
 
-    for i, (pre_task, task), indices in reversed(list(zip(xrange(len(loop_tasks) - 1), loop_tasks, list(zip(*loop_orders))))):
+    for i, (pre_task, task), indices in reversed(list(zip(range(len(loop_tasks) - 1), loop_tasks, list(zip(*loop_orders))))):
             s = loop_over(preloops.get(i, "") + pre_task, s + task, indices, i)
 
     s += loop_tasks[-1]
@@ -330,7 +330,7 @@ def make_reordered_loop(init_loop_orders, olv_index, dtypes, inner_task, sub,
     %(ovar)s_loops_it = %(ovar)s_loops.begin();
     """ % locals()
 
-    for i in xrange(nnested):
+    for i in range(nnested):
         declare_totals += """
         int TOTAL_%(i)i = init_totals[%(ovar)s_loops_it->second];
         ++%(ovar)s_loops_it;
@@ -371,11 +371,11 @@ def make_reordered_loop(init_loop_orders, olv_index, dtypes, inner_task, sub,
     std::vector< std::pair<int, int> >::reverse_iterator %(ovar)s_loops_rit;
     """ % locals()
 
-    for i in xrange(nvars):
+    for i in range(nvars):
         var = sub["lv%i" % i]
         declare_strides += """
         %(ovar)s_loops_rit = %(ovar)s_loops.rbegin();""" % locals()
-        for j in reversed(xrange(nnested)):
+        for j in reversed(range(nnested)):
             declare_strides += """
             int %(var)s_stride_l%(j)i = init_strides[%(i)i][%(ovar)s_loops_rit->second];
             ++%(ovar)s_loops_rit;
@@ -391,13 +391,13 @@ def make_reordered_loop(init_loop_orders, olv_index, dtypes, inner_task, sub,
         var = sub["lv%i" % j]
         pointer_update += "%(dtype)s &%(var)s_i = * ( %(var)s_iter" % locals()
         tot_jump = ''
-        for i in reversed(range(nnested)):
+        for i in reversed(list(range(nnested))):
             iterv = 'ITER_%i' % i
             pointer_update += "+%(var)s_stride_l%(i)i*%(iterv)s" % locals()
         pointer_update += ");\n"
 
     loop = inner_task
-    for i in reversed(range(nnested)):
+    for i in reversed(list(range(nnested))):
         iterv = 'ITER_%i' % i
         total = 'TOTAL_%i' % i
         update = ''
@@ -522,7 +522,7 @@ def make_loop_careduce(loop_orders, dtypes, loop_tasks, sub):
         s = preloops.get(0, "")
     else:
         s = ""
-        for i, (pre_task, task), indices in reversed(list(zip(xrange(len(loop_tasks) - 1), loop_tasks, list(zip(*loop_orders))))):
+        for i, (pre_task, task), indices in reversed(list(zip(range(len(loop_tasks) - 1), loop_tasks, list(zip(*loop_orders))))):
             s = loop_over(preloops.get(i, "") + pre_task, s + task, indices, i)
 
     s += loop_tasks[-1]

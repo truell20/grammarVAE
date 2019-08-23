@@ -1,4 +1,4 @@
-from __future__ import absolute_import, print_function, division
+
 
 import numpy as np
 import unittest
@@ -22,7 +22,7 @@ class TestPyDotFormatter(unittest.TestCase):
         node_types = [node.get_attributes()['node_type']
                       for node in graph.get_nodes()]
         a, b = np.unique(node_types, return_counts=True)
-        nc = dict(zip(a, b))
+        nc = dict(list(zip(a, b)))
         return nc
 
     def test_mlp(self):

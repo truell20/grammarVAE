@@ -1,4 +1,4 @@
-from __future__ import absolute_import, print_function, division
+
 
 import os
 import shutil
@@ -99,7 +99,7 @@ class multiple_outputs_numeric_grad:
         f_x = f(*pt)
         gx = []
         # now iterate over the elements of x and call f on those + delta x
-        for i in xrange(len(pt)):
+        for i in range(len(pt)):
             if ndarray_mask[i]:
                 # It is a ndarray that we can tweak
                 if eps:
@@ -109,7 +109,7 @@ class multiple_outputs_numeric_grad:
                 if pt[i].ndim:
                     _g = []
                     # it has several dimensions:
-                    for pos in xrange(prod(pt[i].shape)):
+                    for pos in range(prod(pt[i].shape)):
                         t = pt[i].copy()
                         t = t.flatten()
                         t[pos] += _eps
@@ -133,7 +133,7 @@ class multiple_outputs_numeric_grad:
         """Return the biggest relative error between g_pt and self.gx"""
 
         g_pt = []
-        for i in xrange(len(_g_pt)):
+        for i in range(len(_g_pt)):
             if self.ndarray_mask[i]:
                 g_pt.append(_g_pt[i])
             elif isinstance(_g_pt[i], numpy.ndarray):
@@ -266,7 +266,7 @@ class T_Scan(unittest.TestCase):
         steps = 5
 
         numpy_values = numpy.array([state * (2 ** (k + 1)) for k
-                                    in xrange(steps)])
+                                    in range(steps)])
         theano_values = my_f(state, steps)
         utt.assert_allclose(numpy_values, theano_values)
 
@@ -334,7 +334,7 @@ class T_Scan(unittest.TestCase):
         steps = 5
 
         numpy_values = numpy.array([state * (2 ** (k + 1)) for k
-                                    in xrange(steps)])
+                                    in range(steps)])
         theano_values = my_f(state, steps)
         utt.assert_allclose(numpy_values, theano_values)
 
@@ -426,7 +426,7 @@ class T_Scan(unittest.TestCase):
         # compute the output in numpy
         v_out = numpy.zeros((4,))
         v_out[0] = v_u[0] * W_in + v_x0 * W
-        for step in xrange(1, 4):
+        for step in range(1, 4):
             v_out[step] = v_u[step] * W_in + v_out[step - 1] * W
         theano_values = f2(v_u, v_x0, W_in, W)
         utt.assert_allclose(theano_values, v_out)
@@ -461,7 +461,7 @@ class T_Scan(unittest.TestCase):
         # compute the output i numpy
         v_out = numpy.zeros((4,))
         v_out[0] = v_u[0] * W_in.get_value() + v_x0 * W.get_value()
-        for step in xrange(1, 4):
+        for step in range(1, 4):
             v_out[step] = (v_u[step] * W_in.get_value() +
                            v_out[step - 1] * W.get_value())
 
@@ -513,7 +513,7 @@ class T_Scan(unittest.TestCase):
         v_x[0] = (numpy.dot(v_u1[0], vW_in1) + v_u2[0] * vW_in2 +
                   numpy.dot(v_x0, vW))
         v_y[0] = numpy.dot(v_x0, vWout)
-        for i in xrange(1, 3):
+        for i in range(1, 3):
             v_x[i] = (numpy.dot(v_u1[i], vW_in1) + v_u2[i] * vW_in2 +
                       numpy.dot(v_x[i - 1], vW))
             v_y[i] = numpy.dot(v_x[i - 1], vWout)
@@ -928,14 +928,14 @@ class T_Scan(unittest.TestCase):
                              allow_input_downcast=True)
         scan_node = [x for x in f9.maker.fgraph.toposort()
                      if isinstance(x.op, theano.scan_module.scan_op.Scan)]
-        assert 0 in scan_node[0].op.destroy_map.keys()
-        assert 1 in scan_node[0].op.destroy_map.keys()
+        assert 0 in list(scan_node[0].op.destroy_map.keys())
+        assert 1 in list(scan_node[0].op.destroy_map.keys())
         # compute output in numpy
         numpy_x0 = numpy.zeros((3,))
         numpy_x1 = numpy.zeros((3,))
         numpy_x0[0] = vu0[0] * vW_in + vx0 * vW + vu1[0] * vu2[0]
         numpy_x1[0] = vu0[0] * vW_in + vx1 * vW + vu1[0] + vu2[0]
-        for i in xrange(1, 3):
+        for i in range(1, 3):
             numpy_x0[i] = (vu0[i] * vW_in + numpy_x0[i - 1] * vW +
                            vu1[i] * vu2[i])
             numpy_x1[i] = (vu0[i] * vW_in + numpy_x1[i - 1] * vW +
@@ -1000,14 +1000,14 @@ class T_Scan(unittest.TestCase):
 
         scan_node = [x for x in f9.maker.fgraph.toposort()
                      if isinstance(x.op, theano.scan_module.scan_op.Scan)]
-        assert 0 in scan_node[0].op.destroy_map.keys()
-        assert 1 in scan_node[0].op.destroy_map.keys()
+        assert 0 in list(scan_node[0].op.destroy_map.keys())
+        assert 1 in list(scan_node[0].op.destroy_map.keys())
         # compute output in numpy
         numpy_x0 = numpy.zeros((3,))
         numpy_x1 = numpy.zeros((3,))
         numpy_x0[0] = vu0[0] * vW_in + vx0 * vW + vu1[0] * vu1[1]
         numpy_x1[0] = vu0[0] * vW_in + vx1 * vW + vu2[0] + vu2[1] + vu2[2]
-        for i in xrange(1, 3):
+        for i in range(1, 3):
             numpy_x0[i] = (vu0[i] * vW_in + numpy_x0[i - 1] * vW +
                            vu1[i] * vu1[i + 1])
             numpy_x1[i] = (vu0[i] * vW_in + numpy_x1[i - 1] * vW +
@@ -1045,8 +1045,8 @@ class T_Scan(unittest.TestCase):
                              mode=mode)
         scan_node = [x for x in f9.maker.fgraph.toposort()
                      if isinstance(x.op, theano.scan_module.scan_op.Scan)]
-        assert 0 not in scan_node[0].op.destroy_map.keys()
-        assert 1 in scan_node[0].op.destroy_map.keys()
+        assert 0 not in list(scan_node[0].op.destroy_map.keys())
+        assert 1 in list(scan_node[0].op.destroy_map.keys())
 
     # Shared variable with updates
     def test_shared_arguments_with_updates(self):
@@ -1132,7 +1132,7 @@ class T_Scan(unittest.TestCase):
         numpy_y1[0] = vy1
         numpy_W1 = vW1.copy()
         numpy_W2 = vW2.copy()
-        for idx in xrange(3):
+        for idx in range(3):
             numpy_y0[idx + 3] = numpy.dot(numpy.dot(vu1[idx, :], numpy_W1),
                                           numpy_W2) + \
                                 0.1 * numpy_y0[idx + 2] + \
@@ -1212,7 +1212,7 @@ class T_Scan(unittest.TestCase):
         rng = numpy.random.RandomState(int(rng_seed))  # int() is for 32bit
 
         numpy_v = numpy.zeros((10, 2))
-        for i in xrange(10):
+        for i in range(10):
             numpy_v[i] = rng.uniform(-1, 1, size=(2,))
 
         theano_v = my_f()
@@ -1386,7 +1386,7 @@ class T_Scan(unittest.TestCase):
         # compute the output in numpy
         v_out = numpy.zeros((4,))
         v_out[0] = v_u[3] * W_in + v_x0 * W
-        for step in xrange(1, 4):
+        for step in range(1, 4):
             v_out[step] = v_u[3 - step] * W_in + v_out[step - 1] * W
 
         theano_values = f2(v_u, v_x0, W_in, W)
@@ -1899,7 +1899,7 @@ class T_Scan(unittest.TestCase):
         s_v = numpy.sin(x_v)
         t_v = numpy.roll(s_v, -1)[:-1]
         s_v = s_v[:-1]
-        for i in xrange(n_iters):
+        for i in range(n_iters):
             cost = learn_rnn_fn(s_v, t_v)
         pred = eval_rnn_fn(s_v)
         return cost
@@ -2202,7 +2202,7 @@ class T_Scan(unittest.TestCase):
         v_x[0] = numpy.dot(v_u1[0], vW_in1) + v_u2[0] * vW_in2 + \
                     numpy.dot(v_x0, vW)
         v_y[0] = numpy.dot(v_x0, vWout) + v_y0[2]
-        for i in xrange(1, 3):
+        for i in range(1, 3):
             v_x[i] = numpy.dot(v_u1[i], vW_in1) + v_u2[i] * vW_in2 + \
                         numpy.dot(v_x[i - 1], vW)
             v_y[i] = numpy.dot(v_x[i - 1], vWout) + v_y[i - 1]
@@ -2291,7 +2291,7 @@ class T_Scan(unittest.TestCase):
                         numpy.dot(v_x0, vW)
         v_y[0] = numpy.dot(v_x0, vWout) + v_y0[2]
 
-        for i in xrange(1, 8):
+        for i in range(1, 8):
             v_x[i] = numpy.dot(v_u1[i], vW_in1) + v_u2[i] * vW_in2 + \
                         numpy.dot(v_x[i - 1], vW)
             v_y[i] = numpy.dot(v_x[i - 1], vWout) + v_y[i - 1]
@@ -2540,7 +2540,7 @@ class T_Scan(unittest.TestCase):
         g_out = tensor.grad(out.sum(), x)
         fct = theano.function([x], [out, g_out])
 
-        for i in xrange(-5, 5):
+        for i in range(-5, 5):
             output, g_output = fct(i)
             assert len(output) == g_output
 
@@ -3777,7 +3777,7 @@ class T_Scan(unittest.TestCase):
                     numpy.dot(v_x0, vW)
         v_y[0] = numpy.dot(v_x0, vWout) + v_y0[2]
 
-        for i in xrange(1, 8):
+        for i in range(1, 8):
             v_x[i] = numpy.dot(v_u1[i], vW_in1) + v_u2[i] * vW_in2 + \
                         numpy.dot(v_x[i - 1], vW)
             v_y[i] = numpy.dot(v_x[i - 1], vWout) + v_y[i - 1]
@@ -4055,7 +4055,7 @@ class T_Scan(unittest.TestCase):
         def inner_fn(tap_m3, tap_m2, tap_m1):
             return (tap_m2, (tap_m1 * 1),
                     theano.gradient.disconnected_grad(tap_m2),
-                    theano.tensor.opt.assert_(tap_m2, 1),
+                    theano.tensor.opt.assertTrue(tap_m2, 1),
                     tap_m3 + tap_m2 + tap_m1)
 
         init = theano.tensor.matrix()
@@ -4587,7 +4587,7 @@ class ScanGpuTests:
         # compute the output in numpy
         v_out = numpy.zeros((4,))
         v_out[0] = v_u[0] * W_in + v_x0 * W
-        for step in xrange(1, 4):
+        for step in range(1, 4):
             v_out[step] = v_u[step] * W_in + v_out[step - 1] * W
         theano_values = f2(v_u, v_x0, W_in, W)
         utt.assert_allclose(theano_values, v_out)
@@ -4654,7 +4654,7 @@ class ScanGpuTests:
         # compute the output in numpy
         v_out = numpy.zeros((4,))
         v_out[0] = v_u[0] * W_in + v_x0 * W
-        for step in xrange(1, 4):
+        for step in range(1, 4):
             v_out[step] = v_u[step] * W_in + v_out[step - 1] * W
         theano_values = f2(v_u, v_x0, W_in, W)
         utt.assert_allclose(theano_values, v_out)
@@ -4718,7 +4718,7 @@ class ScanGpuTests:
         v_out2 = numpy.zeros((4,), dtype='int64')
         v_out1[0] = v_u[0] * W_in + v_x0 * W
         v_out2[0] = v_u[0] + v_x0
-        for step in xrange(1, 4):
+        for step in range(1, 4):
             v_out1[step] = v_u[step] * W_in + v_out1[step - 1] * W
             v_out2[step] = numpy.int64(v_u[step] + v_out1[step - 1])
 
@@ -4984,7 +4984,7 @@ def test_speed():
     r = numpy.arange(10000).astype(theano.config.floatX).reshape(1000, 10)
 
     t0 = time.time()
-    for i in xrange(1, 1000):
+    for i in range(1, 1000):
         r[i] += r[i - 1]
     t1 = time.time()
     print('python', t1 - t0)
@@ -5041,7 +5041,7 @@ def test_speed():
         f._check_for_aliased_inputs = False
         t2 = time.time()
         f_fn = f.fn
-        for i in xrange(998):
+        for i in range(998):
             f_fn()
         f()  # 999 to update the profiling timers
         t3 = time.time()
@@ -5076,7 +5076,7 @@ def test_speed_rnn():
     w = numpy.random.randn(N, N).astype(theano.config.floatX)
 
     t0 = time.time()
-    for i in xrange(1, L):
+    for i in range(1, L):
         r[i] = numpy.tanh(numpy.dot(r[i - 1], w))
     t1 = time.time()
     print('python', t1 - t0)
@@ -5155,7 +5155,7 @@ def test_speed_batchrnn():
     w = numpy.random.randn(N, N).astype(theano.config.floatX)
 
     t0 = time.time()
-    for i in xrange(1, L):
+    for i in range(1, L):
         r[i] = numpy.tanh(numpy.dot(r[i - 1], w))
     t1 = time.time()
     print('python', t1 - t0)

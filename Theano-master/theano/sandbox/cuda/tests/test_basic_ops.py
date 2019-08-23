@@ -1,4 +1,4 @@
-from __future__ import absolute_import, print_function, division
+
 import time
 import unittest
 
@@ -1024,11 +1024,11 @@ class T_subtensor(theano.tensor.tests.test_subtensor.T_subtensor):
         # The variable fast is used to set the member perform_using_take of
         # the Op.  It is only useful for testing that we use the fast
         # version when we should. Users should not use it.
-        for shape, idx, fast in [((70000,), range(70000), True),
-                                 ((70000, 5), range(70000), True),
+        for shape, idx, fast in [((70000,), list(range(70000)), True),
+                                 ((70000, 5), list(range(70000)), True),
                                  ((70000, 5),  numpy.zeros((0,), 'int64'),
                                   True),
-                                 ((70000, 2, 3), range(70000), True),
+                                 ((70000, 2, 3), list(range(70000)), True),
                                  ((1025, 1025), [5, 10], True),
                                  ((3, 1025, 1026), [1, 2], True),
                                  ((1025, 67000), [5, 10], True),
@@ -1188,11 +1188,11 @@ def test_many_arg_elemwise():
             for nb_dim in [2, 3, 4, 5]:
                 shapes = [rng.randint(1, 5) for i in range(nb_dim)]
                 args = [numpy.cast['float32'](rng.randn(*shapes))
-                        for arg in xrange(0, num_args)]
+                        for arg in range(0, num_args)]
 
                 symb_args = [theano.tensor.TensorType('float32',
                                                       (False,)*nb_dim)()
-                             for arg in xrange(0, num_args)]
+                             for arg in range(0, num_args)]
 
                 outputs = []
                 for mode in [mode_with_gpu, mode_without_gpu]:

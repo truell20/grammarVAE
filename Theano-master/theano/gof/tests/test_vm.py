@@ -1,4 +1,4 @@
-from __future__ import absolute_import, print_function, division
+
 import gc
 import sys
 import time
@@ -85,7 +85,7 @@ def test_speed():
 
     def numpy_version(x, depth):
         z = x
-        for d in xrange(depth):
+        for d in range(depth):
             z = (z + z)
         return z
 
@@ -224,7 +224,7 @@ if run_memory_usage_tests:
     # was stable.
     def test_leak2():
         import theano.sandbox.cuda as cuda
-        for i in xrange(1000000):
+        for i in range(1000000):
             n = numpy.asarray([2.3, 4.5], dtype='f')
             c = sys.getrefcount(n)
             a = cuda.CudaNdarray(n)
@@ -242,7 +242,7 @@ if run_memory_usage_tests:
 
         # This isn't really a unit test, you have to run it and look at top to
         # see if there's a leak
-        for i in xrange(10000):
+        for i in range(10000):
             x = tensor.vector()
             z = x
             for d in range(10):
@@ -281,7 +281,7 @@ if run_memory_usage_tests:
                            mode=Mode(optimizer=None,
                                      linker=linker()))
             inp = numpy.random.rand(1000000)
-            for i in xrange(100):
+            for i in range(100):
                 f_a(inp)
             if 0:  # this doesn't seem to work, prints 0 for everything
                 import resource
@@ -318,7 +318,7 @@ if run_memory_usage_tests:
                            mode=Mode(optimizer=None,
                                      linker=linker()))
             inp = numpy.random.rand(1000000)
-            for i in xrange(500):
+            for i in range(500):
                 f_a(inp)
         print(1)
         time_linker('vmLinker_C',

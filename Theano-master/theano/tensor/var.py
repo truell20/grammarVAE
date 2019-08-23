@@ -1,4 +1,4 @@
-from __future__ import absolute_import, print_function, division
+
 import copy
 import traceback as tb
 import warnings
@@ -69,7 +69,7 @@ class _tensor_py_operators(object):
         rval._is_nonzero = False
         return rval
 
-    def __nonzero__(self):
+    def __bool__(self):
         # Python 2.x
         return self.__bool__()
 
@@ -547,7 +547,7 @@ class _tensor_py_operators(object):
 
     def __iter__(self):
         try:
-            for i in xrange(theano.tensor.basic.get_vector_length(self)):
+            for i in range(theano.tensor.basic.get_vector_length(self)):
                 yield self[i]
         except TypeError:
             # This prevents accidental iteration via builtin.sum(self)

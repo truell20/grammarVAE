@@ -2,10 +2,11 @@
 This code can only work if gnumpy and theano are initialized on the
 same gpu as theano.
 """
-from __future__ import absolute_import, print_function, division
+
 
 import six
 from six.moves import reduce
+from functools import reduce
 
 try:
     import gnumpy
@@ -114,7 +115,7 @@ try:
             strides = tuple(strides)
 
             import ctypes
-            ptr_long = long(ctypes.cast(x._base.mat.data_device, ctypes.c_void_p).value)
+            ptr_long = int(ctypes.cast(x._base.mat.data_device, ctypes.c_void_p).value)
 
             # seems legit.
             z = cuda.from_gpu_pointer(ptr_long, x.shape, strides, x._base)

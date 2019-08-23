@@ -1,4 +1,4 @@
-from __future__ import absolute_import, print_function, division
+
 import numpy as np
 import numpy
 import warnings
@@ -739,7 +739,7 @@ def repeat(x, repeats, axis=None):
             if axis < 0:
                 axis = x.ndim + axis
 
-        shape = [x.shape[i] for i in xrange(x.ndim)]
+        shape = [x.shape[i] for i in range(x.ndim)]
 
         # shape_ is the shape of the intermediate tensor which has
         # an additional dimension comparing to x. We use alloc to

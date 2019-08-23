@@ -6,7 +6,7 @@ same gpu as theano.
 WARNING: In the test of this file there is a transpose that is used...
          So there can be problem with shape and stride order...
 """
-from __future__ import absolute_import, print_function, division
+
 
 import six
 
@@ -100,7 +100,7 @@ try:
             strides = tuple(strides[::-1])
 
             import ctypes
-            ptr_long = long(ctypes.cast(x.mat.data_device, ctypes.c_void_p).value)
+            ptr_long = int(ctypes.cast(x.mat.data_device, ctypes.c_void_p).value)
 
             # seems legit.
             z = cuda.from_gpu_pointer(ptr_long, x.shape, strides, x)

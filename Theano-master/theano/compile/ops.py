@@ -4,7 +4,7 @@ building class (:class:`FromFunctionOp`) and decorator (:func:`as_op`) that
 help make new Ops more rapidly.
 
 """
-from __future__ import absolute_import, print_function, division
+
 
 import copy
 import six.moves.cPickle as pickle
@@ -668,14 +668,14 @@ class Rebroadcast(gof.Op):
             broadcast_pattern = []
         else:
             broadcast_pattern = ['?' for i
-                                 in xrange(1 + max(self.axis.keys()))]
+                                 in range(1 + max(self.axis.keys()))]
         for k, v in iteritems(self.axis):
             broadcast_pattern[k] = str(int(v))
         return '%s{%s}' % (self.__class__.__name__,
                            ','.join(broadcast_pattern))
 
     def make_node(self, x):
-        if self.axis.keys() and (x.ndim <= max(self.axis.keys())):
+        if list(self.axis.keys()) and (x.ndim <= max(self.axis.keys())):
             raise ValueError('Trying to rebroadcast non-existent dimension')
         t = x.type.clone(
             broadcastable=[self.axis.get(i, b)
@@ -703,7 +703,7 @@ class Rebroadcast(gof.Op):
         assert len(ishapes) == 1
         l = []
         one = theano.tensor.basic.constant(1)
-        for ax in xrange(len(ishapes[0])):
+        for ax in range(len(ishapes[0])):
             if self.axis.get(ax, False):
                 l.append(one)
             else:
@@ -826,7 +826,7 @@ class SpecifyShape(gof.Op):
     def infer_shape(self, node, shapes):
         xshape, sshape = shapes
         new_shape = []
-        for dim in xrange(node.inputs[0].ndim):
+        for dim in range(node.inputs[0].ndim):
             try:
                 s = theano.tensor.get_scalar_constant_value(
                     node.inputs[1][dim])

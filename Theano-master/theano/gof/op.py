@@ -5,7 +5,7 @@ The `Op` class is the base interface for all operations
 compatible with `gof`'s :doc:`graph` routines.
 
 """
-from __future__ import absolute_import, print_function, division
+
 
 import inspect
 import logging
@@ -1304,14 +1304,14 @@ class COp(Op):
             func_files = [func_files]
 
         self.func_files = [self.get_path(f) for f in func_files]
-        self.func_name = func_name
+        self.__name__ = func_name
 
         self.load_c_code()
 
         if len(self.code_sections) == 0:
             raise ValueError("No sections where defined in C files")
 
-        if self.func_name is not None:
+        if self.__name__ is not None:
             if 'op_code' in self.code_sections:
                 # maybe a warning instead (and clearing the key)
                 raise ValueError('Cannot have an "op_code" section and '
@@ -1523,7 +1523,7 @@ class COp(Op):
                 'c_init_code_struct', type(self), type(self).__name__)
 
     def c_code(self, node, name, inp, out, sub):
-        if self.func_name is not None:
+        if self.__name__ is not None:
             assert 'code' not in self.code_sections
 
             define_macros, undef_macros = self.get_c_macros(node, name,
@@ -1542,7 +1542,7 @@ class COp(Op):
                   }
                 }
                 %(undef_macros)s
-                """ % dict(func_name=self.func_name,
+                """ % dict(func_name=self.__name__,
                            fail=sub['fail'], params=params,
                            func_args=self.format_c_function_args(inp, out),
                            define_macros=define_macros,

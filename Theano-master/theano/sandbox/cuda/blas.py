@@ -1,7 +1,8 @@
-from __future__ import absolute_import, print_function, division
+
 import copy
 import os
 import logging
+from functools import reduce
 _logger = logging.getLogger(__name__)
 
 from six import integer_types
@@ -879,7 +880,7 @@ class BaseGpuCorrMM(GpuOp):
         if isinstance(border_mode, integer_types):
             border_mode = (border_mode, border_mode)
         if isinstance(border_mode, tuple):
-            pad_h, pad_w = map(int, border_mode)
+            pad_h, pad_w = list(map(int, border_mode))
             border_mode = (pad_h, pad_w)
         if not ((isinstance(border_mode, tuple) and min(border_mode) >= 0) or
                 border_mode in ('valid', 'full', 'half')):

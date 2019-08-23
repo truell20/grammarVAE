@@ -1,4 +1,4 @@
-from __future__ import absolute_import, print_function, division
+
 import theano
 from theano import gof
 from theano.compat import izip
@@ -88,7 +88,7 @@ class OpFromGraph(gof.Op):
                               if isinstance(var, SharedVariable)]
         shared_vars = [var.type() for var in self.shared_inputs]
         new = rebuild_collect_shared(outputs, inputs=inputs + shared_vars,
-                                     replace=dict(izip(self.shared_inputs,
+                                     replace=dict(zip(self.shared_inputs,
                                                        shared_vars)),
                                      copy_inputs_over=False)
         (new_inputs, new_outputs,
@@ -160,7 +160,7 @@ class OpFromGraph(gof.Op):
         # But  doing it multiple time could duplicate common subgraph between
         # each shape call. Theano optimizer will clean this up later, but this
         # will ask extra work to the optimizer.
-        repl = dict(zip(self.new_inputs, node.inputs))
+        repl = dict(list(zip(self.new_inputs, node.inputs)))
         cloned = theano.clone(reduce(tuple.__add__, out_shp), replace=repl)
         ret = []
         used = 0
@@ -176,7 +176,7 @@ class OpFromGraph(gof.Op):
             grad_ops = self.grad_ops
         else:
             gs = theano.gradient.grad(cost=None,
-                                      known_grads=dict(izip(self.new_outputs,
+                                      known_grads=dict(zip(self.new_outputs,
                                                             output_grads)),
                                       wrt=self.new_inputs,
                                       disconnected_inputs='ignore')

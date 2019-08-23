@@ -1,4 +1,4 @@
-from __future__ import absolute_import, print_function, division
+
 from optparse import OptionParser
 import sys
 import time
@@ -21,7 +21,7 @@ parser.add_option('--script', action='store_true', dest='script',
 
 def evalTime(f, v, script=False, loops=1000):
     min = 1e10
-    for i in xrange(0, loops):
+    for i in range(0, loops):
         t0 = time.time()
         f(v)
         dt = time.time() - t0

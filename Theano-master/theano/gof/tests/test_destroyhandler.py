@@ -1,4 +1,4 @@
-from __future__ import absolute_import, print_function, division
+
 
 from six.moves import xrange
 from theano.gof.type import Type
@@ -73,7 +73,7 @@ class MyOp(Op):
         for input in inputs:
             if not isinstance(input.type, MyType):
                 raise Exception("Error 1")
-        outputs = [MyVariable(self.name + "_R") for i in xrange(self.nout)]
+        outputs = [MyVariable(self.name + "_R") for i in range(self.nout)]
         return Apply(self, inputs, outputs)
 
     def __str__(self):

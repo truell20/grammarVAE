@@ -1,5 +1,5 @@
 """Functions for Github authorisation."""
-from __future__ import absolute_import, print_function, division
+
 
 try:
     input = raw_input
@@ -31,7 +31,7 @@ def get_auth_token():
     print("Please enter your github username and password. These are not "
           "stored, only used to get an oAuth token. You can revoke this at "
           "any time on Github.")
-    user = input("Username: ")
+    user = eval(input("Username: "))
     pw = getpass.getpass("Password: ")
 
     auth_request = {

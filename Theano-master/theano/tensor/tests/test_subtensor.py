@@ -1,4 +1,4 @@
-from __future__ import absolute_import, print_function, division
+
 import logging
 import sys
 import unittest
@@ -41,7 +41,7 @@ if PY3:
         return i
 else:
     def L(i):
-        return long(i)
+        return int(i)
 
 
 class T_subtensor(unittest.TestCase, utt.TestOptimizationMixin):
@@ -938,7 +938,7 @@ class T_subtensor(unittest.TestCase, utt.TestOptimizationMixin):
                     data_num_init = numpy.arange(data_size, dtype=self.dtype)
                     data_num_init = data_num_init.reshape(data_shape)
                     inc_shapes = [data_shape[i:]
-                                  for i in xrange(0, len(data_shape) + 1)]
+                                  for i in range(0, len(data_shape) + 1)]
                     # Test broadcasting of y.
                     inc_shapes += [(1,) + inc_shapes[-1][1:]]
                     for inc_shape in inc_shapes:
@@ -1045,7 +1045,7 @@ class T_subtensor(unittest.TestCase, utt.TestOptimizationMixin):
 
         f_outs = f(*all_inputs_num)
         assert len(f_outs) == len(all_outputs_num)
-        for f_out, output_num in izip(f_outs, all_outputs_num):
+        for f_out, output_num in zip(f_outs, all_outputs_num):
             # NB: if this assert fails, it will probably be easier to debug if
             # you enable the debug code above.
             assert numpy.allclose(f_out, output_num)

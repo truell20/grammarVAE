@@ -1,4 +1,4 @@
-from __future__ import absolute_import, print_function, division
+
 import numpy
 
 import theano
@@ -69,12 +69,12 @@ def shape_of_variables(fgraph, input_shapes):
     input_dims = [dimension for inp in fgraph.inputs
                   for dimension in fgraph.shape_feature.shape_of[inp]]
 
-    output_dims = [dimension for shape in fgraph.shape_feature.shape_of.values()
+    output_dims = [dimension for shape in list(fgraph.shape_feature.shape_of.values())
                    for dimension in shape]
 
     compute_shapes = theano.function(input_dims, output_dims)
 
-    if any([i not in fgraph.inputs for i in input_shapes.keys()]):
+    if any([i not in fgraph.inputs for i in list(input_shapes.keys())]):
         raise ValueError(
             "input_shapes keys aren't in the fgraph.inputs. FunctionGraph()"
             " interface changed. Now by default, it clones the graph it receives."
@@ -84,7 +84,7 @@ def shape_of_variables(fgraph, input_shapes):
                           for dim in input_shapes[inp]]
     numeric_output_dims = compute_shapes(*numeric_input_dims)
 
-    sym_to_num_dict = dict(izip(output_dims, numeric_output_dims))
+    sym_to_num_dict = dict(zip(output_dims, numeric_output_dims))
 
     l = {}
     for var in fgraph.shape_feature.shape_of:

@@ -1,4 +1,4 @@
-from __future__ import absolute_import, print_function, division
+
 import linecache
 import sys
 
@@ -307,7 +307,7 @@ class Keyword:
         self.name = name
         self.nonzero = nonzero
 
-    def __nonzero__(self):
+    def __bool__(self):
         # Python 2.x
         return self.__bool__()
 

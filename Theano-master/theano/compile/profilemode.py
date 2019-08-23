@@ -1,4 +1,4 @@
-from __future__ import absolute_import, print_function, division
+
 import atexit
 import copy
 import os
@@ -231,7 +231,7 @@ class ProfileMode(Mode):
 
         """
         compile_time = sum([ps.compile_time for ps
-                            in self.profile_stats.values()])
+                            in list(self.profile_stats.values())])
 
         fct_call = dict([(fn, ps.fct_callcount)
                          for (fn, ps) in iteritems(self.profile_stats)])
@@ -259,9 +259,9 @@ class ProfileMode(Mode):
 
         other_time = dict(
             linker_time=sum(
-                [ps.linker_time for ps in self.profile_stats.values()]),
+                [ps.linker_time for ps in list(self.profile_stats.values())]),
             optimizer_time=sum(
-                [ps.optimizer_time for ps in self.profile_stats.values()]))
+                [ps.optimizer_time for ps in list(self.profile_stats.values())]))
 
         self.print_summary_("print_summary",
                             compile_time, fct_call_time, fct_call,
@@ -311,13 +311,13 @@ class ProfileMode(Mode):
         message = self.message
         variable_shape = diff_dict(self.variable_shape, other.variable_shape)
         self_linker_time = sum([ps.linker_time for ps
-                                in self.profile_stats.values()])
+                                in list(self.profile_stats.values())])
         other_linker_time = sum([ps.linker_time for ps
-                                 in other.profile_stats.values()])
+                                 in list(other.profile_stats.values())])
         self_optimizer_time = sum([ps.optimizer_time for ps
-                                   in self.profile_stats.values()])
+                                   in list(self.profile_stats.values())])
         other_optimizer_time = sum([ps.optimizer_time for ps
-                                    in other.profile_stats.values()])
+                                    in list(other.profile_stats.values())])
 
         other_time = {'linker_time': self_linker_time - other_linker_time,
                       'optimizer_time': self_optimizer_time -

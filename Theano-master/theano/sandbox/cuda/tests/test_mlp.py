@@ -1,4 +1,4 @@
-from __future__ import absolute_import, print_function, division
+
 import copy
 import logging
 import time
@@ -61,14 +61,14 @@ def get_mode(use_gpu, check_isfinite=True):
 
 
 def print_mode(mode):
-    if mode is not None and isinstance(mode, (theano.compile.ProfileMode,)):
+    if mode is not None and isinstance(mode, theano.compile.ProfileMode):
         mode.print_summary()
 
 
 def print_diff_mode(a, b):
     if (a is not None and
-        isinstance(a, (theano.compile.ProfileMode,)) and
-        isinstance(b, (theano.compile.ProfileMode,))):
+        isinstance(a, theano.compile.ProfileMode) and
+        isinstance(b, theano.compile.ProfileMode)):
 
         a.print_diff_summary(b)
 
@@ -107,7 +107,7 @@ def run_nnet(use_gpu, n_batch=60, n_in=1024, n_hid=2048, n_out=10,
 
     # print 'building pfunc ...'
     train = pfunc([x, y, lr], [loss], mode=mode,
-                  updates=[(p, p - g) for p, g in izip(params, gparams)])
+                  updates=[(p, p - g) for p, g in zip(params, gparams)])
 
     if 0:
         for i, n in enumerate(train.maker.fgraph.toposort()):
@@ -119,7 +119,7 @@ def run_nnet(use_gpu, n_batch=60, n_in=1024, n_hid=2048, n_out=10,
 
     t0 = time.time()
     rval = []
-    for i in xrange(n_train):
+    for i in range(n_train):
         rval.append(train(xval, yval, lr))
     dt = time.time() - t0
 
@@ -213,7 +213,7 @@ def run_conv_nnet1(use_gpu):
     yval = my_rand(n_batch, n_out)
     lr = theano._asarray(0.01, dtype='float32')
 
-    for i in xrange(n_train):
+    for i in range(n_train):
         rval = train(xval, yval, lr)
     # print 'training done'
     print_mode(mode)
@@ -304,7 +304,7 @@ def run_conv_nnet2(use_gpu):  # pretend we are training LeNet for MNIST
     xval = my_rand(*shape_img)
     yval = my_rand(n_batch, n_out)  # int32 make all 0...
     lr = theano._asarray(0.01, dtype='float32')
-    for i in xrange(n_train):
+    for i in range(n_train):
         rval = train(xval, yval, lr)
 
     print_mode(mode)
@@ -331,7 +331,7 @@ def build_conv_nnet2_classif(use_gpu, isize, ksize, n_batch,
 
     isize1 = isize
     isize2 = isize
-    if isinstance(isize, (tuple, )):
+    if isinstance(isize, tuple):
         isize1 = isize[0]
         isize2 = isize[1]
 
@@ -441,7 +441,7 @@ def run_conv_nnet2_classif(use_gpu, seed, isize, ksize, bsize,
 
     rvals = my_zeros(n_train)
     t0 = time.time()
-    for i in xrange(n_train):
+    for i in range(n_train):
         rvals[i] = train(xval, yval, lr)[0]
     t1 = time.time()
     print_mode(mode)

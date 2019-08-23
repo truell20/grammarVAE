@@ -3,7 +3,7 @@
 They all allow different way to print a graph or the result of an Op
 in a graph(Print Op)
 """
-from __future__ import absolute_import, print_function, division
+
 from copy import copy
 import logging
 import os
@@ -21,6 +21,7 @@ from theano import config
 from theano.gof import Op, Apply
 from theano.compile import Function, debugmode, SharedVariable
 from theano.compile.profilemode import ProfileMode
+from functools import reduce
 
 pydot_imported = False
 try:
@@ -198,8 +199,7 @@ N.B.:
             inner_to_outer_inputs = \
                 dict([(inner_inputs[i], outer_inputs[o])
                       for i, o in
-                      s.owner.op.var_mappings['outer_inp_from_inner_inp']
-                      .items()])
+                      list(s.owner.op.var_mappings['outer_inp_from_inner_inp'].items())])
 
             print("", file=_file)
             debugmode.debugprint(
@@ -512,16 +512,16 @@ class PPrinter:
         current = None
         if display_inputs:
             strings = [(0, "inputs: " + ", ".join(
-                        map(str, list(inputs) + updates.keys())))]
+                        map(str, list(inputs) + list(updates.keys()))))]
         else:
             strings = []
         pprinter = self.clone_assign(lambda pstate, r: r.name is not None and
                                      r is not current, LeafPrinter())
         inv_updates = dict((b, a) for (a, b) in iteritems(updates))
         i = 1
-        for node in gof.graph.io_toposort(list(inputs) + updates.keys(),
+        for node in gof.graph.io_toposort(list(inputs) + list(updates.keys()),
                                           list(outputs) +
-                                          updates.values()):
+                                          list(updates.values())):
             for output in node.outputs:
                 if output in inv_updates:
                     name = str(inv_updates[output])
@@ -574,14 +574,14 @@ if use_ascii:
                  epsilon="\\epsilon")
 else:
 
-    special = dict(middle_dot=u"\u00B7",
-                   big_sigma=u"\u03A3")
+    special = dict(middle_dot="\u00B7",
+                   big_sigma="\u03A3")
 
-    greek = dict(alpha=u"\u03B1",
-                 beta=u"\u03B2",
-                 gamma=u"\u03B3",
-                 delta=u"\u03B4",
-                 epsilon=u"\u03B5")
+    greek = dict(alpha="\u03B1",
+                 beta="\u03B2",
+                 gamma="\u03B3",
+                 delta="\u03B4",
+                 epsilon="\u03B5")
 
 
 pprint = PPrinter()
@@ -859,7 +859,7 @@ def pydotprint(fct, outfile=None,
     # it, we must copy it.
     outputs = list(outputs)
     if isinstance(fct, Function):
-        function_inputs = zip(fct.maker.expanded_inputs, fct.maker.fgraph.inputs)
+        function_inputs = list(zip(fct.maker.expanded_inputs, fct.maker.fgraph.inputs))
         for i, fg_ii in reversed(list(function_inputs)):
             if i.update is not None:
                 k = outputs.pop()
@@ -904,10 +904,10 @@ def pydotprint(fct, outfile=None,
             if label:
                 param['label'] = label
             if hasattr(node.op, 'view_map') and idx in reduce(
-                    list.__add__, node.op.view_map.values(), []):
+                    list.__add__, list(node.op.view_map.values()), []):
                     param['color'] = colorCodes['Output']
             elif hasattr(node.op, 'destroy_map') and idx in reduce(
-                    list.__add__, node.op.destroy_map.values(), []):
+                    list.__add__, list(node.op.destroy_map.values()), []):
                         param['color'] = 'red'
             if var.owner is None:
                 color = 'green'
@@ -984,7 +984,7 @@ def pydotprint(fct, outfile=None,
             # don't add egde here as it is already added from the inputs.
 
     # The var that represent updates, must be linked to the input var.
-    for sha, up in input_update.items():
+    for sha, up in list(input_update.items()):
         _, shaid = var_name(sha)
         _, upid = var_name(up)
         g.add_edge(pd.Edge(shaid, upid, label="UPDATE", color=colorCodes['Output']))
@@ -1110,7 +1110,7 @@ def pydotprint_variables(vars,
             return
         if app in my_list:
             return
-        astr = apply_name(app) + '_' + str(len(my_list.keys()))
+        astr = apply_name(app) + '_' + str(len(list(my_list.keys())))
         if len(astr) > max_label_size:
             astr = astr[:max_label_size - 3] + '...'
         my_list[app] = astr
@@ -1130,7 +1130,7 @@ def pydotprint_variables(vars,
 
         for i, nd in enumerate(app.inputs):
             if nd not in my_list:
-                varastr = var_name(nd) + '_' + str(len(my_list.keys()))
+                varastr = var_name(nd) + '_' + str(len(list(my_list.keys())))
                 if len(varastr) > max_label_size:
                     varastr = varastr[:max_label_size - 3] + '...'
                 my_list[nd] = varastr
@@ -1150,7 +1150,7 @@ def pydotprint_variables(vars,
 
         for i, nd in enumerate(app.outputs):
             if nd not in my_list:
-                varastr = var_name(nd) + '_' + str(len(my_list.keys()))
+                varastr = var_name(nd) + '_' + str(len(list(my_list.keys())))
                 if len(varastr) > max_label_size:
                     varastr = varastr[:max_label_size - 3] + '...'
                 my_list[nd] = varastr

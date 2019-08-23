@@ -1,4 +1,4 @@
-from __future__ import division
+
 import sys
 
 import equation_vae

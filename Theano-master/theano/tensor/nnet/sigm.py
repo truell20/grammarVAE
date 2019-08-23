@@ -5,7 +5,7 @@ These functions implement special cases of exp and log to improve numerical
 stability.
 
 """
-from __future__ import absolute_import, print_function, division
+
 
 import warnings
 
@@ -732,7 +732,7 @@ def simplify_mul(tree):
     if isinstance(inputs, list):
         # Recurse through inputs.
         s_inputs = []
-        for s_i in imap(simplify_mul, inputs):
+        for s_i in map(simplify_mul, inputs):
             if s_i[1] is None:
                 # Multiplication by +/-1.
                 neg ^= s_i[0]

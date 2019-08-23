@@ -3,7 +3,7 @@ Classes and functions for validating graphs that contain view
 and inplace operations.
 
 """
-from __future__ import absolute_import, print_function, division
+
 
 from collections import deque
 
@@ -187,7 +187,7 @@ def _build_droot_impact(destroy_handler):
     root_destroyer = {}  # root -> destroyer apply
 
     for app in destroy_handler.destroyers:
-        for output_idx, input_idx_list in app.op.destroy_map.items():
+        for output_idx, input_idx_list in list(app.op.destroy_map.items()):
             if len(input_idx_list) != 1:
                 raise NotImplementedError()
             input_idx = input_idx_list[0]
@@ -1017,8 +1017,8 @@ class DestroyHandler(toolbox.Bookkeeper):  # noqa
                     # depend on destroyed_input
                     root_clients = OrderedSet()
                     for r in root_impact:
-                        assert not [a for a, c in self.clients[r].items() if not c]
-                        root_clients.update([a for a, c in self.clients[r].items() if c])
+                        assert not [a for a, c in list(self.clients[r].items()) if not c]
+                        root_clients.update([a for a, c in list(self.clients[r].items()) if c])
                     root_clients.remove(app)
                     if root_clients:
                         rval[app] = root_clients

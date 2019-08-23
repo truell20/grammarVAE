@@ -1,4 +1,4 @@
-from __future__ import absolute_import, print_function, division
+
 import unittest
 from theano.compat import izip
 
@@ -144,7 +144,7 @@ def makeTester(name, op, gpu_op, cases, checks=None, mode_gpu=mode_with_gpu,
                         raise
 
             for i, (variable, expected) in \
-                    enumerate(izip(variables, expecteds)):
+                    enumerate(zip(variables, expecteds)):
                 if variable.dtype != expected.dtype or \
                         variable.shape != expected.shape or \
                         not TensorType.values_eq_approx(variable,

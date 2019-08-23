@@ -1,7 +1,7 @@
 """
 Tests for GPU convolution
 """
-from __future__ import absolute_import, print_function, division
+
 import sys
 import time
 import unittest
@@ -59,10 +59,10 @@ def py_conv_valid_numpy(img, kern):
             img.shape[2] - kern.shape[2] + 1,
             img.shape[3] - kern.shape[3] + 1)
     out = numpy.zeros(outshp, dtype='float32')
-    for b in xrange(out.shape[0]):
-        for k in xrange(out.shape[1]):
-            for rr in xrange(out.shape[2]):
-                for cc in xrange(out.shape[3]):
+    for b in range(out.shape[0]):
+        for k in range(out.shape[1]):
+            for rr in range(out.shape[2]):
+                for cc in range(out.shape[3]):
                     # rr, cc is the upper-left corner of img patches
                     imgpatch = img[b, :, rr:rr + kern.shape[2],
                                    cc:cc + kern.shape[3]]
@@ -100,7 +100,7 @@ def py_conv(img, kern, mode, subsample):
     if isinstance(mode, int):
         mode = (mode, mode)
     if isinstance(mode, tuple):
-        pad_h, pad_w = map(int, mode)
+        pad_h, pad_w = list(map(int, mode))
         img = py_conv_pad_img(img, pad_h, pad_w)
         mode = 'valid'
     if imported_scipy_convolve2d:
@@ -126,9 +126,9 @@ def py_conv_scipy(img, kern, mode, subsample):
                 img.shape[2] + kern.shape[2] - 1,
                 img.shape[3] + kern.shape[3] - 1)
     out = numpy.zeros(outshp, dtype='float32')
-    for b in xrange(out.shape[0]):
-        for k in xrange(out.shape[1]):
-            for s in xrange(img.shape[1]):
+    for b in range(out.shape[0]):
+        for k in range(out.shape[1]):
+            for s in range(img.shape[1]):
                 #convolve2d or correlate
                 out[b, k, :, :] += convolve2d(img[b, s, :, :],
                                   kern[k, s, :, :],

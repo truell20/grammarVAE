@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-from __future__ import absolute_import, print_function, division
+
 import numpy
 import sys
 import time
@@ -207,7 +207,7 @@ m.b = rng.randn(nout) * 0.0
 x = (rng.rand(neg, nout)-0.5) * 1.5
 
 t = time.time()
-for i in xrange(niter):
+for i in range(niter):
     err = m.step(x)
 print('time: ',time.time() - t, 'err: ', err)
 try:

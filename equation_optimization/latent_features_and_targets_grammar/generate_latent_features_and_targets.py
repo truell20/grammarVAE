@@ -1,4 +1,4 @@
-from __future__ import division
+
 
 import numpy as np  
 import pdb
@@ -8,7 +8,7 @@ import pdb
 fname = '../../data/equation2_15_dataset.txt'
 
 from numpy import *
-import cPickle as pickle
+import pickle as pickle
 test = '1 / 3 + x + sin( x * x )'
 x = np.linspace(-10,10,1000)
 y = np.array(eval(test))
@@ -43,7 +43,7 @@ for i in range(len(eqs[:MAX])):
         score = np.log(1+WORST)
     if not np.isfinite(score):
         score = np.log(1+WORST)
-    print i, eqs[i], score
+    print(i, eqs[i], score)
     targets.append(score)
 
 targets = np.array(targets)
@@ -54,7 +54,7 @@ np.savetxt('true_y_eq.txt', y)
 
 batch_size = 5000
 num_batches = int(np.ceil(len(targets) / batch_size))
-for i in xrange(num_batches):
+for i in range(num_batches):
     if i == 0:
         latent_points = grammar_model.encode(eqs[:batch_size])
     else:

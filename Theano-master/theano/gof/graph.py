@@ -5,7 +5,7 @@ To read about what theano graphs are from a user perspective, have a look at
 `graph.html <../doc/graph.html>`__.
 
 """
-from __future__ import absolute_import, print_function, division
+
 
 from collections import deque
 from copy import copy
@@ -515,7 +515,7 @@ class Variable(Node):
         if not hasattr(self, '_fn_cache'):
             self._fn_cache = dict()
 
-        inputs = tuple(sorted(inputs_to_values.keys(), key=id))
+        inputs = tuple(sorted(list(inputs_to_values.keys()), key=id))
         if inputs not in self._fn_cache:
             self._fn_cache[inputs] = theano.function(inputs, self)
         args = [inputs_to_values[param] for param in inputs]

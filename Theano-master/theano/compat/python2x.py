@@ -1,7 +1,7 @@
 """
 Helper functions to make theano backwards compatible with python 2.6 - 2.7
 """
-from __future__ import absolute_import, print_function, division
+
 
 import sys
 
@@ -129,7 +129,7 @@ if sys.version_info[:2] < (2, 7):
             if isinstance(other, OrderedDict):
                 if len(self) != len(other):
                     return False
-                for p, q in zip(self.items(), other.items()):
+                for p, q in zip(list(self.items()), list(other.items())):
                     if p != q:
                         return False
                 return True
@@ -213,9 +213,9 @@ if sys.version_info[:2] < (2, 7):
             [('a', 5), ('r', 2), ('b', 2)]
             '''
             if n is None:
-                return sorted(self.iteritems(), key=itemgetter(1),
+                return sorted(iter(self.items()), key=itemgetter(1),
                               reverse=True)
-            return nlargest(n, self.iteritems(), key=itemgetter(1))
+            return nlargest(n, iter(self.items()), key=itemgetter(1))
 
         def elements(self):
             '''Iterator over elements.
@@ -229,7 +229,7 @@ if sys.version_info[:2] < (2, 7):
             If an element's count has been set to zero or is a negative
             number, elements() will ignore it.
             '''
-            for elem, count in self.iteritems():
+            for elem, count in self.items():
                 for _ in repeat(None, count):
                     yield elem
 
@@ -258,7 +258,7 @@ if sys.version_info[:2] < (2, 7):
                 if hasattr(iterable, 'iteritems'):
                     if self:
                         self_get = self.get
-                        for elem, count in iterable.iteritems():
+                        for elem, count in iterable.items():
                             self[elem] = self_get(elem, 0) + count
                     else:
                         # fast path when counter is empty
@@ -359,7 +359,7 @@ if sys.version_info[:2] < (2, 7):
             result = Counter()
             if len(self) < len(other):
                 self, other = other, self
-            for elem in ifilter(self.__contains__, other):
+            for elem in filter(self.__contains__, other):
                 newcount = _min(self[elem], other[elem])
                 if newcount > 0:
                     result[elem] = newcount

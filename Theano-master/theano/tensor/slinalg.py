@@ -1,4 +1,4 @@
-from __future__ import absolute_import, print_function, division
+
 import logging
 import warnings
 from six.moves import xrange
@@ -111,23 +111,23 @@ class CholeskyGrad(Op):
         N = x.shape[0]
         if self.lower:
             F = numpy.tril(dz)
-            for k in xrange(N - 1, -1, -1):
-                for j in xrange(k + 1, N):
-                    for i in xrange(j, N):
+            for k in range(N - 1, -1, -1):
+                for j in range(k + 1, N):
+                    for i in range(j, N):
                         F[i, k] -= F[i, j] * L[j, k]
                         F[j, k] -= F[i, j] * L[i, k]
-                for j in xrange(k + 1, N):
+                for j in range(k + 1, N):
                     F[j, k] /= L[k, k]
                     F[k, k] -= L[j, k] * F[j, k]
                 F[k, k] /= (2 * L[k, k])
         else:
             F = numpy.triu(dz)
-            for k in xrange(N - 1, -1, -1):
-                for j in xrange(k + 1, N):
-                    for i in xrange(j, N):
+            for k in range(N - 1, -1, -1):
+                for j in range(k + 1, N):
+                    for i in range(j, N):
                         F[k, i] -= F[j, i] * L[k, j]
                         F[k, j] -= F[j, i] * L[k, i]
-                for j in xrange(k + 1, N):
+                for j in range(k + 1, N):
                     F[k, j] /= L[k, k]
                     F[k, k] -= L[k, j] * F[k, j]
                 F[k, k] /= (2 * L[k, k])
@@ -350,7 +350,7 @@ def kron(a, b):
     else:
         o = shf.reshape((o.shape[0] * o.shape[2],
                          o.shape[1] * o.shape[3]) +
-                        tuple(o.shape[i] for i in xrange(4, o.ndim)))
+                        tuple(o.shape[i] for i in range(4, o.ndim)))
     return o
 
 

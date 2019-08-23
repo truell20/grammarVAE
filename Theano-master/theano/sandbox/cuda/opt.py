@@ -1,4 +1,4 @@
-from __future__ import absolute_import, print_function, division
+
 
 import copy
 import logging
@@ -81,6 +81,7 @@ from theano.tensor.nnet.abstract_conv import (BaseAbstractConv2d,
                                               AbstractConv2d_gradWeights,
                                               AbstractConv2d_gradInputs)
 from theano.tensor.opt import register_specialize_device
+from functools import reduce
 
 
 try:
@@ -633,9 +634,9 @@ def local_gpu_batched_dot(node):
                            as_cuda_ndarray_variable(y_))
         # unpad z shape
         if x.ndim == 2:
-            z = z.dimshuffle(0, *range(2, z.ndim))
+            z = z.dimshuffle(0, *list(range(2, z.ndim)))
         if y.ndim == 2:
-            z = z.dimshuffle(*range(z.ndim - 1))
+            z = z.dimshuffle(*list(range(z.ndim - 1)))
         return as_cuda_ndarray_variable(z)
 
     if isinstance(node.op, GpuFromHost):
@@ -897,7 +898,7 @@ def local_gpu_careduce(node):
 
                     new_in_shp = [x_shape[0]]
                     new_mask = [reduce_mask[0]]
-                    for i in xrange(1, x.type.ndim):
+                    for i in range(1, x.type.ndim):
                         if reduce_mask[i] == reduce_mask[i - 1]:
                             new_in_shp[-1] *= x_shape[i]
                         else:
@@ -2143,7 +2144,7 @@ def split_huge_add_or_mul(node):
             return False
         while len(node.inputs) > max_nb_inputs:
             inner_op = []
-            for i in xrange(0,
+            for i in range(0,
                             len(node.inputs),
                             max_nb_inputs):
                 inner_op.append(node.op(*node.inputs[i: i + max_nb_inputs]))

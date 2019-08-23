@@ -1,4 +1,4 @@
-from __future__ import absolute_import, print_function, division
+
 from copy import copy
 from itertools import product as itertools_product
 from unittest import TestCase
@@ -331,17 +331,17 @@ class t_gemm(TestCase):
                              for p in (z, a, x, y, b)]
             z_orig = z.copy()
             z_after = numpy.zeros_like(z_orig)
-            for i in xrange(3):
+            for i in range(3):
                 z_after[:, :, i] = self._gemm(z[:, :, i], a,
                                               x[:, :, i], y[:, :, i], b)
 
             tz, ta, tx, ty, tb = [shared(p) for p in (z, a, x, y, b)]
-            for i in xrange(3):
+            for i in range(3):
                 f_i = inplace_func([],
                         gemm_inplace(tz[:, :, i],
                              ta, tx[:, :, i], ty[:, :, i], tb),
                         mode=compile.Mode(optimizer=None, linker=l))
-                for j in xrange(3):
+                for j in range(3):
                     # tz will not _always_ be overwritten,
                     # and adding update={...} in the call to function()
                     # will create cycles, so we update by hand.
@@ -357,7 +357,7 @@ class t_gemm(TestCase):
                 g_i = theano.function([], tz_i,
                         updates=[(tz, T.set_subtensor(tz[:, :, i], tz_i))],
                         mode=compile.Mode(optimizer=None, linker=l))
-                for j in xrange(3):
+                for j in range(3):
                     g_i()
                     unittest_tools.assert_allclose(z_after[:, :, i],
                                                    tz.get_value(borrow=True)[:, :, i])
@@ -781,7 +781,7 @@ def test_gemm_unrolled():
         def update_H(cur_V):
             return T.nnet.sigmoid(T.dot(cur_V, W) + T.dot(G, W.T))
 
-        for i in xrange(num_rounds):
+        for i in range(num_rounds):
             cur_V = update_V(cur_H)
             cur_H = update_H(cur_V)
 
@@ -1305,10 +1305,10 @@ def matrixmultiply(a, b):
         b_is_vector = False
     assert a.shape[1] == b.shape[0]
     c = zeros((a.shape[0], b.shape[1]), common_type(a, b))
-    for i in xrange(a.shape[0]):
-        for j in xrange(b.shape[1]):
+    for i in range(a.shape[0]):
+        for j in range(b.shape[1]):
             s = 0
-            for k in xrange(a.shape[1]):
+            for k in range(a.shape[1]):
                 s += a[i, k] * b[k, j]
             c[i, j] = s
     if b_is_vector:

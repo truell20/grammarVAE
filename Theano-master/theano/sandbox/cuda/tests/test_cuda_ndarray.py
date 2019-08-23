@@ -1,4 +1,4 @@
-from __future__ import absolute_import, print_function, division
+
 import time, copy, sys, unittest
 # Skip test if cuda_ndarray is not available.
 from nose.plugins.skip import SkipTest
@@ -508,7 +508,7 @@ def test_stride_manipulation():
     offset = 0
 
     b_strides = b._strides
-    for i in xrange(len(b.shape)):
+    for i in range(len(b.shape)):
         offset += (b.shape[i]-1) * b_strides[i]
         v._set_stride(i, -b_strides[i])
 
@@ -992,7 +992,7 @@ def test_base():
     # Test that the 'base' attribute of a CudaNdarray is the one
     # built initially, not an intermediate one.
     a = cuda_ndarray.CudaNdarray.zeros((3, 4, 5))
-    for i in xrange(5):
+    for i in range(5):
         b = a[:]
     assert b.base is a
 

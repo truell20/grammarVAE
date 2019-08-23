@@ -49,7 +49,7 @@ scan_eqopt2 -> They are all global optimizer. (in2out convert local to global).
                ScanSaveMem,
                in2out(remove_constants_and_unused_inputs_scan3)
 """
-from __future__ import absolute_import, print_function, division
+
 import logging
 import copy
 from sys import maxsize
@@ -147,7 +147,7 @@ def remove_constants_and_unused_inputs_scan(node):
     nw_outer = [node.inputs[0]]
 
     all_ins = gof.graph.inputs(op_outs)
-    for idx in xrange(op.n_seqs):
+    for idx in range(op.n_seqs):
         node_inp = node.inputs[idx + 1]
         if (isinstance(node_inp, tensor.TensorConstant) and
                 node_inp.tag.unique_value is not None):
@@ -335,7 +335,7 @@ class PushOutNonSeqScan(gof.Optimizer):
         for nd in existent_nodes:
             to_keep_set.update(nd.inputs)
 
-        for out, idx in to_replace_map.items():
+        for out, idx in list(to_replace_map.items()):
             if (  # If types are different, conversion Op will be inserted,
                     # and it may trigger an infinite loop.
                     replace_with_in[idx].type == out.type and
@@ -378,7 +378,7 @@ class PushOutNonSeqScan(gof.Optimizer):
         elif not to_keep_set:
             # Nothing in the inner graph should be kept
             replace_with = OrderedDict()
-            for out, idx in to_replace_map.items():
+            for out, idx in list(to_replace_map.items()):
                 if out in local_fgraph_outs_set:
                     x = node.outputs[local_fgraph_outs_map[out]]
                     y = replace_with_out[idx]
@@ -395,7 +395,7 @@ class PushOutNonSeqScan(gof.Optimizer):
                     # Every output of the node has a replacement, the Scan
                     # node can be removed from the graph
                     fgraph.replace_all_validate_remove(
-                        replace_with.items(),
+                        list(replace_with.items()),
                         remove=[node],
                         reason='scanOp_pushout_nonseqs_ops')
                 else:
@@ -407,7 +407,7 @@ class PushOutNonSeqScan(gof.Optimizer):
                     # performed but the Scan node can't be removed at this
                     # point.
                     fgraph.replace_all_validate(
-                        replace_with.items(),
+                        list(replace_with.items()),
                         reason='scanOp_pushout_nonseqs_ops')
 
         else:
@@ -581,7 +581,7 @@ class PushOutSeqScan(gof.Optimizer):
         for nd in existent_nodes:
             to_keep_set.update(nd.inputs)
 
-        for out, idx in to_replace_map.items():
+        for out, idx in list(to_replace_map.items()):
             if (out in to_keep_set and out.owner not in existent_nodes_set and
                 # If types are different, conversion Op will be inserted,
                 # and it may trigger an infinite loop.
@@ -628,7 +628,7 @@ class PushOutSeqScan(gof.Optimizer):
               not op.outer_mitmot(node)):
             # Nothing in the inner graph should be kept
             replace_with = OrderedDict()
-            for out, idx in to_replace_map.items():
+            for out, idx in list(to_replace_map.items()):
                 if out in local_fgraph_outs_set:
                     x = node.outputs[local_fgraph_outs_map[out]]
                     _y = replace_with_out[idx]
@@ -969,7 +969,7 @@ class ScanInplaceOptimizer(Optimizer):
                 ls[i] = inp.owner.op(*inp.owner.inputs)
 
         n_outs = len(ls)
-        for idx in xrange(n_outs):
+        for idx in range(n_outs):
             if ls[idx] in ls[:idx]:
                 ls[idx] = deep_copy_op(ls[idx])
 
@@ -1018,7 +1018,7 @@ class ScanInplaceOptimizer(Optimizer):
                       if (isinstance(x.op, scan_op.Scan) and
                           x.op.info['gpu'] == self.gpu_flag and
                           x.op.info['gpua'] == self.gpua_flag)]
-        for scan_idx in xrange(len(scan_nodes)):
+        for scan_idx in range(len(scan_nodes)):
 
             # First attempt to make the Scan compute inplace every recurrent
             # output that seems like it could be computed inplace. If that
@@ -1056,7 +1056,7 @@ class ScanInplaceOptimizer(Optimizer):
                     if hasattr(client.op, 'destroy_map'):
                         # This flattens the content of destroy_map.values()
                         # which is a list of lists
-                        inplace_inp_indices = sum(client.op.destroy_map.values(), [])
+                        inplace_inp_indices = sum(list(client.op.destroy_map.values()), [])
 
                         inplace_inps = [client.inputs[i] for i in inplace_inp_indices]
                         if original_node.inputs[inp_idx] in inplace_inps:
@@ -1132,9 +1132,9 @@ class ScanSaveMem(gof.Optimizer):
         op = node.op
         c_outs = op.n_mit_mot + op.n_mit_sot + op.n_sit_sot + op.n_nit_sot
 
-        init_l = [0 for x in xrange(op.n_mit_mot)]
+        init_l = [0 for x in range(op.n_mit_mot)]
         init_l += [abs(min(v)) for v in op.tap_array[op.n_mit_mot:]]
-        init_l += [0 for x in xrange(op.n_nit_sot)]
+        init_l += [0 for x in range(op.n_nit_sot)]
         # 2. Check the clients of each output and see for how many steps
         # does scan need to run
 
@@ -1175,7 +1175,7 @@ class ScanSaveMem(gof.Optimizer):
         # Note that for mit_mot outputs and shared outputs we can not change
         # the number of intermediate steps stored without affecting the
         # result of the op
-        store_steps = [0 for o in xrange(op.n_mit_mot)]
+        store_steps = [0 for o in range(op.n_mit_mot)]
         store_steps += [-1 for o in node.outputs[op.n_mit_mot:c_outs]]
         # Flag that says if an input has changed and we need to do something
         # or not
@@ -1709,7 +1709,7 @@ class ScanMerge(gof.Optimizer):
             # SitSot
             inner_ins[idx].append(
                 rename(nd.op.inner_sitsot(nd.op.inputs), idx))
-            info['tap_array'] += [[-1] for x in xrange(nd.op.n_sit_sot)]
+            info['tap_array'] += [[-1] for x in range(nd.op.n_sit_sot)]
             inner_outs[idx].append(nd.op.inner_sitsot_outs(nd.op.outputs))
             outer_ins += rename(nd.op.outer_sitsot(nd.inputs), idx)
             outer_outs += nd.op.outer_sitsot_outs(nd.outputs)

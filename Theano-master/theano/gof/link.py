@@ -2,7 +2,7 @@
 WRITEME
 
 """
-from __future__ import absolute_import, print_function, division
+
 from copy import copy, deepcopy
 from sys import getsizeof
 import sys
@@ -381,7 +381,7 @@ class Linker(object):
                     takes, ['argument', 'arguments'][takes > 1], got)
             if (len(args) != len(inputs)):
                 raise TypeError(e_arity(len(inputs), len(args)))
-            for arg, variable in izip(args, inputs):
+            for arg, variable in zip(args, inputs):
                 variable.data = arg
             thunk()
             if unpack_single:
@@ -645,7 +645,7 @@ def streamline(fgraph, thunks, order, post_thunk_old_storage=None,
             for x in no_recycling:
                 x[0] = None
             try:
-                for thunk, node, old_storage in izip(thunks, order,
+                for thunk, node, old_storage in zip(thunks, order,
                                                      post_thunk_old_storage):
                     thunk()
                     for old_s in old_storage:
@@ -658,7 +658,7 @@ def streamline(fgraph, thunks, order, post_thunk_old_storage=None,
             for x in no_recycling:
                 x[0] = None
             try:
-                for thunk, node in izip(thunks, order):
+                for thunk, node in zip(thunks, order):
                     thunk()
             except Exception:
                 raise_with_op(node, thunk)
@@ -860,9 +860,9 @@ class PerformLinker(LocalLinker):
 
         return (f,
                 [Container(input, storage)
-                 for input, storage in izip(fgraph.inputs, input_storage)],
+                 for input, storage in zip(fgraph.inputs, input_storage)],
                 [Container(output, storage, True)
-                 for output, storage in izip(fgraph.outputs, output_storage)],
+                 for output, storage in zip(fgraph.outputs, output_storage)],
                 thunks,
                 order)
 
@@ -975,7 +975,7 @@ class WrapLinker(Linker):
         make_all += [l.make_all(**kwargs) for l in self.linkers[1:]]
 
         fns, input_lists, output_lists, thunk_lists, order_lists \
-            = zip(*make_all)
+            = list(zip(*make_all))
 
         order_list0 = order_lists[0]
         for order_list in order_lists[1:]:
@@ -990,7 +990,7 @@ class WrapLinker(Linker):
         order = [x[0] for x in zip(*order_lists)]
 
         to_reset = []
-        for thunks, node in izip(thunk_groups, order):
+        for thunks, node in zip(thunk_groups, order):
             for j, output in enumerate(node.outputs):
                 if output in no_recycling:
                     for thunk in thunks:
@@ -1001,13 +1001,13 @@ class WrapLinker(Linker):
 
         def f():
             for inputs in input_lists[1:]:
-                for input1, input2 in izip(inputs0, inputs):
+                for input1, input2 in zip(inputs0, inputs):
                     input2.storage[0] = copy(input1.storage[0])
             for x in to_reset:
                 x[0] = None
             pre(self, [input.data for input in input_lists[0]],
                 order, thunk_groups)
-            for i, (thunks, node) in enumerate(izip(thunk_groups, order)):
+            for i, (thunks, node) in enumerate(zip(thunk_groups, order)):
                 try:
                     wrapper(i, node, *thunks)
                 except Exception:

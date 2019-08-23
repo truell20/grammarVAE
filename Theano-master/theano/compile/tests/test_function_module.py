@@ -1,4 +1,4 @@
-from __future__ import absolute_import, print_function, division
+
 import copy
 import six.moves.cPickle as pickle
 import numpy
@@ -267,8 +267,8 @@ class T_function(unittest.TestCase):
             # Assert intermediate and Constants storages are shared.
             # and output stoarges are not shared
             i_o_variables = fgraph_cpy.inputs + fgraph_cpy.outputs
-            ori_storages = storage_map_ori.values()
-            l = [val for key, val in storage_map_cpy.items()
+            ori_storages = list(storage_map_ori.values())
+            l = [val for key, val in list(storage_map_cpy.items())
                  if key not in i_o_variables or isinstance(key, theano.tensor.Constant)]
             for storage in l:
                 self.assertTrue(any([storage is s for s in ori_storages]))
@@ -330,7 +330,7 @@ class T_function(unittest.TestCase):
             # test cpy function:
             # 2. SharedVariable is updatable -> values did update(z == 5)
             # 1. sharedvariable is swap ->  Rpl sharedvariables share storage
-            names = map_SV.keys()
+            names = list(map_SV.keys())
             for key in cpy.fn.storage_map:
                 if key.name in names:
                     assert map_SV[key.name].container.storage[0] ==\

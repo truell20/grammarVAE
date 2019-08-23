@@ -1,4 +1,4 @@
-from __future__ import absolute_import, print_function, division
+
 import numpy
 import scipy
 
@@ -31,7 +31,7 @@ def local_csm_properties_csm(node):
             # csm.owner.inputs could be broadcastable. In that case, we have
             # to adjust the broadcasting flag here.
             ret_var = [theano.tensor.patternbroadcast(i, o.broadcastable)
-                       for i, o in izip(csm.owner.inputs, node.outputs)]
+                       for i, o in zip(csm.owner.inputs, node.outputs)]
             return ret_var
 
     return False

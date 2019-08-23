@@ -1,4 +1,4 @@
-from __future__ import absolute_import, print_function, division
+
 import itertools
 import logging
 import operator
@@ -53,6 +53,7 @@ from theano.tensor import (_shared, wvector, bvector, autocast_float_as,
 
 from theano.tests import unittest_tools as utt
 from theano.tests.unittest_tools import attr
+from functools import reduce
 
 
 imported_scipy_special = False
@@ -80,7 +81,7 @@ if PY3:
         return i
 else:
     def L(i):
-        return long(i)
+        return int(i)
 
 def inplace_func(inputs, outputs, mode=None, allow_input_downcast=False,
                  on_unused_input='raise', name=None):
@@ -398,7 +399,7 @@ def makeTester(name, op, expected, checks=None, good=None, bad_build=None,
                     expecteds = (expecteds, )
 
                 for i, (variable, expected) in enumerate(
-                        izip(variables, expecteds)):
+                        zip(variables, expecteds)):
                     if (variable.dtype != expected.dtype
                             or variable.shape != expected.shape
                             or not numpy.allclose(variable, expected,
@@ -2839,8 +2840,8 @@ def test_nan_inf_constant_signature():
     n = len(test_constants)
     # We verify that signatures of two rows i, j in the matrix above are
     # equal if and only if i == j.
-    for i in xrange(n):
-        for j in xrange(n):
+    for i in range(n):
+        for j in range(n):
             x = constant(test_constants[i])
             y = constant(test_constants[j])
             assert (x.signature() == y.signature()) == (i == j)
@@ -3003,7 +3004,7 @@ class T_max_and_argmax(unittest.TestCase):
             # Compute pairwise absolute differences.
             diff = numpy.abs(data_vector.reshape((-1, 1)) - data_vector)
             # Alter the diagonal to avoid a zero minimum.
-            for i in xrange(len(diff)):
+            for i in range(len(diff)):
                 diff[i, i] = 1
             # Find an appropriate epsilon.
             eps = builtin_min(numeric_grad.type_eps[config.floatX],
@@ -3031,7 +3032,7 @@ class T_max_and_argmax(unittest.TestCase):
             assert numpy.all(max_grad_data == z)
 
         for axis in (-1, 0, 1, None):
-            for j in xrange(2):
+            for j in range(2):
                 safe_verify_grad(lambda v: max_and_argmax(v, axis=axis)[j],
                                  [data])
                 if axis != 1:
@@ -4616,7 +4617,7 @@ class test_matinv(unittest.TestCase):
         x = numpy.asarray(x, dtype=config.floatX)
         w = numpy.asarray(w, dtype=config.floatX)
 
-        for i in xrange(100):
+        for i in range(100):
             ssd, gw = fn(x, w)
             # print ssd, x*w, x, w
             if i == 0:
@@ -4639,7 +4640,7 @@ class test_matinv(unittest.TestCase):
 
         myssd0 = numpy.sum((x * w - ones) ** 2.0)
         # we want at least a test that is not too fast. So we make one here.
-        for i in xrange(100):
+        for i in range(100):
             gw = 2 * (x * w - ones) * x  # derivative of dMSE/dw
             myssd = numpy.sum((x * w - ones) ** 2)
             w -= 0.4 * gw
@@ -6467,7 +6468,7 @@ def _test_autocast_numpy():
 
     def ok(z):
         assert tensor.constant(z).dtype == numpy.asarray(z).dtype
-    for x in ([2 ** i for i in xrange(63)] +
+    for x in ([2 ** i for i in range(63)] +
               [0, L(0), L(1), L(2 ** 63 - 1)] +
               [0., 1., 1.1, 1.5]):
         n_x = numpy.asarray(x)
@@ -6500,7 +6501,7 @@ def _test_autocast_numpy_floatX():
             # We only consider 'int' and 'long' Python values that can fit
             # into int64, as that is the maximal integer type that Theano
             # supports, and that is the maximal type in Python indexing.
-            for x in ([2 ** i - 1 for i in xrange(64)] +
+            for x in ([2 ** i - 1 for i in range(64)] +
                       [0, L(0), L(1), L(2 ** 63 - 1)] +
                       [0., 1., 1.1, 1.5]):
                 ok(x, floatX)
@@ -6664,7 +6665,7 @@ class test_arithmetic_cast(unittest.TestCase):
 
 class T_long_tensor(unittest.TestCase):
     def test_fit_int64(self):
-        for exp in xrange(theano.configdefaults.python_int_bitwidth()):
+        for exp in range(theano.configdefaults.python_int_bitwidth()):
             val = L(2 ** exp - 1)
             scalar_ct = constant(val)
 
@@ -7170,7 +7171,7 @@ def test_transpose():
 
 
 def test_stacklists():
-    a, b, c, d = map(scalar, 'abcd')
+    a, b, c, d = list(map(scalar, 'abcd'))
     X = stacklists([[a, b],
                     [c, d]])
     f = function([a, b, c, d], X)

@@ -2,7 +2,7 @@
 Driver of graph construction, optimization, and linking.
 
 """
-from __future__ import absolute_import, print_function, division
+
 
 import copy
 from six import string_types, iteritems, iterkeys
@@ -689,7 +689,7 @@ class Function(object):
         # it is well tested, we don't share the part of the storage_map.
         if share_memory:
             i_o_vars = maker.fgraph.inputs + maker.fgraph.outputs
-            for key in storage_map.keys():
+            for key in list(storage_map.keys()):
                 if key not in i_o_vars:
                     new_storage_map[memo[key]] = storage_map[key]
 
@@ -804,14 +804,14 @@ class Function(object):
                 getattr(self, '_check_for_aliased_inputs', True)):
             # Collect aliased inputs among the storage space
             args_share_memory = []
-            for i in xrange(len(self.input_storage)):
+            for i in range(len(self.input_storage)):
                 i_var = self.maker.inputs[i].variable
                 i_val = self.input_storage[i].storage[0]
                 if hasattr(i_var.type, 'may_share_memory'):
                     is_aliased = False
-                    for j in xrange(len(args_share_memory)):
+                    for j in range(len(args_share_memory)):
 
-                        group_j = izip(
+                        group_j = zip(
                             [self.maker.inputs[k].variable for k
                              in args_share_memory[j]],
                             [self.input_storage[k].storage[0] for k
@@ -941,7 +941,7 @@ class Function(object):
 
                 assert len(self.output_keys) == len(outputs)
 
-                return dict(izip(self.output_keys, outputs))
+                return dict(zip(self.output_keys, outputs))
 
             return outputs
 
@@ -1064,12 +1064,12 @@ def insert_deepcopy(fgraph, wrapped_inputs, wrapped_outputs):
     # We can't use fgraph.inputs as this don't include Constant Value.
     all_graph_inputs = gof.graph.inputs(fgraph.outputs)
 
-    for i in xrange(len(fgraph.outputs)):
+    for i in range(len(fgraph.outputs)):
         views_of_output_i = set()
         view_tree_set(alias_root(fgraph.outputs[i]), views_of_output_i)
         copied = False
         # do not allow outputs to be aliased
-        for j in xrange(i + 1, len(fgraph.outputs)):
+        for j in range(i + 1, len(fgraph.outputs)):
             # We could don't put deep copy if both outputs have borrow==True
             # and not(wrapped_outputs[i].borrow and wrapped_outputs[j].borrow):
             if fgraph.outputs[j] in views_of_output_i:
@@ -1316,10 +1316,10 @@ class FunctionMaker(object):
 
                         t2 = removeAllFgraph(t2)
 
-                        givens = dict(izip(gof.graph.inputs([t1]),
+                        givens = dict(zip(gof.graph.inputs([t1]),
                                            gof.graph.inputs([t2])))
 
-                        temp = dict(izip(gof.graph.inputs([t1]),
+                        temp = dict(zip(gof.graph.inputs([t1]),
                                          gof.graph.inputs([t2])))
 
                         # hack to remove inconstent entry in givens

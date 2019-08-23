@@ -1,4 +1,4 @@
-from __future__ import absolute_import, print_function, division
+
 import itertools
 import unittest
 import numpy
@@ -157,7 +157,7 @@ class TestMapVariables(unittest.TestCase):
         t2 = z * v
 
         f = theano.function([c, d, outer], [t, t2])
-        for m, n in itertools.combinations(range(10), 2):
+        for m, n in itertools.combinations(list(range(10)), 2):
             assert f(m, n, outer=0.5) == [m + n, m - n]
 
         # test that the unsupported case of replacement with a shared

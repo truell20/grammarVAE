@@ -25,7 +25,7 @@ z1 = grammar_model.encode(smiles)
 # times for the same latent point will return different answers
 
 for mol,real in zip(grammar_model.decode(z1),smiles):
-    print mol + '  ' + real
+    print(mol + '  ' + real)
 
 
 
@@ -37,7 +37,7 @@ char_model = molecule_vae.ZincCharacterModel(char_weights)
 # 4. encode and decode
 z2 = char_model.encode(smiles)
 for mol in char_model.decode(z2):
-    print mol
+    print(mol)
 
 
 

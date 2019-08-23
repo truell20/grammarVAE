@@ -1,4 +1,4 @@
-from __future__ import absolute_import, print_function, division
+
 from datetime import datetime
 from six.moves import xrange
 
@@ -21,4 +21,4 @@ def disturb_mem():
     ms = int(ms)
     n = ms % 1000
     m = ms // 1000
-    l = [[0] * m for i in xrange(n)]
+    l = [[0] * m for i in range(n)]

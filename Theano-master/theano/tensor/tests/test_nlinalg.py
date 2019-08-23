@@ -1,4 +1,4 @@
-from __future__ import absolute_import, print_function, division
+
 import unittest
 
 import numpy
@@ -103,7 +103,7 @@ def test_matrix_dot():
     n = rng.randint(4) + 2
     rs = []
     xs = []
-    for k in xrange(n):
+    for k in range(n):
         rs += [rng.randn(4, 4).astype(theano.config.floatX)]
         xs += [tensor.matrix()]
     sol = matrix_dot(*xs)

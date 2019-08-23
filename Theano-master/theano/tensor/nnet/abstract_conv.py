@@ -1,7 +1,7 @@
 """
 Abstract conv interface
 """
-from __future__ import absolute_import, print_function, division
+
 
 import logging
 from six import reraise, integer_types
@@ -632,7 +632,7 @@ class BaseAbstractConv2d(Op):
         if isinstance(border_mode, integer_types):
             border_mode = (border_mode, border_mode)
         if isinstance(border_mode, tuple):
-            pad_h, pad_w = map(int, border_mode)
+            pad_h, pad_w = list(map(int, border_mode))
             border_mode = (pad_h, pad_w)
         if border_mode == (0, 0):
             border_mode = 'valid'
@@ -715,9 +715,9 @@ class BaseAbstractConv2d(Op):
 
         with warnings.catch_warnings():
             warnings.simplefilter('ignore', numpy.ComplexWarning)
-            for b in xrange(img.shape[0]):
-                for n in xrange(kern.shape[0]):
-                    for im0 in xrange(img.shape[1]):
+            for b in range(img.shape[0]):
+                for n in range(kern.shape[0]):
+                    for im0 in range(img.shape[1]):
                         # some cast generates a warning here
                         out[b, n, ...] += _convolve2d(img[b, im0, ...],
                                                       kern[n, im0, ...],
@@ -781,7 +781,7 @@ class AbstractConv2d(BaseAbstractConv2d):
         elif mode == "half":
             mode = (kern.shape[2] // 2, kern.shape[3] // 2)
         if isinstance(mode, tuple):
-            pad_h, pad_w = map(int, mode)
+            pad_h, pad_w = list(map(int, mode))
             mode = "valid"
             new_img = numpy.zeros((img.shape[0], img.shape[1],
                                    img.shape[2] + 2 * pad_h,
@@ -912,7 +912,7 @@ class AbstractConv2d_gradWeights(BaseAbstractConv2d):
         elif mode == "half":
             mode = (shape[0] // 2, shape[1] // 2)
         if isinstance(mode, tuple):
-            pad_h, pad_w = map(int, mode)
+            pad_h, pad_w = list(map(int, mode))
             mode = "valid"
             new_img = numpy.zeros((img.shape[0], img.shape[1],
                                    img.shape[2] + 2 * pad_h,
@@ -1047,7 +1047,7 @@ class AbstractConv2d_gradInputs(BaseAbstractConv2d):
         elif mode == "half":
             pad_h, pad_w = (kern.shape[2] // 2, kern.shape[3] // 2)
         elif isinstance(mode, tuple):
-            pad_h, pad_w = map(int, self.border_mode)
+            pad_h, pad_w = list(map(int, self.border_mode))
         if self.subsample[0] > 1 or self.subsample[1] > 1:
             new_shape = (topgrad.shape[0], topgrad.shape[1],
                          shape[0] + 2 * pad_h - kern.shape[2] + 1,

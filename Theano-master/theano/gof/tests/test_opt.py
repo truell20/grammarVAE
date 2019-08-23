@@ -1,4 +1,4 @@
-from __future__ import absolute_import, print_function, division
+
 
 from theano.gof.type import Type
 from theano.gof.graph import Variable, Apply, Constant
@@ -515,7 +515,7 @@ class TestMergeOptimizer:
 class TestEquilibrium(object):
 
     def test_1(self):
-        x, y, z = map(MyVariable, 'xyz')
+        x, y, z = list(map(MyVariable, 'xyz'))
         e = op3(op4(x, y))
         g = FunctionGraph([x, y, z], [e])
         # print g
@@ -530,7 +530,7 @@ class TestEquilibrium(object):
         assert str(g) == '[Op2(x, y)]'
 
     def test_2(self):
-        x, y, z = map(MyVariable, 'xyz')
+        x, y, z = list(map(MyVariable, 'xyz'))
         e = op1(op1(op3(x, y)))
         g = FunctionGraph([x, y, z], [e])
         # print g
@@ -546,7 +546,7 @@ class TestEquilibrium(object):
         assert str(g) == '[Op2(x, y)]'
 
     def test_low_use_ratio(self):
-        x, y, z = map(MyVariable, 'xyz')
+        x, y, z = list(map(MyVariable, 'xyz'))
         e = op3(op4(x, y))
         g = FunctionGraph([x, y, z], [e])
         # print 'before', g

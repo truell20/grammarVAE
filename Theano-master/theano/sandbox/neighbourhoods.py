@@ -8,7 +8,7 @@ it cover more cases. But thoses cases aren't needed frequently, so you
 probably don't want to use this version, go see neighbours.py!!!!!!!
 
 """
-from __future__ import absolute_import, print_function, division
+
 import numpy
 from six.moves import xrange
 import six.moves.builtins as builtins
@@ -100,7 +100,7 @@ class NeighbourhoodsFromImages(Op):
 
     def out_shape(self, input_shape):
         dims = list(input_shape[:self.n_dims_before])
-        num_strides = [0 for i in xrange(len(self.strides))]
+        num_strides = [0 for i in range(len(self.strides))]
         neigh_flattened_dim = 1
         for i, ds in enumerate(self.dims_neighbourhoods):
             cur_stride = self.strides[i]
@@ -200,7 +200,7 @@ class NeighbourhoodsFromImages(Op):
     def make_py_code(self):
         # TODO : need description for method and return
         code = self._py_outerloops()
-        for i in xrange(len(self.strides)):
+        for i in range(len(self.strides)):
             code += self._py_innerloop(i)
         code += self._py_assignment()
         return code, builtins.compile(code, '<string>', 'exec')
@@ -208,7 +208,7 @@ class NeighbourhoodsFromImages(Op):
     def _py_outerloops(self):
         # TODO : need description for method, parameter and return
         code_before = ""
-        for dim_idx in xrange(self.n_dims_before):
+        for dim_idx in range(self.n_dims_before):
             code_before += ('\t' * (dim_idx)) + \
                 "for outer_idx_%d in xrange(input_shape[%d]):\n" % \
                 (dim_idx, dim_idx)
@@ -237,17 +237,17 @@ class NeighbourhoodsFromImages(Op):
     def _py_flattened_idx(self):
         # TODO : need description for method and return
         return "+".join(["neigh_strides[%d]*neigh_idx_%d" % (i, i)
-                        for i in xrange(len(self.strides))])
+                        for i in range(len(self.strides))])
 
     def _py_assignment(self):
         # TODO : need description for method and return
         input_idx = "".join(["outer_idx_%d," % (i,)
-                            for i in xrange(self.n_dims_before)])
+                            for i in range(self.n_dims_before)])
         input_idx += "".join(["dim_%d_offset+neigh_idx_%d," %
-                             (i, i) for i in xrange(len(self.strides))])
+                             (i, i) for i in range(len(self.strides))])
         out_idx = "".join(
-            ["outer_idx_%d," % (i,) for i in xrange(self.n_dims_before)] +
-            ["stride_idx_%d," % (i,) for i in xrange(len(self.strides))])
+            ["outer_idx_%d," % (i,) for i in range(self.n_dims_before)] +
+            ["stride_idx_%d," % (i,) for i in range(len(self.strides))])
         out_idx += self._py_flattened_idx()
 
         # return_val = '\t' * (self.n_dims_before + len(self.strides)*2)

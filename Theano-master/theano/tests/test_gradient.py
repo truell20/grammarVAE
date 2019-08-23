@@ -1,4 +1,4 @@
-from __future__ import absolute_import, print_function, division
+
 #
 # UNIT TEST
 #
@@ -27,7 +27,7 @@ def grad_sources_inputs(sources, inputs):
     """
     if inputs is None:
         inputs = theano.gof.graph.inputs([source[0] for source in sources])
-    return dict(izip(inputs, theano.gradient.grad(cost=None, known_grads=dict(sources),
+    return dict(zip(inputs, theano.gradient.grad(cost=None, known_grads=dict(sources),
                                                   wrt=inputs, consider_constant=inputs)))
 
 
@@ -474,7 +474,7 @@ def test_known_grads():
     for layer in layers:
         print('Testing by separately computing ', layer)
         first = theano.tensor.grad(cost, layer, disconnected_inputs='ignore')
-        known = dict(izip(layer, first))
+        known = dict(zip(layer, first))
         full = theano.tensor.grad(cost=None, known_grads=known, wrt=inputs, disconnected_inputs='ignore')
         full = theano.function(inputs, full)
         full = full(*values)
@@ -597,12 +597,12 @@ def test_subgraph_grad():
     true_grads = true_grads(*values)
     next_grad = None
     param_grads = []
-    for i in xrange(2):
+    for i in range(2):
         param_grad, next_grad = theano.subgraph_grad(
             wrt=params[i], end=grad_ends[i],
             start=next_grad, cost=costs[i]
         )
-        next_grad = OrderedDict(izip(grad_ends[i], next_grad))
+        next_grad = OrderedDict(zip(grad_ends[i], next_grad))
         param_grads.extend(param_grad)
 
     pgrads = theano.function(inputs, param_grads)

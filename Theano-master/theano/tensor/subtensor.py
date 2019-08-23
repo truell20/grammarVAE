@@ -1,4 +1,4 @@
-from __future__ import absolute_import, print_function, division
+
 from copy import copy
 import sys
 from textwrap import dedent
@@ -491,7 +491,7 @@ class Subtensor(Op):
             raise IndexError(
                 "Not enough inputs to fill in the Subtensor template.",
                 inputs, idx_list)
-        for input, expected_type in izip(inputs, input_types):
+        for input, expected_type in zip(inputs, input_types):
             if input.type != expected_type:
                 raise TypeError(
                     "Wrong type for Subtensor template. Expected %s, got %s."
@@ -501,7 +501,7 @@ class Subtensor(Op):
         padded = (self.get_constant_idx((None,) + inputs, allow_partial=True) +
                   [slice(None, None, None)] * (x.type.ndim - len(idx_list)))
         broadcastable = []
-        for i, (p, bc) in enumerate(izip(padded, x.type.broadcastable)):
+        for i, (p, bc) in enumerate(zip(padded, x.type.broadcastable)):
             if isinstance(p, slice):
                 if bc:
                     start = p.start
@@ -545,7 +545,7 @@ class Subtensor(Op):
         padded = (actual_idx_list +
                   [slice(None, None, None)] * (len(xshp) - len(self.idx_list)))
         i = 0
-        for idx, xl in izip(padded, xshp):
+        for idx, xl in zip(padded, xshp):
             if isinstance(idx, slice):
                 # If it is the default (None, None, None) slice, or a variant,
                 # the shape will be xl
@@ -1072,7 +1072,7 @@ def inc_subtensor(x, y, inplace=False, set_instead_of_inc=False,
                                                                       y.ndim))
 
     dim_offset = x.ndim - y.ndim
-    for dim in xrange(y.ndim):
+    for dim in range(y.ndim):
         if (x.broadcastable[dim + dim_offset] and not y.broadcastable[dim]):
             # It is acceptable to try to increment a subtensor with a
             # broadcastable dim with a tensor that is not broadcastable
@@ -1169,7 +1169,7 @@ def inc_subtensor(x, y, inplace=False, set_instead_of_inc=False,
         if y.ndim > 0:
             # This if is needed to prevent some useless warning about
             # old code bug.
-            expanded_y = alloc(y, *[x.shape[i] for i in xrange(x.ndim)])
+            expanded_y = alloc(y, *[x.shape[i] for i in range(x.ndim)])
             flattened_y = expanded_y.flatten(inner_x.ndim)
         else:
             flattened_y = y
@@ -1279,7 +1279,7 @@ class IncSubtensor(Op):
         inputs: TODO WRITEME
 
         """
-        x, y = map(theano.tensor.as_tensor_variable, [x, y])
+        x, y = list(map(theano.tensor.as_tensor_variable, [x, y]))
         if y.ndim > x.ndim:
             raise ValueError(("Trying to increment a %d-dimensional "
                               "subtensor with a %d-dimensional value.") % (
@@ -1302,7 +1302,7 @@ class IncSubtensor(Op):
             raise IndexError(
                 "Not enough inputs to fill in the Subtensor template.",
                 inputs, idx_list)
-        for input, expected_type in izip(inputs, input_types):
+        for input, expected_type in zip(inputs, input_types):
             if input.type != expected_type:
                 raise TypeError(
                     "Wrong type for Subtensor template. Expected %s, got %s."
@@ -1639,7 +1639,7 @@ def _sum_grad_over_bcasted_dims(x, gx):
         x_broad = (True,) * x_dim_added + x.broadcastable
         assert sum(gx.broadcastable) < sum(x_broad)
         axis_to_sum = []
-        for i in xrange(gx.ndim):
+        for i in range(gx.ndim):
             if gx.broadcastable[i] is False and x_broad[i] is True:
                 axis_to_sum.append(i)
             elif (gx.broadcastable[i] is True and
@@ -1653,7 +1653,7 @@ def _sum_grad_over_bcasted_dims(x, gx):
         gx = gx.sum(axis=axis_to_sum, keepdims=True)
         if gx.ndim != x.ndim:
             assert gx.ndim > x.ndim
-            for i in xrange(x_dim_added):
+            for i in range(x_dim_added):
                 assert gx.broadcastable[i]
             gx = gx.dimshuffle(*list(range(x_dim_added, gx.ndim)))
         assert gx.broadcastable == x.broadcastable

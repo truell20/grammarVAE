@@ -10,7 +10,7 @@ which value to report. Note also that `switch` is an elemwise operation (so
 it picks each entry of a matrix according to the condition) while `ifelse`
 is a global operation with a scalar condition.
 """
-from __future__ import absolute_import, print_function, division
+
 from copy import deepcopy
 from theano.compat import izip
 import logging
@@ -73,7 +73,7 @@ class IfElse(PureOp):
             # check destroyhandler and others to ensure that a view_map with
             # multiple inputs can work
             view_map = {}
-            for idx in xrange(n_outs):
+            for idx in range(n_outs):
                 view_map[idx] = [idx + 1]
             self.view_map = view_map
         self.as_view = as_view
@@ -181,7 +181,7 @@ class IfElse(PureOp):
         ts = args[:self.n_outs]
         fs = args[self.n_outs:]
 
-        for t, f in izip(ts, fs):
+        for t, f in zip(ts, fs):
             if t.type != f.type:
                 raise TypeError(('IfElse requires same types for true and '
                                 'false return values'), t, f, t.type, f.type)
@@ -240,12 +240,12 @@ class IfElse(PureOp):
             else:
                 truthval = storage_map[cond][0]
                 if truthval != 0:
-                    ls = [idx + 1 for idx in xrange(self.n_outs)
+                    ls = [idx + 1 for idx in range(self.n_outs)
                           if not compute_map[ts[idx]][0]]
                     if len(ls) > 0:
                         return ls
                     else:
-                        for out, t in izip(outputs, ts):
+                        for out, t in zip(outputs, ts):
                             compute_map[out][0] = 1
                             val = storage_map[t][0]
                             if self.as_view:
@@ -257,12 +257,12 @@ class IfElse(PureOp):
                                 storage_map[out][0] = deepcopy(val)
                         return []
                 else:
-                    ls = [1 + idx + self.n_outs for idx in xrange(self.n_outs)
+                    ls = [1 + idx + self.n_outs for idx in range(self.n_outs)
                           if not compute_map[fs[idx]][0]]
                     if len(ls) > 0:
                         return ls
                     else:
-                        for out, f in izip(outputs, fs):
+                        for out, f in zip(outputs, fs):
                             compute_map[out][0] = 1
                             # can't view both outputs unless destroyhandler
                             # improves
@@ -333,7 +333,7 @@ def ifelse(condition, then_branch, else_branch, name=None):
     # we will store them in these new_... lists.
     new_then_branch = []
     new_else_branch = []
-    for then_branch_elem, else_branch_elem in izip(then_branch, else_branch):
+    for then_branch_elem, else_branch_elem in zip(then_branch, else_branch):
         if not isinstance(then_branch_elem, theano.Variable):
             then_branch_elem = theano.tensor.as_tensor_variable(
                 then_branch_elem)
@@ -617,9 +617,9 @@ def cond_remove_identical(node):
 
     # sync outs
     out_map = {}
-    for idx in xrange(len(node.outputs)):
+    for idx in range(len(node.outputs)):
         if idx not in out_map:
-            for jdx in xrange(idx + 1, len(node.outputs)):
+            for jdx in range(idx + 1, len(node.outputs)):
                 if (ts[idx] == ts[jdx] and
                         fs[idx] == fs[jdx] and
                         jdx not in out_map):
@@ -632,7 +632,7 @@ def cond_remove_identical(node):
     nw_fs = []
     inv_map = {}
     pos = 0
-    for idx in xrange(len(node.outputs)):
+    for idx in range(len(node.outputs)):
         if idx not in out_map:
             inv_map[idx] = pos
             pos = pos + 1
@@ -648,7 +648,7 @@ def cond_remove_identical(node):
     new_outs = new_ifelse(*new_ins, **dict(return_list=True))
 
     rval = []
-    for idx in xrange(len(node.outputs)):
+    for idx in range(len(node.outputs)):
         if idx in out_map:
             rval += [new_outs[inv_map[out_map[idx]]]]
         else:

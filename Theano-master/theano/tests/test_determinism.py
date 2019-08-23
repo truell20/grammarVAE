@@ -1,4 +1,4 @@
-from __future__ import absolute_import, print_function, division
+
 from theano.tests.record import RecordMode, Record
 from theano.compat import OrderedDict
 from theano.tests import disturb_mem
@@ -78,7 +78,7 @@ def test_determinism_1():
     log = run(0)
     # Do several trials, since failure doesn't always occur
     # (Sometimes you sample the same outcome twice in a row)
-    for i in xrange(10):
+    for i in range(10):
         run(1, log)
 
 if __name__ == '__main__':
