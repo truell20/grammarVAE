@@ -1,7 +1,7 @@
 import copy
 import tensorflow as tf
 from tensorflow.keras import backend as K
-from tensorflow.keras.losses import BinaryCrossentropy
+from tensorflow.keras.losses import binary_crossentropy
 from tensorflow.keras import Model
 from tensorflow.keras.layers import Input, Dense, Lambda, Activation, Flatten, RepeatVector, TimeDistributed, GRU, Conv1D
 import zinc_grammar as G
@@ -116,7 +116,7 @@ class MoleculeVAE():
             x_decoded_mean = conditional(x, x_decoded_mean) # we add this new function to the loss
             x = K.flatten(x)
             x_decoded_mean = K.flatten(x_decoded_mean)
-            xent_loss = max_length * BinaryCrossentropy(x, x_decoded_mean)
+            xent_loss = max_length * binary_crossentropy(x, x_decoded_mean)
             kl_loss = - 0.5 * K.mean(1 + z_log_var - K.square(z_mean) - K.exp(z_log_var), axis = -1)
             return xent_loss + kl_loss
 
