@@ -1,13 +1,13 @@
 import copy
 import tensorflow as tf
-from tf.keras import backend as K
-from tf.keras import objectives
-from tf.keras.models import Model
-from tf.keras.layers import Input, Dense, Lambda
-from tf.keras.layers.core import Dense, Activation, Flatten, RepeatVector
-from tf.keras.layers.wrappers import TimeDistributed
-from tf.keras.layers.recurrent import GRU
-from tf.keras.layers.convolutional import Convolution1D
+from tensorflow.keras import backend as K
+from tensorflow.keras import objectives
+from tensorflow.keras.models import Model
+from tensorflow.keras.layers import Input, Dense, Lambda
+from tensorflow.keras.layers.core import Dense, Activation, Flatten, RepeatVector
+from tensorflow.keras.layers.wrappers import TimeDistributed
+from tensorflow.keras.layers.recurrent import GRU
+from tensorflow.keras.layers.convolutional import Convolution1D
 import zinc_grammar as G
 
 # helper variables in Keras format for parsing the grammar
