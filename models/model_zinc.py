@@ -62,8 +62,9 @@ class MoleculeVAE():
             self.encoder.load_weights(weights_file, by_name = True)
             self.decoder.load_weights(weights_file, by_name = True)
             self.encoderMV.load_weights(weights_file, by_name = True)
-
-        self.autoencoder.compile(optimizer = 'Adam',
+            
+        opt = tf.train.AdamOptimizer()
+        self.autoencoder.compile(optimizer = opt,
                                  loss = vae_loss,
                                  metrics = ['accuracy'])
 
