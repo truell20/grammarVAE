@@ -1,13 +1,13 @@
 import copy
-from keras import backend as K
-from keras import objectives
-from keras.models import Model
-from keras.layers import Input, Dense, Lambda
-from keras.layers.core import Dense, Activation, Flatten, RepeatVector
-from keras.layers.wrappers import TimeDistributed
-from keras.layers.recurrent import GRU
-from keras.layers.convolutional import Convolution1D
 import tensorflow as tf
+from tf.keras import backend as K
+from tf.keras import objectives
+from tf.keras.models import Model
+from tf.keras.layers import Input, Dense, Lambda
+from tf.keras.layers.core import Dense, Activation, Flatten, RepeatVector
+from tf.keras.layers.wrappers import TimeDistributed
+from tf.keras.layers.recurrent import GRU
+from tf.keras.layers.convolutional import Convolution1D
 import zinc_grammar as G
 
 # helper variables in Keras format for parsing the grammar
@@ -95,7 +95,7 @@ class MoleculeVAE():
         def sampling(args):
             z_mean_, z_log_var_ = args
             batch_size = K.shape(z_mean_)[0]
-            epsilon = K.random_normal(shape=(batch_size, latent_rep_size), mean=0., std = epsilon_std)
+            epsilon = K.random_normal(shape=(batch_size, latent_rep_size), mean=0., stddev = epsilon_std)
             return z_mean_ + K.exp(z_log_var_ / 2) * epsilon
 
         z_mean = Dense(latent_rep_size, name='z_mean', activation = 'linear')(h)
