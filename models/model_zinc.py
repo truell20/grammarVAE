@@ -55,7 +55,7 @@ class MoleculeVAE():
         # for obtaining mean and log variance of encoding distribution
         x2 = Input(shape=(max_length, charset_length))
         (z_m, z_l_v) = self._encoderMeanVar(x2, latent_rep_size, max_length)
-        self.encoderMV = Model(input=x2, output=[z_m, z_l_v])
+        self.encoderMV = Model(inputs=x2, outputs=[z_m, z_l_v])
 
         if weights_file:
             self.autoencoder.load_weights(weights_file)
