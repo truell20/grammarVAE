@@ -1,7 +1,7 @@
 import copy
 import tensorflow as tf
 from tensorflow.keras import backend as K
-from tensorflow.keras import objectives
+from tensorflow.keras.losses import BinaryCrossentropy
 from tensorflow.keras.models import Model
 from tensorflow.keras.layers import Input, Dense, Lambda
 from tensorflow.keras.layers.core import Dense, Activation, Flatten, RepeatVector
