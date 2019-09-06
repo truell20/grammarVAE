@@ -3,8 +3,7 @@ import tensorflow as tf
 from tensorflow.keras import backend as K
 from tensorflow.keras.losses import BinaryCrossentropy
 from tensorflow.keras.models import Model
-from tensorflow.keras.layers import Input, Dense, Lambda, Activation, Flatten, RepeatVector, TimeDistributed, GRU
-from tensorflow.keras.layers.convolutional import Convolution1D
+from tensorflow.keras.layers import Input, Dense, Lambda, Activation, Flatten, RepeatVector, TimeDistributed, GRU, Conv1D
 import zinc_grammar as G
 
 # helper variables in Keras format for parsing the grammar
@@ -70,9 +69,9 @@ class MoleculeVAE():
 
 
     def _encoderMeanVar(self, x, latent_rep_size, max_length, epsilon_std = 0.01):
-        h = Convolution1D(9, 9, activation = 'relu', name='conv_1')(x)
-        h = Convolution1D(9, 9, activation = 'relu', name='conv_2')(h)
-        h = Convolution1D(10, 11, activation = 'relu', name='conv_3')(h)
+        h = Conv1D(9, 9, activation = 'relu', name='conv_1')(x)
+        h = Conv1D(9, 9, activation = 'relu', name='conv_2')(h)
+        h = Conv1D(10, 11, activation = 'relu', name='conv_3')(h)
         h = Flatten(name='flatten_1')(h)
         h = Dense(435, activation = 'relu', name='dense_1')(h)
 
@@ -83,9 +82,9 @@ class MoleculeVAE():
 
 
     def _buildEncoder(self, x, latent_rep_size, max_length, epsilon_std = 0.01):
-        h = Convolution1D(9, 9, activation = 'relu', name='conv_1')(x)
-        h = Convolution1D(9, 9, activation = 'relu', name='conv_2')(h)
-        h = Convolution1D(10, 11, activation = 'relu', name='conv_3')(h)
+        h = Conv1D(9, 9, activation = 'relu', name='conv_1')(x)
+        h = Conv1D(9, 9, activation = 'relu', name='conv_2')(h)
+        h = Conv1D(10, 11, activation = 'relu', name='conv_3')(h)
         h = Flatten(name='flatten_1')(h)
         h = Dense(435, activation = 'relu', name='dense_1')(h)
 
