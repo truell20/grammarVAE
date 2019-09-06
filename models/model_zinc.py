@@ -2,7 +2,7 @@ import copy
 import tensorflow as tf
 from tensorflow.keras import backend as K
 from tensorflow.keras.losses import BinaryCrossentropy
-from tensorflow.keras.models import Model
+from tensorflow.keras import Model
 from tensorflow.keras.layers import Input, Dense, Lambda, Activation, Flatten, RepeatVector, TimeDistributed, GRU, Conv1D
 import zinc_grammar as G
 
