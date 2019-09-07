@@ -63,8 +63,7 @@ class MoleculeVAE():
             self.decoder.load_weights(weights_file, by_name = True)
             self.encoderMV.load_weights(weights_file, by_name = True)
             
-        opt = tf.train.AdamOptimizer()
-        self.autoencoder.compile(optimizer = opt,
+        self.autoencoder.compile(optimizer = tf.keras.optimizers.Adam(),
                                  loss = vae_loss,
                                  metrics = ['accuracy'])
 
@@ -109,7 +108,7 @@ class MoleculeVAE():
             M2 = tf.gather_nd(masks_K, ix2) # get slices of masks_K with indices
             M3 = tf.reshape(M2, [-1,MAX_LEN,DIM]) # reshape them
             P2 = tf.multiply(K.exp(x_pred),M3) # apply them to the exp-predictions
-            P2 = tf.div(P2,K.sum(P2,axis=-1,keepdims=True)) # normalize predictions
+            P2 = tf.math.divide(P2,K.sum(P2,axis=-1,keepdims=True)) # normalize predictions
             return P2
 
         def vae_loss(x, x_decoded_mean):
