@@ -14,7 +14,7 @@ import zinc_grammar as G
 masks_K      = K.variable(G.masks)
 ind_of_ind_K = K.variable(G.ind_of_ind)
 
-MAX_LEN = 277
+MAX_LEN = 120
 DIM = G.D
 
 
