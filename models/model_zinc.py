@@ -108,7 +108,7 @@ class MoleculeVAE():
             ix2 = tf.expand_dims(tf.gather(ind_of_ind_K, most_likely),1) # index ind_of_ind with res
             ix2 = tf.cast(ix2, tf.int32) # cast indices as ints 
             M2 = tf.gather_nd(masks_K, ix2) # get slices of masks_K with indices
-            M3 = tf.reshape(M2, [-1,MAX_LEN,DIM]) # reshape them
+            M3 = tf.reshape(M2, [-1,max_length,DIM]) # reshape them
             P2 = tf.multiply(K.exp(x_pred),M3) # apply them to the exp-predictions
             P2 = tf.divide(P2,K.sum(P2,axis=-1,keepdims=True)) # normalize predictions
             return P2
