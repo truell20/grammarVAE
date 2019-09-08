@@ -1,6 +1,6 @@
 import copy
 from keras import backend as K
-from keras import objectives
+from keras.losses import binary_crossentropy
 from keras.models import Model
 from keras.layers import Input, Dense, Lambda
 from keras.layers.core import Dense, Activation, Flatten, RepeatVector
@@ -50,7 +50,7 @@ class MoleculeVAE():
 
         x2 = Input(shape=(max_length, charset_length))
         (z_m, z_l_v) = self._encoderMeanVar(x2, latent_rep_size, max_length)
-        self.encoderMV = Model(input=x2, output=[z_m, z_l_v])
+        self.encoderMV = Model(inputs=x2, outputs=[z_m, z_l_v])
         if weights_file:
             self.autoencoder.load_weights(weights_file)
             self.encoder.load_weights(weights_file, by_name = True)
@@ -84,7 +84,7 @@ class MoleculeVAE():
         def sampling(args):
             z_mean_, z_log_var_ = args
             batch_size = K.shape(z_mean_)[0]
-            epsilon = K.random_normal(shape=(batch_size, latent_rep_size), mean=0., std = epsilon_std)
+            epsilon = K.random_normal(shape=(batch_size, latent_rep_size), mean=0., stddev = epsilon_std)
             return z_mean_ + K.exp(z_log_var_ / 2) * epsilon
 
         z_mean = Dense(latent_rep_size, name='z_mean', activation = 'linear')(h)
@@ -93,7 +93,7 @@ class MoleculeVAE():
         def vae_loss(x, x_decoded_mean):
             x = K.flatten(x)
             x_decoded_mean = K.flatten(x_decoded_mean)
-            xent_loss = max_length * objectives.binary_crossentropy(x, x_decoded_mean)
+            xent_loss = max_length * binary_crossentropy(x, x_decoded_mean)
             kl_loss = - 0.5 * K.mean(1 + z_log_var - K.square(z_mean) - K.exp(z_log_var), axis = -1)
             return xent_loss + kl_loss
 
