@@ -125,9 +125,9 @@ class ZincGrammarModel(object):
 
 class ZincCharacterModel(object):
 
-    def __init__(self, weights_file, latent_rep_size=56):
+    def __init__(self, weights_file, latent_rep_size=56, max_length=150):
         self._model = models.model_zinc_str
-        self.MAX_LEN = 120
+        self.MAX_LEN = max_length
         self.vae = self._model.MoleculeVAE()
         self.charlist = ['C', '(', ')', 'c', '1', '2', 'o', '=', 'O', 'N', '3', 'F', '[',
                          '@', 'H', ']', 'n', '-', '#', 'S', 'l', '+', 's', 'B', 'r', '/',
