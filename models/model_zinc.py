@@ -14,6 +14,7 @@ masks_K = K.variable(G.masks)
 ind_of_ind_K = K.variable(G.ind_of_ind)
 
 MAX_LEN = 150
+MAX_LEN_FUNCTIONAL = 50
 DIM = G.D
 
 class MoleculeVAE():
@@ -23,13 +24,16 @@ class MoleculeVAE():
     def create(self,
                charset,
                max_length = MAX_LEN,
+               max_length_functional=MAX_LEN_FUNCTIONAL,
                latent_rep_size = 2,
                weights_file = None):
         charset_length = len(charset)
         
         x = Input(shape=(max_length, charset_length))
-        _, z = self._buildEncoder(x, latent_rep_size, max_length)
-        self.encoder = Model(x, z)
+        f = Input(shape=(max_length_functional, 1))
+
+        _, z = self._buildEncoder(x, f, latent_rep_size, max_length, max_length_functional)
+        self.encoder = Model([x, f], z)
 
         encoded_input = Input(shape=(latent_rep_size,))
         self.decoder = Model(
@@ -43,9 +47,10 @@ class MoleculeVAE():
         )
 
         x1 = Input(shape=(max_length, charset_length))
-        vae_loss, z1 = self._buildEncoder(x1, latent_rep_size, max_length)
+        f1 = Input(shape=(max_length_functional, 1))
+        vae_loss, z1 = self._buildEncoder(x1, f1, latent_rep_size, max_length, max_length_functional)
         self.autoencoder = Model(
-            x1,
+            [x1, f1],
             self._buildDecoder(
                 z1,
                 latent_rep_size,
@@ -56,8 +61,9 @@ class MoleculeVAE():
 
         # for obtaining mean and log variance of encoding distribution
         x2 = Input(shape=(max_length, charset_length))
-        (z_m, z_l_v) = self._encoderMeanVar(x2, latent_rep_size, max_length)
-        self.encoderMV = Model(inputs=x2, outputs=[z_m, z_l_v])
+        f2 = Input(shape=(max_length_functional, 1))
+        (z_m, z_l_v) = self._encoderMeanVar(x2, f2, latent_rep_size, max_length, max_length_functional)
+        self.encoderMV = Model(inputs=[x2, f2], outputs=[z_m, z_l_v])
 
         if weights_file:
             self.autoencoder.load_weights(weights_file)
@@ -69,13 +75,23 @@ class MoleculeVAE():
                                  loss = vae_loss,
                                  metrics = ['accuracy'])
 
-
-    def _encoderMeanVar(self, x, latent_rep_size, max_length, epsilon_std = 0.01):
+    # Encoder tower structure
+    def _towers(self, x, f, max_length, max_length_func):
+        # Tower 1
         h = Convolution1D(9, 9, activation = 'relu', name='conv_1')(x)
         h = Convolution1D(9, 9, activation = 'relu', name='conv_2')(h)
         h = Convolution1D(10, 11, activation = 'relu', name='conv_3')(h)
         h = Flatten(name='flatten_1')(h)
-        h = Dense(435, activation = 'relu', name='dense_1')(h)
+
+        # Tower 2
+        hf = Dense(20, activation = 'relu', name='tower_2_dense_1')(f)
+
+        # Merge
+        h = Concatenate()([h, hf])
+        return Dense(435, activation = 'relu', name='dense_1')(h)
+
+    def _encoderMeanVar(self, x, f, latent_rep_size, max_length, max_length_func, epsilon_std = 0.01):
+        h = self._towers(x, f, max_length, max_length_func)
 
         z_mean = Dense(latent_rep_size, name='z_mean', activation = 'linear')(h)
         z_log_var = Dense(latent_rep_size, name='z_log_var', activation = 'linear')(h)
@@ -83,12 +99,8 @@ class MoleculeVAE():
         return (z_mean, z_log_var) 
 
 
-    def _buildEncoder(self, x, latent_rep_size, max_length, epsilon_std = 0.01):
-        h = Convolution1D(9, 9, activation = 'relu', name='conv_1')(x)
-        h = Convolution1D(9, 9, activation = 'relu', name='conv_2')(h)
-        h = Convolution1D(10, 11, activation = 'relu', name='conv_3')(h)
-        h = Flatten(name='flatten_1')(h)
-        h = Dense(435, activation = 'relu', name='dense_1')(h)
+    def _buildEncoder(self, x, f, latent_rep_size, max_length, max_length_func, epsilon_std = 0.01):
+        h = self._towers(x, f, max_length, max_length_func)
 
         def sampling(args):
             z_mean_, z_log_var_ = args
@@ -113,23 +125,39 @@ class MoleculeVAE():
             P2 = tf.divide(P2,K.sum(P2,axis=-1,keepdims=True)) # normalize predictions
             return P2
 
-        def vae_loss(x, x_decoded_mean):
-            x_decoded_mean = conditional(x, x_decoded_mean) # we add this new function to the loss
-            x = K.flatten(x)
+        def vae_loss(true, pred_decoded_mean):
+            x_decoded_mean = conditional(true[0], pred_decoded_mean[0]) # we add this new function to the loss
+            x = K.flatten(true[0])
             x_decoded_mean = K.flatten(x_decoded_mean)
-            xent_loss = max_length * binary_crossentropy(x, x_decoded_mean)
+            xent_loss_1 = max_length * binary_crossentropy(x, x_decoded_mean)
+            
+            f_decoded_mean = conditional(true[1], pred_decoded_mean[1]) # we add this new function to the loss
+            f = K.flatten(true[1])
+            f_decoded_mean = K.flatten(f_decoded_mean)
+            xent_loss_2 = max_length * binary_crossentropy(f, f_decoded_mean)
+
+
             kl_loss = - 0.5 * K.mean(1 + z_log_var - K.square(z_mean) - K.exp(z_log_var), axis = -1)
-            return xent_loss + kl_loss
+            
+            return xent_loss_1 + xent_loss_2 + kl_loss
 
         return (vae_loss, Lambda(sampling, output_shape=(latent_rep_size,), name='lambda')([z_mean, z_log_var]))
 
-    def _buildDecoder(self, z, latent_rep_size, max_length, charset_length):
+    def _buildDecoder(self, z, latent_rep_size, max_length, max_length_functional, charset_length):
         h = Dense(latent_rep_size, name='latent_input', activation = 'relu')(z)
+
+        # Tower 2
+        hf = Dense(int(1.5*max_length_functional), name='latent_input', activation = 'relu')(h)
+        hf = Dense(max_length_functional, name='latent_input', activation = 'sigmoid')(hf)
+
+        # Tower 1
         h = RepeatVector(max_length, name='repeat_vector')(h)
         h = GRU(501, return_sequences = True, name='gru_1')(h)
         h = GRU(501, return_sequences = True, name='gru_2')(h)
         h = GRU(501, return_sequences = True, name='gru_3')(h)
-        return TimeDistributed(Dense(charset_length), name='decoded_mean')(h) # don't do softmax, we do this in the loss now
+        h = TimeDistributed(Dense(charset_length), name='decoded_mean')(h)
+
+        return h, hf
 
     def save(self, filename):
         self.autoencoder.save_weights(filename)
