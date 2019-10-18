@@ -147,16 +147,16 @@ class MoleculeVAE():
         return (vae_loss, Lambda(sampling, output_shape=(latent_rep_size,), name='lambda')([z_mean, z_log_var]))
 
     def _buildDecoder(self, z, latent_rep_size, max_length, max_length_functional, charset_length):
-        h = Dense(latent_rep_size, name='latent_input', activation = 'relu')(z)
+        l = Dense(latent_rep_size, name='latent_input', activation = 'relu')(z)
 
         # Tower 2
-        hf = RepeatVector(max_length_functional, name='repeat_vector_2')(h)
+        hf = RepeatVector(max_length_functional, name='repeat_vector_2')(l)
         hf = Dense(20, name='dense_tower_1', activation = 'relu')(hf)
         hf = Dense(20, name='dense_tower_2', activation = 'sigmoid')(hf)
         hf = TimeDistributed(Dense(1), name='decoded_mean_2')(hf)
 
         # Tower 1
-        h = RepeatVector(max_length, name='repeat_vector')(h)
+        h = RepeatVector(max_length, name='repeat_vector')(l)
         h = GRU(501, return_sequences = True, name='gru_1')(h)
         h = GRU(501, return_sequences = True, name='gru_2')(h)
         h = GRU(501, return_sequences = True, name='gru_3')(h)
