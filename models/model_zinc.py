@@ -36,29 +36,31 @@ class MoleculeVAE():
         self.encoder = Model([x, f], z)
 
         encoded_input = Input(shape=(latent_rep_size,))
+        o, fo = self._buildDecoder(
+            encoded_input,
+            latent_rep_size,
+            max_length,
+            max_length_functional,
+            charset_length
+        )
         self.decoder = Model(
             encoded_input,
-            self._buildDecoder(
-                encoded_input,
-                latent_rep_size,
-                max_length,
-                max_length_functional,
-                charset_length
-            )
+            [o, fo]
         )
 
         x1 = Input(shape=(max_length, charset_length))
         f1 = Input(shape=(max_length_functional, 1))
         vae_loss, z1 = self._buildEncoder(x1, f1, latent_rep_size, max_length, max_length_functional)
+        o1, fo1 = self._buildDecoder(
+            z1,
+            latent_rep_size,
+            max_length,
+            max_length_functional,
+            charset_length
+        )
         self.autoencoder = Model(
             [x1, f1],
-            self._buildDecoder(
-                z1,
-                latent_rep_size,
-                max_length,
-                max_length_functional,
-                charset_length
-            )
+            [o1, fo1]
         )
 
         # for obtaining mean and log variance of encoding distribution
@@ -74,7 +76,7 @@ class MoleculeVAE():
             self.encoderMV.load_weights(weights_file, by_name = True)
 
         self.autoencoder.compile(optimizer = 'Adam',
-                                 loss = vae_loss,
+                                 loss = {'o1': vae_loss, 'fo1': vae_loss},
                                  metrics = ['accuracy'])
 
     # Encoder tower structure
@@ -170,7 +172,7 @@ class MoleculeVAE():
         
         print('build decoder', K.int_shape(h), K.int_shape(hf))
         
-        return [h, hf]
+        return h, hf
 
     def save(self, filename):
         self.autoencoder.save_weights(filename)
