@@ -117,24 +117,24 @@ class MoleculeVAE():
         # this function is the main change.
         # essentially we mask the training data so that we are only allowed to apply
         #   future rules based on the current non-terminal
-        def conditional(x_true, x_pred):
+        def conditional(x_true, x_pred, ml, cl):
             most_likely = K.argmax(x_true)
             most_likely = tf.reshape(most_likely,[-1]) # flatten most_likely
             ix2 = tf.expand_dims(tf.gather(ind_of_ind_K, most_likely),1) # index ind_of_ind with res
             ix2 = tf.cast(ix2, tf.int32) # cast indices as ints 
             M2 = tf.gather_nd(masks_K, ix2) # get slices of masks_K with indices
-            M3 = tf.reshape(M2, [-1,max_length,DIM]) # reshape them
+            M3 = tf.reshape(M2, [-1,ml,DIM]) # reshape them
             P2 = tf.multiply(K.exp(x_pred),M3) # apply them to the exp-predictions
             P2 = tf.divide(P2,K.sum(P2,axis=-1,keepdims=True)) # normalize predictions
             return P2
 
         def vae_loss(true, pred_decoded_mean):
-            x_decoded_mean = conditional(true[0], pred_decoded_mean[0]) # we add this new function to the loss
+            x_decoded_mean = conditional(true[0], pred_decoded_mean[0], max_length, charset_length) # we add this new function to the loss
             x = K.flatten(true[0])
             x_decoded_mean = K.flatten(x_decoded_mean)
             xent_loss_1 = max_length * binary_crossentropy(x, x_decoded_mean)
             
-            f_decoded_mean = conditional(true[1], pred_decoded_mean[1]) # we add this new function to the loss
+            f_decoded_mean = conditional(true[1], pred_decoded_mean[1], max_length_functional, 1) # we add this new function to the loss
             f = K.flatten(true[1])
             f_decoded_mean = K.flatten(f_decoded_mean)
             xent_loss_2 = max_length_func * binary_crossentropy(f, f_decoded_mean)
@@ -164,7 +164,7 @@ class MoleculeVAE():
         
         print('build decoder', K.shape(h), K.shape(hf))
         
-        return h, hf
+        return [h, hf]
 
     def save(self, filename):
         self.autoencoder.save_weights(filename)
