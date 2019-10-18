@@ -130,10 +130,10 @@ class MoleculeVAE():
             P2 = tf.divide(P2,K.sum(P2,axis=-1,keepdims=True)) # normalize predictions
             return P2
 
-        def vae_loss(true, pred_decoded_mean, pred_functional):
+        def vae_loss(true, pred_decoded_mean):
             print('vae_loss', K.int_shape(true))
             print('vae_loss_2', K.int_shape(pred_decoded_mean))
-            print('vae_loss_3', K.int_shape(pred_functional))
+            #print('vae_loss_3', K.int_shape(pred_functional))
 
             x_decoded_mean = conditional(true[0], pred_decoded_mean, max_length, DIM) # we add this new function to the loss
             x = K.flatten(true[0])
