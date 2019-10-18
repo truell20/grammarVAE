@@ -42,6 +42,7 @@ class MoleculeVAE():
                 encoded_input,
                 latent_rep_size,
                 max_length,
+                max_length_functional,
                 charset_length
             )
         )
