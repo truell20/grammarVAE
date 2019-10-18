@@ -85,6 +85,7 @@ class MoleculeVAE():
 
         # Tower 2
         hf = Dense(20, activation = 'relu', name='tower_2_dense_1')(f)
+        hf = Flatten(name='tower_2_flatten_1')(hf)
 
         # Merge
         h = Concatenate()([h, hf])
