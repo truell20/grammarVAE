@@ -129,8 +129,8 @@ class MoleculeVAE():
             return P2
 
         def vae_loss(true, pred_decoded_mean):
-            print('vae_loss', K.shape(true))
-            print('vae_loss_2', K.shape(pred_decoded_mean))
+            print('vae_loss', K.int_shape(true))
+            print('vae_loss_2', K.int_shape(pred_decoded_mean))
 
             x_decoded_mean = conditional(true[0], pred_decoded_mean[0], max_length, DIM) # we add this new function to the loss
             x = K.flatten(true[0])
@@ -167,7 +167,7 @@ class MoleculeVAE():
         h = GRU(501, return_sequences = True, name='gru_3')(h)
         h = TimeDistributed(Dense(charset_length), name='decoded_mean')(h)
         
-        print('build decoder', K.shape(h), K.shape(hf))
+        print('build decoder', K.int_shape(h), K.int_shape(hf))
         
         return [h, hf]
 
