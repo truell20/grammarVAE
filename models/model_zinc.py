@@ -150,8 +150,10 @@ class MoleculeVAE():
         h = Dense(latent_rep_size, name='latent_input', activation = 'relu')(z)
 
         # Tower 2
-        hf = Dense(20, name='dense_tower_1', activation = 'relu')(h)
-        hf = Dense(max_length_functional, name='dense_tower_2', activation = 'sigmoid')(hf)
+        hf = RepeatVector(max_length_functional, name='repeat_vector_2')(h)
+        hf = Dense(20, name='dense_tower_1', activation = 'relu')(hf)
+        hf = Dense(20, name='dense_tower_2', activation = 'sigmoid')(hf)
+        hf = TimeDistributed(Dense(1), name='decoded_mean_2')(hf)
 
         # Tower 1
         h = RepeatVector(max_length, name='repeat_vector')(h)
