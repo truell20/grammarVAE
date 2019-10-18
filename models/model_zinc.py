@@ -137,7 +137,7 @@ class MoleculeVAE():
             f_decoded_mean = conditional(true[1], pred_decoded_mean[1]) # we add this new function to the loss
             f = K.flatten(true[1])
             f_decoded_mean = K.flatten(f_decoded_mean)
-            xent_loss_2 = max_length * binary_crossentropy(f, f_decoded_mean)
+            xent_loss_2 = max_functional_length * binary_crossentropy(f, f_decoded_mean)
 
 
             kl_loss = - 0.5 * K.mean(1 + z_log_var - K.square(z_mean) - K.exp(z_log_var), axis = -1)
@@ -150,7 +150,8 @@ class MoleculeVAE():
         h = Dense(latent_rep_size, name='latent_input', activation = 'relu')(z)
 
         # Tower 2
-        hf = Dense(int(1.5*max_length_functional), name='dense_tower_1', activation = 'relu')(h)
+        h = RepeatVector(max_length, name='repeat_vector')(h)
+        hf = Dense(20, name='dense_tower_1', activation = 'relu')(h)
         hf = Dense(max_length_functional, name='dense_tower_2', activation = 'sigmoid')(hf)
 
         # Tower 1
@@ -159,7 +160,9 @@ class MoleculeVAE():
         h = GRU(501, return_sequences = True, name='gru_2')(h)
         h = GRU(501, return_sequences = True, name='gru_3')(h)
         h = TimeDistributed(Dense(charset_length), name='decoded_mean')(h)
-
+        
+        print('build decoder', K.shape(h), K.shape(hf))
+        
         return h, hf
 
     def save(self, filename):
