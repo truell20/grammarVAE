@@ -155,7 +155,7 @@ class MoleculeVAE():
                 #f_decoded_mean = K.flatten(f_decoded_mean)
                 t = tf.reshape(true, (-1, 50))
                 p = tf.reshape(pred_decoded_mean, (-1, 50))
-                xent_loss = max_length_func * categorical_crossentropy(t, p)
+                xent_loss = categorical_crossentropy(t, p)
             else:
                 raise ValueError('UNRECOGNIZED SHAPE')
 
