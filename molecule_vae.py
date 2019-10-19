@@ -68,7 +68,7 @@ class ZincGrammarModel(object):
         self.vae.load(self._productions, weights_file, max_length=self.MAX_LEN, latent_rep_size=latent_rep_size)
 
 
-    def encode(self, smiles):
+    def encode(self, smiles, function_embed):
         """ Encode a list of smiles strings into the latent space """
         assert type(smiles) == list
         tokens = list(map(self._tokenize, smiles))
@@ -81,7 +81,7 @@ class ZincGrammarModel(object):
             one_hot[i][np.arange(num_productions),indices[i]] = 1.
             one_hot[i][np.arange(num_productions, self.MAX_LEN),-1] = 1.
         self.one_hot = one_hot
-        return self.vae.encoderMV.predict(one_hot)[0]
+        return self.vae.encoderMV.predict(one_hot, function_embed)[0]
 
     def _sample_using_masks(self, unmasked):
         """ Samples a one-hot vector, masking at each timestep.
