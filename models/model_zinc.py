@@ -162,7 +162,7 @@ class MoleculeVAE():
             kl_loss = - 0.5 * K.mean(1 + z_log_var - K.square(z_mean) - K.exp(z_log_var), axis = -1)
 
             print('kl_loss', K.int_shape(kl_loss))
-            print('xe_loss', K.int_shape(xe))
+            print('xe_loss', K.int_shape(xent_loss))
             return xent_loss + kl_loss
 
         return (vae_loss, Lambda(sampling, output_shape=(latent_rep_size,), name='lambda')([z_mean, z_log_var]))
