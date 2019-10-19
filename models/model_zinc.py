@@ -139,7 +139,7 @@ class MoleculeVAE():
                 x_decoded_mean = conditional(true[0], pred_decoded_mean, max_length, DIM) # we add this new function to the loss
                 x = K.flatten(true[0])
                 x_decoded_mean = K.flatten(x_decoded_mean)
-                xent_loss_1 = max_length * binary_crossentropy(x, x_decoded_mean)
+                xent_loss = max_length * binary_crossentropy(x, x_decoded_mean)
             elif K.int_shape(pred_decoded_mean)[1] == max_length_func:
                 f_decoded_mean = conditional(true[1], pred_functional, max_length_func, 1) # we add this new function to the loss
                 f = K.flatten(true[1])
