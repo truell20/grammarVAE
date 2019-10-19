@@ -88,7 +88,8 @@ class MoleculeVAE():
         h = Flatten(name='flatten_1')(h)
 
         # Tower 2
-        hf = Dense(20, activation = 'relu', name='tower_2_dense_1')(f)
+        hf = Reshape((-1, 50), name='tower_2_reshape_enc')(f)
+        hf = Dense(20, activation = 'relu', name='tower_2_dense_1')(hf)
         hf = Flatten(name='tower_2_flatten_1')(hf)
 
         # Merge
@@ -155,7 +156,7 @@ class MoleculeVAE():
                 #f_decoded_mean = K.flatten(f_decoded_mean)
                 t = tf.reshape(true, (-1, 50))
                 p = tf.reshape(pred_decoded_mean, (-1, 50))
-                xent_loss = categorical_crossentropy(t, p)
+                xent_loss = max_length_func * binary_crossentropy(t, p)
             else:
                 raise ValueError('UNRECOGNIZED SHAPE')
 
@@ -171,8 +172,7 @@ class MoleculeVAE():
         l = Dense(latent_rep_size, name='latent_input', activation = 'relu')(z)
 
         # Tower 2
-        hf = Dense(50, name='dense_tower_1', activation = 'relu')(l)
-        hf = Dense(50, name='dense_tower_2', activation = 'sigmoid')(hf)
+        hf = Dense(50, name='dense_tower_2', activation = 'sigmoid')(l)
         hf = Reshape((50, 1), name='decoded_mean_2')(hf)
 
         # Tower 1
