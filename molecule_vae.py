@@ -81,7 +81,7 @@ class ZincGrammarModel(object):
             one_hot[i][np.arange(num_productions),indices[i]] = 1.
             one_hot[i][np.arange(num_productions, self.MAX_LEN),-1] = 1.
         self.one_hot = one_hot
-        return self.vae.encoderMV.predict(one_hot, function_embed)[0]
+        return self.vae.encoderMV.predict([one_hot, function_embed])[0]
 
     def _sample_using_masks(self, unmasked):
         """ Samples a one-hot vector, masking at each timestep.
