@@ -2,7 +2,7 @@ import copy
 from keras import backend as K
 from keras.losses import binary_crossentropy, categorical_crossentropy
 from keras.models import Model
-from keras.layers import Input, Dense, Lambda, Concatenate
+from keras.layers import Input, Dense, Lambda, Concatenate, Reshape
 from keras.layers.core import Dense, Activation, Flatten, RepeatVector
 from keras.layers.wrappers import TimeDistributed
 from keras.layers.recurrent import GRU
