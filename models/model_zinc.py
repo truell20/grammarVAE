@@ -157,7 +157,7 @@ class MoleculeVAE():
             else:
                 raise ValueError('UNRECOGNIZED SHAPE')'''
 
-            xe = categorical_crossentropy(true, pred_decoded_mean)
+            xe = categorical_crossentropy(true, pred_decoded_mean, axis=1)
             kl_loss = - 0.5 * K.mean(1 + z_log_var - K.square(z_mean) - K.exp(z_log_var), axis = -1)
 
             print('kl_loss', K.int_shape(kl_loss))
