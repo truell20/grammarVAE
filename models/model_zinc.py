@@ -159,8 +159,8 @@ class MoleculeVAE():
                 raise ValueError('UNRECOGNIZED SHAPE')
 
             kl_loss = - 0.5 * K.mean(1 + z_log_var - K.square(z_mean) - K.exp(z_log_var), axis = -1)
-            if K.int_shape(pred_decoded_mean)[1] == max_length:
-                return xent_loss + kl_loss
+            #if K.int_shape(pred_decoded_mean)[1] == max_length:
+            #    return xent_loss + kl_loss
             return kl_loss
 
         return (vae_loss, Lambda(sampling, output_shape=(latent_rep_size,), name='lambda')([z_mean, z_log_var]))
