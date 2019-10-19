@@ -1,6 +1,6 @@
 import copy
 from keras import backend as K
-from keras.losses import binary_crossentropy
+from keras.losses import binary_crossentropy, categorical_crossentropy
 from keras.models import Model
 from keras.layers import Input, Dense, Lambda, Concatenate
 from keras.layers.core import Dense, Activation, Flatten, RepeatVector
@@ -153,7 +153,7 @@ class MoleculeVAE():
                 #f_decoded_mean = conditional(true, pred_decoded_mean, max_length_func, 1) # we add this new function to the loss
                 #f = K.flatten(true)
                 #f_decoded_mean = K.flatten(f_decoded_mean)
-                xent_loss = max_length_func * crossentropy(f, f_decoded_mean)
+                xent_loss = max_length_func * categorical_crossentropy(f, f_decoded_mean)
             else:
                 raise ValueError('UNRECOGNIZED SHAPE')
 
