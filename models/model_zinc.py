@@ -144,6 +144,8 @@ class MoleculeVAE():
             print('vae_loss_2', K.int_shape(pred_decoded_mean))
             #print('vae_loss_3', K.int_shape(pred_functional))
 
+            return categorical_crossentropy(true, pred_decoded_mean)
+
             if K.int_shape(pred_decoded_mean)[1] == max_length:
                 x_decoded_mean = conditional(true, pred_decoded_mean, max_length, DIM) # we add this new function to the loss
                 x = K.flatten(true)
@@ -153,15 +155,12 @@ class MoleculeVAE():
                 #f_decoded_mean = conditional(true, pred_decoded_mean, max_length_func, 1) # we add this new function to the loss
                 #f = K.flatten(true)
                 #f_decoded_mean = K.flatten(f_decoded_mean)
-                #xent_loss = max_length_func * categorical_crossentropy(true, pred_decoded_mean)
-                pass
+                xent_loss = max_length_func * categorical_crossentropy(true, pred_decoded_mean)
             else:
                 raise ValueError('UNRECOGNIZED SHAPE')
 
             kl_loss = - 0.5 * K.mean(1 + z_log_var - K.square(z_mean) - K.exp(z_log_var), axis = -1)
-            #if K.int_shape(pred_decoded_mean)[1] == max_length:
-            #    return xent_loss + kl_loss
-            return kl_loss
+            return x_ent + kl_loss
 
         return (vae_loss, Lambda(sampling, output_shape=(latent_rep_size,), name='lambda')([z_mean, z_log_var]))
 
