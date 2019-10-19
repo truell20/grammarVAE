@@ -121,17 +121,26 @@ class MoleculeVAE():
         #   future rules based on the current non-terminal
         def conditional(x_true, x_pred, max_l, charset_l):
             most_likely = K.argmax(x_true)
+            print('most_likely', K.int_shape(most_likely))
             most_likely = tf.reshape(most_likely,[-1]) # flatten most_likely
+            print('most_likely', K.int_shape(most_likely))
             ix2 = tf.expand_dims(tf.gather(ind_of_ind_K, most_likely),1) # index ind_of_ind with res
+            print('ix2', K.int_shape(ix2))
             ix2 = tf.cast(ix2, tf.int32) # cast indices as ints 
+            print('ix2', K.int_shape(ix2))
             M2 = tf.gather_nd(masks_K, ix2) # get slices of masks_K with indices
+            print('M2', K.int_shape(M2))
             M3 = tf.reshape(M2, [-1,max_l,charset_l]) # reshape them
+            print('M3', K.int_shape(M3))
             P2 = tf.multiply(K.exp(x_pred),M3) # apply them to the exp-predictions
+            print('P2', K.int_shape(P2))
             P2 = tf.divide(P2,K.sum(P2,axis=-1,keepdims=True)) # normalize predictions
+            print('P2', K.int_shape(P2))
             return P2
 
         def vae_loss(true, pred_decoded_mean):
             print('vae_loss', K.int_shape(true))
+            print('vae_loss', K.int_shape(true[0]))
             print('vae_loss_2', K.int_shape(pred_decoded_mean))
             #print('vae_loss_3', K.int_shape(pred_functional))
 
