@@ -135,7 +135,7 @@ class MoleculeVAE():
             print('vae_loss_2', K.int_shape(pred_decoded_mean))
             #print('vae_loss_3', K.int_shape(pred_functional))
 
-            if K.int_shape(pred_decoded_mean)[1] == max_length_func:
+            if K.int_shape(pred_decoded_mean)[1] == max_length:
                 x_decoded_mean = conditional(true[0], pred_decoded_mean, max_length, DIM) # we add this new function to the loss
                 x = K.flatten(true[0])
                 x_decoded_mean = K.flatten(x_decoded_mean)
