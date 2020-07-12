@@ -14,7 +14,7 @@ masks_K = K.variable(G.masks)
 ind_of_ind_K = K.variable(G.ind_of_ind)
 
 MAX_LEN = 150
-MAX_LEN_FUNCTIONAL = 50
+MAX_LEN_FUNCTIONAL = 200
 DIM = G.D
 
 class MoleculeVAE():
@@ -88,8 +88,8 @@ class MoleculeVAE():
         h = Flatten(name='flatten_1')(h)
 
         # Tower 2
-        hf = Reshape((-1, 50), name='tower_2_reshape_enc')(f)
-        hf = Dense(20, activation = 'relu', name='tower_2_dense_1')(hf)
+#         hf = Reshape((-1, 50), name='tower_2_reshape_enc')(f)
+        hf = Dense(64, activation = 'relu', name='tower_2_dense_1')(hf)
         hf = Flatten(name='tower_2_flatten_1')(hf)
 
         # Merge
@@ -172,7 +172,8 @@ class MoleculeVAE():
         l = Dense(latent_rep_size, name='latent_input', activation = 'relu')(z)
 
         # Tower 2
-        hf = Dense(50, name='dense_tower_2', activation = 'sigmoid')(l)
+        hf = Dense(128, name='dense_tower_1', activation = 'relu')(l)	
+        hf = Dense(64, name='dense_tower_2', activation = 'sigmoid')(hf)
         hf = Reshape((50, 1), name='decoded_mean_2')(hf)
 
         # Tower 1
