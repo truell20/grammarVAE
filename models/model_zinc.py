@@ -158,7 +158,7 @@ class MoleculeVAE():
 
                 t = tf.reshape(true, (-1, max_length_func))
                 p = tf.reshape(pred_decoded_mean, (-1, max_length_func))
-                xent_loss = max_length_func * binary_crossentropy(t, p)
+                xent_loss = binary_crossentropy(t, p)
             else:
                 raise ValueError('UNRECOGNIZED SHAPE')
 
