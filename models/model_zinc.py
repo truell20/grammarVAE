@@ -174,8 +174,8 @@ class MoleculeVAE():
         l = Dense(latent_rep_size, name='latent_input', activation = 'relu')(z)
 
         # Tower 2
-        hf = Dense(128, name='dense_tower_1', activation = 'relu')(l)	
-        hf = Dense(max_length_functional, name='dense_tower_2', activation = 'sigmoid')(hf)
+#         hf = Dense(128, name='dense_tower_1', activation = 'relu')(l)	
+        hf = Dense(max_length_functional, name='dense_tower_2', activation = 'sigmoid')(l)
         hf = Reshape((max_length_functional, 1), name='decoded_mean_2')(hf)
 
         # Tower 1
