@@ -89,7 +89,7 @@ class MoleculeVAE():
 
         # Tower 2
 #         hf = Reshape((-1, 50), name='tower_2_reshape_enc')(f)
-        hf = Dense(64, activation = 'relu', name='tower_2_dense_1')(hf)
+        hf = Dense(64, activation = 'relu', name='tower_2_dense_1')(f)
         hf = Flatten(name='tower_2_flatten_1')(hf)
 
         # Merge
