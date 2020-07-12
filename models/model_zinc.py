@@ -151,14 +151,14 @@ class MoleculeVAE():
                 x_decoded_mean = K.flatten(x_decoded_mean)
                 xent_loss = max_length * binary_crossentropy(x, x_decoded_mean)
             elif K.int_shape(pred_decoded_mean)[1] == max_length_func:
-                f_decoded_mean = conditional(true, pred_decoded_mean, max_length_func, 1) # we add this new function to the loss
-                f = tf.reshape(true, (-1, max_length_func))
-                f_decoded_mean = tf.reshape(f_decoded_mean, (-1, max_length_func))
-                xent_loss = max_length_func * binary_crossentropy(f, f_decoded_mean)
+                # f_decoded_mean = conditional(true, pred_decoded_mean, max_length_func, 1) # we add this new function to the loss
+                # f = tf.reshape(true, (-1, max_length_func))
+                # f_decoded_mean = tf.reshape(f_decoded_mean, (-1, max_length_func))
+                # xent_loss = max_length_func * binary_crossentropy(f, f_decoded_mean)
 
-                # t = tf.reshape(true, (-1, max_length_func))
-                # p = tf.reshape(pred_decoded_mean, (-1, max_length_func))
-                # xent_loss = max_length_func * binary_crossentropy(t, p)
+                t = tf.reshape(true, (-1, max_length_func))
+                p = tf.reshape(pred_decoded_mean, (-1, max_length_func))
+                xent_loss = max_length_func * binary_crossentropy(t, p)
             else:
                 raise ValueError('UNRECOGNIZED SHAPE')
 
