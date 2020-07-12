@@ -174,7 +174,7 @@ class MoleculeVAE():
         # Tower 2
         hf = Dense(128, name='dense_tower_1', activation = 'relu')(l)	
         hf = Dense(64, name='dense_tower_2', activation = 'sigmoid')(hf)
-        hf = Reshape((max_length_func, 1), name='decoded_mean_2')(hf)
+        hf = Reshape((max_length_functional, 1), name='decoded_mean_2')(hf)
 
         # Tower 1
         h = RepeatVector(max_length, name='repeat_vector')(l)
