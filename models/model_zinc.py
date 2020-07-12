@@ -151,12 +151,14 @@ class MoleculeVAE():
                 x_decoded_mean = K.flatten(x_decoded_mean)
                 xent_loss = max_length * binary_crossentropy(x, x_decoded_mean)
             elif K.int_shape(pred_decoded_mean)[1] == max_length_func:
-                #f_decoded_mean = conditional(true, pred_decoded_mean, max_length_func, 1) # we add this new function to the loss
-                #f = K.flatten(true)
-                #f_decoded_mean = K.flatten(f_decoded_mean)
-                t = tf.reshape(true, (-1, max_length_func))
-                p = tf.reshape(pred_decoded_mean, (-1, max_length_func))
-                xent_loss = max_length_func * binary_crossentropy(t, p)
+                f_decoded_mean = conditional(true, pred_decoded_mean, max_length_func, 1) # we add this new function to the loss
+                f = tf.reshape(true, (-1, max_length_func))
+                f_decoded_mean = tf.reshape(f_decoded_mean, (-1, max_length_func))
+                xent_loss = max_length_func * binary_crossentropy(f, f_decoded_mean)
+
+#                 t = tf.reshape(true, (-1, max_length_func))
+#                 p = tf.reshape(pred_decoded_mean, (-1, max_length_func))
+#                 xent_loss = max_length_func * binary_crossentropy(t, p)
             else:
                 raise ValueError('UNRECOGNIZED SHAPE')
 
@@ -173,7 +175,7 @@ class MoleculeVAE():
 
         # Tower 2
         hf = Dense(128, name='dense_tower_1', activation = 'relu')(l)	
-        hf = Dense(64, name='dense_tower_2', activation = 'sigmoid')(hf)
+        hf = Dense(max_length_functional, name='dense_tower_2', activation = 'sigmoid')(hf)
         hf = Reshape((max_length_functional, 1), name='decoded_mean_2')(hf)
 
         # Tower 1
