@@ -156,9 +156,9 @@ class MoleculeVAE():
                 f_decoded_mean = tf.reshape(f_decoded_mean, (-1, max_length_func))
                 xent_loss = max_length_func * binary_crossentropy(f, f_decoded_mean)
 
-#                 t = tf.reshape(true, (-1, max_length_func))
-#                 p = tf.reshape(pred_decoded_mean, (-1, max_length_func))
-#                 xent_loss = max_length_func * binary_crossentropy(t, p)
+                # t = tf.reshape(true, (-1, max_length_func))
+                # p = tf.reshape(pred_decoded_mean, (-1, max_length_func))
+                # xent_loss = max_length_func * binary_crossentropy(t, p)
             else:
                 raise ValueError('UNRECOGNIZED SHAPE')
 
@@ -174,9 +174,9 @@ class MoleculeVAE():
         l = Dense(latent_rep_size, name='latent_input', activation = 'relu')(z)
 
         # Tower 2
-#         hf = Dense(128, name='dense_tower_1', activation = 'relu')(l)	
-        hf = Dense(max_length_functional, name='dense_tower_2', activation = 'sigmoid')(l)
-        hf = Reshape((max_length_functional, 1), name='decoded_mean_2')(hf)
+        # hf = Dense(128, name='dense_tower_1', activation = 'relu')(l)	
+        hf = Dense(200, name='dense_tower_2', activation = 'sigmoid')(l)
+        hf = Reshape((200, 1), name='decoded_mean_2')(hf)
 
         # Tower 1
         h = RepeatVector(max_length, name='repeat_vector')(l)
@@ -192,5 +192,5 @@ class MoleculeVAE():
     def save(self, filename):
         self.autoencoder.save_weights(filename)
     
-    def load(self, charset, weights_file, latent_rep_size = 2, max_length=MAX_LEN):
+    def load(self, charset, weights_file, latent_rep_size = 128, max_length=MAX_LEN):
         self.create(charset, max_length = max_length, weights_file = weights_file, latent_rep_size = latent_rep_size)
