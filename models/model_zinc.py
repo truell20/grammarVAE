@@ -1,6 +1,6 @@
 import copy
 from keras import backend as K
-from keras.losses import binary_crossentropy, categorical_crossentropy
+from keras.losses import binary_crossentropy, categorical_crossentropy, mse
 from keras.models import Model
 from keras.layers import Input, Dense, Lambda, Concatenate, Reshape
 from keras.layers.core import Dense, Activation, Flatten, RepeatVector
@@ -158,7 +158,7 @@ class MoleculeVAE():
 
                 t = tf.reshape(true, (-1, max_length_func))
                 p = tf.reshape(pred_decoded_mean, (-1, max_length_func))
-                xent_loss = binary_crossentropy(t, p)
+                xent_loss = mse(t, p)
             else:
                 raise ValueError('UNRECOGNIZED SHAPE')
 
