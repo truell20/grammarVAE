@@ -30,10 +30,9 @@ class MoleculeVAE():
         charset_length = len(charset)
         
         x = Input(shape=(max_length, charset_length))
-        f = Input(shape=(max_length_functional, 1))
 
-        _, z = self._buildEncoder(x, f, latent_rep_size, max_length, max_length_functional)
-        self.encoder = Model([x, f], z)
+        _, z = self._buildEncoder(x, latent_rep_size, max_length, max_length_functional)
+        self.encoder = Model(x, z)
 
         encoded_input = Input(shape=(latent_rep_size,))
         o, fo = self._buildDecoder(
@@ -49,8 +48,7 @@ class MoleculeVAE():
         )
 
         x1 = Input(shape=(max_length, charset_length))
-        f1 = Input(shape=(max_length_functional, 1))
-        vae_loss, z1 = self._buildEncoder(x1, f1, latent_rep_size, max_length, max_length_functional)
+        vae_loss, z1 = self._buildEncoder(x1, latent_rep_size, max_length, max_length_functional)
         o1, fo1 = self._buildDecoder(
             z1,
             latent_rep_size,
@@ -59,15 +57,14 @@ class MoleculeVAE():
             charset_length
         )
         self.autoencoder = Model(
-            [x1, f1],
+            x1,
             [o1, fo1]
         )
 
         # for obtaining mean and log variance of encoding distribution
         x2 = Input(shape=(max_length, charset_length))
-        f2 = Input(shape=(max_length_functional, 1))
-        (z_m, z_l_v) = self._encoderMeanVar(x2, f2, latent_rep_size, max_length, max_length_functional)
-        self.encoderMV = Model(inputs=[x2, f2], outputs=[z_m, z_l_v])
+        (z_m, z_l_v) = self._encoderMeanVar(x2, latent_rep_size, max_length, max_length_functional)
+        self.encoderMV = Model(inputs=x2, outputs=[z_m, z_l_v])
 
         if weights_file:
             self.autoencoder.load_weights(weights_file)
@@ -96,8 +93,8 @@ class MoleculeVAE():
 #         h = Concatenate()([h, hf])
         return Dense(435, activation = 'relu', name='dense_1')(h)
 
-    def _encoderMeanVar(self, x, f, latent_rep_size, max_length, max_length_func, epsilon_std = 0.01):
-        h = self._towers(x, f, max_length, max_length_func)
+    def _encoderMeanVar(self, x, latent_rep_size, max_length, max_length_func, epsilon_std = 0.01):
+        h = self._towers(x, max_length, max_length_func)
 
         z_mean = Dense(latent_rep_size, name='z_mean', activation = 'linear')(h)
         z_log_var = Dense(latent_rep_size, name='z_log_var', activation = 'linear')(h)
@@ -105,8 +102,8 @@ class MoleculeVAE():
         return (z_mean, z_log_var) 
 
 
-    def _buildEncoder(self, x, f, latent_rep_size, max_length, max_length_func, epsilon_std = 0.01):
-        h = self._towers(x, f, max_length, max_length_func)
+    def _buildEncoder(self, x, latent_rep_size, max_length, max_length_func, epsilon_std = 0.01):
+        h = self._towers(x, max_length, max_length_func)
 
         def sampling(args):
             z_mean_, z_log_var_ = args
