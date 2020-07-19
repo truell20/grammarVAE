@@ -77,7 +77,7 @@ class MoleculeVAE():
                                  metrics = ['accuracy'])
 
     # Encoder tower structure
-    def _towers(self, x, f, max_length):
+    def _towers(self, x, max_length):
         # Tower 1
         h = Convolution1D(9, 9, activation = 'relu', name='conv_1')(x)
         h = Convolution1D(9, 9, activation = 'relu', name='conv_2')(h)
