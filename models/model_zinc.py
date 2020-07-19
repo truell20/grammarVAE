@@ -176,7 +176,7 @@ class MoleculeVAE():
         # Tower 2
 #         hf = Reshape((-1, latent_rep_size), name='prediction_reshape')(l)
         hf = Dense(512, name='dense_tower_1', activation = 'relu')(l)	
-        hf = Flatten(name='tower_2_flatten_1')(hf)
+#         hf = Flatten(name='tower_2_flatten_1')(hf)
         hf = Dense(200, name='dense_tower_2', activation = 'sigmoid')(hf)
         hf = Reshape((200, 1), name='decoded_mean_2')(hf)
 
