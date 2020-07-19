@@ -89,11 +89,11 @@ class MoleculeVAE():
 
         # Tower 2
 #         hf = Reshape((-1, 50), name='tower_2_reshape_enc')(f)
-        hf = Dense(64, activation = 'relu', name='tower_2_dense_1')(f)
-        hf = Flatten(name='tower_2_flatten_1')(hf)
+#         hf = Dense(64, activation = 'relu', name='tower_2_dense_1')(f)
+#         hf = Flatten(name='tower_2_flatten_1')(hf)
 
         # Merge
-        h = Concatenate()([h, hf])
+#         h = Concatenate()([h, hf])
         return Dense(435, activation = 'relu', name='dense_1')(h)
 
     def _encoderMeanVar(self, x, f, latent_rep_size, max_length, max_length_func, epsilon_std = 0.01):
@@ -174,7 +174,9 @@ class MoleculeVAE():
         l = Dense(latent_rep_size, name='latent_input', activation = 'relu')(z)
 
         # Tower 2
-        # hf = Dense(128, name='dense_tower_1', activation = 'relu')(l)	
+        hf = Reshape((-1, latent_rep_size), name='prediction_reshape')(l)
+        hf = Dense(512, name='dense_tower_1', activation = 'relu')(hf)	
+        hf = Flatten(name='tower_2_flatten_1')(hf)
         hf = Dense(200, name='dense_tower_2', activation = 'sigmoid')(l)
         hf = Reshape((200, 1), name='decoded_mean_2')(hf)
 
