@@ -24,7 +24,7 @@ class MoleculeVAE():
                weights_file = None):
         charset_length = len(charset)
         
-           x = Input(shape=(max_length, charset_length))
+        x = Input(shape=(max_length, charset_length))
         f = Input(shape=(max_length_functional, 1))
 
         _, z = self._buildEncoder(x, f, latent_rep_size, max_length, max_length_functional)
@@ -135,7 +135,7 @@ class MoleculeVAE():
         l = Dense(latent_rep_size, name='latent_input', activation = 'relu')(z)
         
         # Tower 1
-        h = RepeatVector(max_length, name='repeat_vector')(h)
+        h = RepeatVector(max_length, name='repeat_vector')(l)
         h = GRU(501, return_sequences = True, name='gru_1')(h)
         h = GRU(501, return_sequences = True, name='gru_2')(h)
         h = GRU(501, return_sequences = True, name='gru_3')(h)
